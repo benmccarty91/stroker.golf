@@ -14,10 +14,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
-      - name: Change Directory
-        run: cd ./Client
       - name: Install Dependencies
         run: npm install
+        working-directory: dist/Client
       - name: Build
         run: npm run build-prod
       - name: Archive Production Artifact
