@@ -8,6 +8,10 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    defaults: 
+      run:
+        shell: bash
+        working-directory: Client
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -19,15 +23,15 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: dist
-          path: dist/Client
-    defaults: 
-      run:
-        shell: bash
-        working-directory: Client
+          path: Client/dist/Client
   deploy:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: Client
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -35,7 +39,7 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: dist
-          path: dist
+          path: Client/dist/Client
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
