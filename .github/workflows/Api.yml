@@ -6,15 +6,17 @@ on:
 
 jobs:
   build-and-deploy:
-    name: Deploy
+    name: Build, Install, and Deploy
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-        working-directory: API
+        working-directory: API/functions
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
+      - name: Install Dependencies
+        run: npm install
       - name: Build and Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
