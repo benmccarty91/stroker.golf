@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'API/**'
+      - '.github/workflows/Api.yml'
 
 jobs:
   build-and-deploy:
