@@ -49,13 +49,15 @@ To deploy to firebase, edit `.firebaserc` to set the default project to your pro
 
 `npm run build`
 
-`npm deploy`
+`firebase deploy --only functions`
+
+(Billing is required to deploy functions)
 
 The API also automatically deploys when you push code up to github.
 
 ## Data
 Not much of a template here, just some basic security rules for firebase firestore.  Again, navigate to Data and edit `.firebaserc` and set the default project to your project id.  
 
-Deploy with `firebase deploy --only firestore`
+The firestore must be initialized via the website.  Once set up, new rules can be deployed with `firebase deploy --only firestore`
 
 These files deploy automatically with pushes to github.
