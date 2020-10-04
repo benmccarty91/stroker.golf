@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginService } from 'src/services/LoginService';
+import { timer } from 'rxjs';
+import { CONSTS } from 'src/assets/CONSTS';
+import { AuthService } from 'src/services/AuthService';
+import { PubSubService } from 'src/services/PubSubService';
 
 @Component({
   selector: 'app-root',
@@ -9,17 +12,20 @@ import { LoginService } from 'src/services/LoginService';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private loginService: LoginService,
+    private authService: AuthService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
-    const loggedIn = this.loginService.LoggedIn();
-    if (!loggedIn) {
-      this.router.navigateByUrl('/Login');
-    }
-    else {
-      this.router.navigateByUrl('/Landing');
-    }
+    this.authService.init().subscribe(x => {
+      const loggedIn = this.authService.loggedIn();
+      if (!loggedIn) {
+        this.router.navigateByUrl('/login');
+      }
+      else {
+        this.router.navigateByUrl('/landing');
+      }
+    });
   }
 }

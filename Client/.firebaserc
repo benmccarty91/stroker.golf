@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "stroker-af4d5"
+  },
+  "targets": {
+    "stroker-af4d5": {
+      "hosting": {
+        "Client": [
+          "stroker-af4d5"
+        ]
+      }
+    }
   }
 }
