@@ -28,8 +28,8 @@ export class AuthService {
     return false;
   }
 
-  public getUser(): User {
-    return this.user;
+  public getUser(): Observable<User> {
+    return this.fireAuth.user;
   }
 
   public async logIn(): Promise<boolean> {

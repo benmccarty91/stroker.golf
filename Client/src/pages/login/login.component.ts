@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
   googleAuth(): void {
     this.authService.logIn().then(success => {
       if (success) {
-        this.router.navigateByUrl('/Landing');
+        this.router.navigateByUrl('/landing');
       }
     });
   }

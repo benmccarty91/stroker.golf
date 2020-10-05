@@ -11,7 +11,8 @@ import { AuthService } from 'src/services/AuthService';
 })
 export class LandingComponent implements OnInit {
 
-  public user: User;
+  public user: User = null;
+  public displayName = '';
 
   constructor(
     private authService: AuthService,
@@ -19,10 +20,10 @@ export class LandingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.user = this.authService.getUser();
-    timer(5000).subscribe(x => {
-      this.router.navigateByUrl('/test');
-    })
+    this.authService.getUser().subscribe(x => {
+      this.user = x;
+      this.displayName = this.user.displayName;
+    });
   }
 
 }
