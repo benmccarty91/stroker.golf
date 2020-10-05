@@ -32,10 +32,27 @@ export class AuthService {
     return this.fireAuth.user;
   }
 
-  public async logIn(): Promise<boolean> {
+  public async loginWithGoogle(): Promise<boolean> {
     let cred: auth.UserCredential;
     try {
       cred = await this.fireAuth.signInWithPopup(new auth.GoogleAuthProvider());
+    } catch (error) {
+      console.log(`login failed with error: ${error}`);
+      return false;
+    }
+    if (cred) {
+      console.log(`logged in user: ${cred.user.displayName}`);
+      this.user = cred.user;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public async loginWithFacebook(): Promise<boolean> {
+    let cred: auth.UserCredential;
+    try {
+      cred = await this.fireAuth.signInWithPopup(new auth.FacebookAuthProvider());
     } catch (error) {
       console.log(`login failed with error: ${error}`);
       return false;

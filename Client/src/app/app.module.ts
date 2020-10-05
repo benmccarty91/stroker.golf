@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
+import { LoginModule } from 'src/pages/login/login.module';
+import { LandingModule } from 'src/pages/landing/landing.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { environment } from 'src/environments/environment';
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    LoginModule,
+    LandingModule
   ],
   providers: [AngularFireAuth],
   bootstrap: [AppComponent]
