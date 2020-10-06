@@ -9,6 +9,8 @@ import { environment } from 'src/environments/environment';
 import { LoginModule } from 'src/pages/login/login.module';
 import { LandingModule } from 'src/pages/landing/landing.module';
 import { HeaderModule } from 'src/components/header/header.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { HeaderModule } from 'src/components/header/header.module';
     AngularFireAuthModule,
     LoginModule,
     LandingModule,
-    HeaderModule
+    HeaderModule,
+    BrowserAnimationsModule,
+    MatSliderModule
   ],
   providers: [AngularFireAuth],
   bootstrap: [AppComponent]
