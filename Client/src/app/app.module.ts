@@ -8,6 +8,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { LoginModule } from 'src/pages/login/login.module';
 import { LandingModule } from 'src/pages/landing/landing.module';
+import { HeaderModule } from 'src/components/header/header.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { LandingModule } from 'src/pages/landing/landing.module';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     LoginModule,
-    LandingModule
+    LandingModule,
+    HeaderModule
   ],
   providers: [AngularFireAuth],
   bootstrap: [AppComponent]
