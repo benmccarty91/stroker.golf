@@ -1,0 +1,13 @@
+nav {
+  background-color: #888888;
+
+  .nav-link {
+    cursor: pointer;
+  }
+
+  .active {
+    a {
+      color: #fff;
+    }
+  }
+}

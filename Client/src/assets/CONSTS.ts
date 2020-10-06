@@ -5,6 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class CONSTS {
   public EVENTS = {
-    AUTH_INIT: 'authServiceInitialized'
+    AUTH_INIT: 'authServiceInitialized',
+    LOGGED_IN: 'userLoggedIn',
+    LOGGED_OUT: 'userLoggedOut'
   };
 }

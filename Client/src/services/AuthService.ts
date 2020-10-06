@@ -3,6 +3,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { auth, User } from 'firebase';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CONSTS } from 'src/assets/CONSTS';
+import { PubSubService } from './PubSubService';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +14,9 @@ export class AuthService {
   private user: User;
 
   constructor(
-    private fireAuth: AngularFireAuth
+    private fireAuth: AngularFireAuth,
+    private pubSubService: PubSubService,
+    private consts: CONSTS
   ) { }
 
   public init(): Observable<User> {
@@ -43,6 +47,7 @@ export class AuthService {
     if (cred) {
       console.log(`logged in user: ${cred.user.displayName}`);
       this.user = cred.user;
+      this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
       return true;
     } else {
       return false;
@@ -60,9 +65,15 @@ export class AuthService {
     if (cred) {
       console.log(`logged in user: ${cred.user.displayName}`);
       this.user = cred.user;
+      this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
       return true;
     } else {
       return false;
     }
+  }
+
+  public async logOut(): Promise<void> {
+    await this.fireAuth.signOut();
+    return;
   }
 }
