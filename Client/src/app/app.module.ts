@@ -11,6 +11,7 @@ import { LandingModule } from 'src/pages/landing/landing.module';
 import { HeaderModule } from 'src/components/header/header.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
+import { NavModule } from 'src/components/nav/nav.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { MatSliderModule } from '@angular/material/slider';
     LandingModule,
     HeaderModule,
     BrowserAnimationsModule,
-    MatSliderModule
+    MatSliderModule,
+    NavModule
   ],
   providers: [AngularFireAuth],
   bootstrap: [AppComponent]
