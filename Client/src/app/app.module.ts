@@ -1,17 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
+// import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { LoginModule } from 'src/pages/login/login.module';
 import { LandingModule } from 'src/pages/landing/landing.module';
-import { HeaderModule } from 'src/components/header/header.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSliderModule } from '@angular/material/slider';
 import { NavModule } from 'src/components/nav/nav.module';
+
+import { MaterialModule } from './shared/material.module';
 
 @NgModule({
   declarations: [
@@ -19,15 +19,14 @@ import { NavModule } from 'src/components/nav/nav.module';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    // AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     LoginModule,
     LandingModule,
-    HeaderModule,
     BrowserAnimationsModule,
-    MatSliderModule,
-    NavModule
+    NavModule,
+    MaterialModule
   ],
   providers: [AngularFireAuth],
   bootstrap: [AppComponent]
