@@ -1,0 +1,11 @@
+@import '~@angular/material/theming';
+//And then retrieve the palette
+
+$primaryPalette : mat-palette($mat-indigo);
+$secondaryPalette : mat-palette($mat-pink);
+$greyPalette: mat-palette($mat-grey);
+
+//Retrive the colors you need
+$primary : mat-color($primaryPalette);
+$secondary: mat-color($secondaryPalette);
+$grey: mat-color($greyPalette)

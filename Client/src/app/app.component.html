@@ -3,7 +3,9 @@
 <mat-sidenav-container class="app-sidenav-container" autosize>
   <mat-sidenav #drawer class="app-sidenav mat-elevation-z10" 
     [mode]="smallScreen ? 'over' : 'side'" 
-    [opened]="!smallScreen">
+    [opened]="!smallScreen"
+    [disableClose]="!smallScreen"
+    >
 
    <app-nav></app-nav>
   </mat-sidenav>

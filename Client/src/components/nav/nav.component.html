@@ -1,8 +1,35 @@
 <mat-toolbar color="primary">Menu</mat-toolbar>
-<mat-list>
-  <mat-list-item>Menu Item 1</mat-list-item>
-  <mat-list-item>Menu Item 2</mat-list-item>
-  <mat-list-item>Menu Item 3</mat-list-item>
-  <mat-list-item>Menu Item 4</mat-list-item>
-  <mat-list-item>Menu Item 5</mat-list-item>
+<mat-list class="nav-list">
+
+  <a class="nav-link"  [ngClass]="{'active': isActive('/landing'), 'disabled': !isLoggedIn}" (click)="handleLink('/landing')">
+    <mat-list-item class="nav-item">
+      Home
+    </mat-list-item>
+  </a>
+  
+  <a class="nav-link"  [ngClass]="{'active': isActive('/newGame'), 'disabled': !isLoggedIn}" (click)="handleLink('/newGame')">
+    <mat-list-item class="nav-item">
+      New Game
+    </mat-list-item>
+  </a>
+  
+  <a class="nav-link"  [ngClass]="{'active': isActive('/scores'), 'disabled': !isLoggedIn}" (click)="handleLink('/scores')">
+    <mat-list-item class="nav-item">
+      Scores
+    </mat-list-item>
+  </a>
+  
+  <a *ngIf="!isLoggedIn" class="nav-link"  [ngClass]="{'active': isActive('/login')}" (click)="handleLink('/login')">
+    <mat-list-item class="nav-item">
+      Log In
+    </mat-list-item>
+  </a>
+  
+  <a *ngIf="isLoggedIn" class="nav-link"  [ngClass]="{'active': isActive('/logOut')}" (click)="handleLink('/logOut')">
+    <mat-list-item class="nav-item">
+      Log Out
+    </mat-list-item>
+  </a>
+  
+  
 </mat-list>
