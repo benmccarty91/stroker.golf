@@ -17,10 +17,15 @@
   height: 100%;
   flex-direction: column;
 
+  overflow: hidden;
+
+  background-image: url('../assets/images/course.jpg');
+  background-size: cover;
+
   .main {
     margin: 10px auto;
     height: 100%;
-    min-height: 90%;
+    min-height: 80%;
     width: 95%;
   }
 }
