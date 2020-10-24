@@ -73,6 +73,7 @@ export class AuthService {
   }
 
   public async logOut(): Promise<void> {
+    console.log('loging out user');
     await this.fireAuth.signOut();
     return;
   }

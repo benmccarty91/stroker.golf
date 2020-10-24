@@ -12,7 +12,7 @@ import { AuthService } from 'src/services/AuthService';
 export class LandingComponent implements OnInit {
 
   public user: User = null;
-  public displayName = '';
+  public displayName = null;
 
   constructor(
     private authService: AuthService,
@@ -22,7 +22,7 @@ export class LandingComponent implements OnInit {
   ngOnInit(): void {
     this.authService.getUser().subscribe(x => {
       this.user = x;
-      this.displayName = this.user.displayName;
+      this.displayName = this.user ? this.user.displayName : null;
     });
   }
 
