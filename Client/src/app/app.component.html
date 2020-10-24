@@ -1,12 +1,9 @@
 <!-- <router-outlet></router-outlet> -->
 
-<mat-sidenav-container class="app-sidenav-container" autosize>
-  <mat-sidenav #drawer class="app-sidenav mat-elevation-z10" 
-    [mode]="smallScreen ? 'over' : 'side'" 
-    [opened]="!smallScreen"
-    [disableClose]="!smallScreen"
-    >
-   <app-nav></app-nav>
+<mat-sidenav-container [ngClass]="{'disabled': appLoading}" class="app-sidenav-container" autosize>
+  <mat-sidenav #drawer class="app-sidenav mat-elevation-z10" [mode]="smallScreen ? 'over' : 'side'"
+    [opened]="!smallScreen" [disableClose]="!smallScreen">
+    <app-nav></app-nav>
   </mat-sidenav>
 
   <div class="app-sidenav-content">
@@ -17,3 +14,4 @@
   </div>
 
 </mat-sidenav-container>
+<mat-spinner *ngIf="appLoading" diameter="30" color="warn"></mat-spinner>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CONSTS } from 'src/assets/CONSTS';
 import { AuthService } from 'src/services/AuthService';
+import { PubSubService } from 'src/services/PubSubService';
 
 @Component({
   selector: 'app-google-sign-in',
@@ -11,6 +13,8 @@ export class GoogleSignInComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private pubsubService: PubSubService,
+    private consts: CONSTS,
     private router: Router
   ) { }
 
@@ -18,10 +22,17 @@ export class GoogleSignInComponent implements OnInit {
   }
 
   googleAuth(): void {
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
     this.authService.loginWithGoogle().then(success => {
       if (success) {
         this.router.navigateByUrl('/landing');
+      } else {
+        console.log('error logging in with google');
+        this.router.navigateByUrl('/login');
       }
+    }).catch(err => {
+      console.log(`error launching google auth.  Error: ${err}`);
+      this.router.navigateByUrl('/login');
     });
   }
 
