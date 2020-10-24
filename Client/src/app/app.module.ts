@@ -13,6 +13,7 @@ import { NavModule } from 'src/components/nav/nav.module';
 
 import { MaterialModule } from './shared/material.module';
 import { HeaderModule } from 'src/components/header/header.module';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,7 @@ import { HeaderModule } from 'src/components/header/header.module';
   ],
   imports: [
     BrowserModule,
-    // AppRoutingModule,
+    AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     LoginModule,

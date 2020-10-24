@@ -6,12 +6,12 @@
     [opened]="!smallScreen"
     [disableClose]="!smallScreen"
     >
-
    <app-nav></app-nav>
   </mat-sidenav>
 
   <div class="app-sidenav-content">
     <app-header (toggleSidenav)="drawer.toggle()"></app-header>
+    <router-outlet></router-outlet>
   </div>
 
 </mat-sidenav-container>
