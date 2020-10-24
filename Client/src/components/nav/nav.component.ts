@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { loggedIn } from '@angular/fire/auth-guard';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public isLoggedIn: boolean = false;
 
   private currentRoute: string = '';
-
+  @Output() toggleSidenav = new EventEmitter<void>();
   constructor(
     private router: Router,
     private location: Location,
@@ -40,7 +40,8 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   handleLink(route: string): void {
-    if (!this.isLoggedIn) {
+    this.toggleSidenav.emit();
+    if (!this.isLoggedIn || route === this.currentRoute) {
       return;
     }
     if (route === '/logOut') {
@@ -49,6 +50,7 @@ export class NavComponent implements OnInit, OnDestroy {
       });
     } else {
       this.currentRoute = route;
+      // navigation logic
     }
   }
 }
