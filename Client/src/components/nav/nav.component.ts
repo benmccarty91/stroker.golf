@@ -4,6 +4,7 @@ import { loggedIn } from '@angular/fire/auth-guard';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { AppComponent } from 'src/app/app.component';
 import { AuthService } from 'src/services/AuthService';
 
 @Component({
@@ -21,7 +22,8 @@ export class NavComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private location: Location,
-    private authService: AuthService
+    private authService: AuthService,
+    private appComponent: AppComponent
   ) { }
 
   ngOnInit(): void {
@@ -40,7 +42,9 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   handleLink(route: string): void {
-    this.toggleSidenav.emit();
+    if (this.appComponent.smallScreen) {
+      this.toggleSidenav.emit();
+    }
     if (!this.isLoggedIn || route === this.currentRoute) {
       return;
     }

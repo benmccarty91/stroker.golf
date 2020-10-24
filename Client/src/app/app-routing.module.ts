@@ -4,8 +4,6 @@ import { LandingComponent } from 'src/pages/landing/landing.component';
 import { LoginComponent } from 'src/pages/login/login.component';
 import { TestComponent } from 'src/pages/test/test.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
-import { AppComponent } from './app.component';
-import { GoogleSignInComponent } from 'src/components/google-sign-in/google-sign-in.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToLanding = () => redirectLoggedInTo(['landing']);
@@ -34,6 +32,10 @@ const routes: Routes = [
     path: '',
     redirectTo: 'landing',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'landing'
   }
 ];
 
