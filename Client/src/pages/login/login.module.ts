@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../login/login.component';
 import { GoogleSignInModule } from 'src/components/google-sign-in/google-sign-in.module';
 import { FacebookSignInModule } from 'src/components/facebook-sign-in/facebook-sign-in.module';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 
 
@@ -10,6 +11,7 @@ import { FacebookSignInModule } from 'src/components/facebook-sign-in/facebook-s
   declarations: [LoginComponent],
   imports: [
     CommonModule,
+    MaterialModule,
     GoogleSignInModule,
     FacebookSignInModule
   ]

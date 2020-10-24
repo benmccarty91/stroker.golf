@@ -1,6 +1,9 @@
 .container {
+  margin: 10px;
   .google {
     background-color: #dd4b39;
     color: white;
+    min-width: 40%;
+    font-size: large;
   }
 }
