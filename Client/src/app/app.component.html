@@ -1,5 +1,15 @@
-<button mat-button>Bentest</button>
-<button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
-  <mat-icon>more_vert</mat-icon>
-</button>
 <!-- <router-outlet></router-outlet> -->
+
+<mat-sidenav-container class="app-sidenav-container" autosize>
+  <mat-sidenav #drawer class="app-sidenav mat-elevation-z10" 
+    [mode]="smallScreen ? 'over' : 'side'" 
+    [opened]="!smallScreen">
+
+   <app-nav></app-nav>
+  </mat-sidenav>
+
+  <div class="app-sidenav-content">
+    <app-header (toggleSidenav)="drawer.toggle()"></app-header>
+  </div>
+
+</mat-sidenav-container>

@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavModule } from 'src/components/nav/nav.module';
 
 import { MaterialModule } from './shared/material.module';
+import { HeaderModule } from 'src/components/header/header.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { MaterialModule } from './shared/material.module';
     LandingModule,
     BrowserAnimationsModule,
     NavModule,
+    HeaderModule,
     MaterialModule
   ],
   providers: [AngularFireAuth],
