@@ -15,6 +15,13 @@ router.get('/', async (req, res) => { //this is the GET controller for /api/Test
   } catch (error) { //if error
     res.status(500).send(error); //return 500.  probably want to pass a custom error message in production
   }
-})
+});
+
+router.get('/bentest', async (req, res) => {
+  const data = {
+    message: 'hello, ben'
+  };
+  res.send(data);
+});
 
 module.exports = router; //export our router so index.js can get it

@@ -13,6 +13,9 @@ export const environment = {
     messagingSenderId: '1061788771221',
     appId: '1:1061788771221:web:ec541e4e8f4c113ecb8c9c',
     measurementId: 'G-FQJ9W378JC'
+  },
+  api: {
+    baseURL: 'http://localhost:5001/stroker-af4d5/us-central1/api'
   }
 };
 

@@ -15,12 +15,14 @@ import { MaterialModule } from './shared/material.module';
 import { HeaderModule } from 'src/components/header/header.module';
 import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
@@ -33,7 +35,10 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     MaterialModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' })
   ],
-  providers: [AngularFireAuth],
+  providers: [
+    AngularFireAuth,
+    HttpClient
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
