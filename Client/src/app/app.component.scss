@@ -35,6 +35,10 @@ app-header {
     height: 100%;
     min-height: 80%;
     width: 95%;
+
+    ::ng-deep mat-card {
+      opacity: .96;
+    }
   }
 }
 
