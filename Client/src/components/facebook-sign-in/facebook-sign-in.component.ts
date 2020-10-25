@@ -28,11 +28,8 @@ export class FacebookSignInComponent implements OnInit {
         this.router.navigateByUrl('/landing');
       } else {
         console.log('error logging in with facebook');
-        this.router.navigateByUrl('/login');
+        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
       }
-    }).catch(err => {
-      console.log(`error launching facebook auth.  Error: ${err}`);
-      this.router.navigateByUrl('/login');
     });
   }
 
