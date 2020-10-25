@@ -3,7 +3,10 @@ import * as express from 'express';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.send('hello, paul.');
+  const data = {
+    message: 'hello, paul'
+  };
+  res.send(data);
 })
 
 module.exports = router;
