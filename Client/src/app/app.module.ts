@@ -14,6 +14,7 @@ import { NavModule } from 'src/components/nav/nav.module';
 import { MaterialModule } from './shared/material.module';
 import { HeaderModule } from 'src/components/header/header.module';
 import { AppRoutingModule } from './app-routing.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserAnimationsModule,
     NavModule,
     HeaderModule,
-    MaterialModule
+    MaterialModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: true })
   ],
   providers: [AngularFireAuth],
   bootstrap: [AppComponent]
