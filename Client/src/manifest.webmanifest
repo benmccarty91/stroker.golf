@@ -1,7 +1,7 @@
 {
   "name": "Stroker.golf",
   "short_name": "Stroker",
-  "theme_color": "#636363",
+  "theme_color": "#424242",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",

@@ -6,6 +6,10 @@
       "name": "app",
       "installMode": "prefetch",
       "resources": {
+        "urls": [
+          "https://fonts.googleapis.com/**",
+          "https://fonts.gstatic.com/**"
+        ],
         "files": [
           "/favicon.ico",
           "/index.html",
