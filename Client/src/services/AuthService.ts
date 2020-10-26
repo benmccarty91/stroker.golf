@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { StorageMap } from '@ngx-pwa/local-storage';
 import { auth, User } from 'firebase';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { CONSTS } from 'src/assets/CONSTS';
+import { StrokerUser } from 'src/models/StrokerUser';
 import { PubSubService } from './PubSubService';
 
 @Injectable({
@@ -11,30 +12,13 @@ import { PubSubService } from './PubSubService';
 })
 export class AuthService {
 
-  private user: User;
 
   constructor(
     private fireAuth: AngularFireAuth,
     private pubSubService: PubSubService,
-    private consts: CONSTS
+    private consts: CONSTS,
+    private storageService: StorageMap
   ) { }
-
-  public init(): Observable<User> {
-    return this.fireAuth.user.pipe(
-      map(x => { this.user = x; return x; })
-    );
-  }
-
-  public loggedIn(): boolean {
-    if (this.user) {
-      return true;
-    }
-    return false;
-  }
-
-  public getUser(): Observable<User> {
-    return this.fireAuth.user;
-  }
 
   public async loginWithGoogle(): Promise<boolean> {
     let cred: auth.UserCredential;
@@ -45,9 +29,10 @@ export class AuthService {
       return false;
     }
     if (cred) {
-      console.log(`logged in user: ${cred.user.displayName}`);
-      this.user = cred.user;
-      this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
+      this.saveUser(cred.user).subscribe(() => {
+        console.log(`logged in user: ${cred.user.displayName}`);
+        this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
+      });
       return true;
     } else {
       return false;
@@ -63,9 +48,10 @@ export class AuthService {
       return false;
     }
     if (cred) {
-      console.log(`logged in user: ${cred.user.displayName}`);
-      this.user = cred.user;
-      this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
+      this.saveUser(cred.user).subscribe(() => {
+        console.log(`logged in user: ${cred.user.displayName}`);
+        this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
+      });
       return true;
     } else {
       return false;
@@ -74,7 +60,21 @@ export class AuthService {
 
   public async logOut(): Promise<void> {
     console.log('loging out user');
+    this.storageService.clear().subscribe(() => { });
     await this.fireAuth.signOut();
     return;
+  }
+
+  private saveUser(user: User): Observable<any> {
+    const newUser: StrokerUser = {
+      id: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+      photoUrl: user.photoURL
+    };
+    user.getIdToken().then(token => {
+      this.storageService.set(this.consts.APP_DATA.API_TOKEN, token).subscribe(() => { });
+    });
+    return this.storageService.set(this.consts.APP_DATA.USER, newUser);
   }
 }

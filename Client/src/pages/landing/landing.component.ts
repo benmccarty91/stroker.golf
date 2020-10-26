@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from 'firebase';
-import { timer } from 'rxjs';
+import { StorageMap } from '@ngx-pwa/local-storage';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
+import { StrokerUser } from 'src/models/StrokerUser';
 import { ApiService } from 'src/services/ApiService';
 import { AuthService } from 'src/services/AuthService';
 import { PubSubService } from 'src/services/PubSubService';
@@ -15,27 +15,26 @@ import { PubSubService } from 'src/services/PubSubService';
 })
 export class LandingComponent extends BASE_PAGE implements OnInit {
 
-  public user: User = null;
+  public user: StrokerUser = null;
   public displayName = null;
 
   constructor(
     private authService: AuthService,
-    private pubsubService: PubSubService,
+    private storageService: StorageMap,
+    pubsubService: PubSubService,
     private consts: CONSTS,
-    private api: ApiService,
-    private router: Router
   ) {
     super(pubsubService, consts);
   }
 
   ngOnInit(): void {
-    this.authService.getUser().subscribe(x => {
-      this.user = x;
+    this.storageService.get(this.consts.APP_DATA.USER).subscribe(user => {
+      this.user = user as StrokerUser;
       this.displayName = this.user ? this.user.displayName : null;
     });
-    this.api.get('/test/bentest').subscribe(x => {
-      console.log(x);
-      // this.apiResponse = x.message;
-    });
+    // this.api.get('/test/bentest').subscribe(x => {
+    //   console.log(x);
+    //   // this.apiResponse = x.message;
+    // });
   }
 }

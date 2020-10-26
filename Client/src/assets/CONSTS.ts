@@ -11,4 +11,8 @@ export class CONSTS {
     PAGE_LOAD_COMPLETE: 'appLoadComplete',
     PAGE_LOAD_START: 'appLoadStart'
   };
+  public APP_DATA = {
+    USER: 'currentUser',
+    API_TOKEN: 'apiToken'
+  }
 }

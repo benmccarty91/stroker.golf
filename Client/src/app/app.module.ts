@@ -16,6 +16,7 @@ import { HeaderModule } from 'src/components/header/header.module';
 import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { StorageModule } from '@ngx-pwa/local-storage';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   ],
   imports: [
     HttpClientModule,
+    StorageModule.forRoot({ IDBDBName: 'Stroker.golf' }),
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),

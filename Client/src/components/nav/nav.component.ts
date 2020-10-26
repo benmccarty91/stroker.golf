@@ -2,9 +2,11 @@ import { Location } from '@angular/common';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { loggedIn } from '@angular/fire/auth-guard';
 import { NavigationEnd, Router } from '@angular/router';
+import { StorageMap } from '@ngx-pwa/local-storage';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AppComponent } from 'src/app/app.component';
+import { CONSTS } from 'src/assets/CONSTS';
 import { AuthService } from 'src/services/AuthService';
 
 @Component({
@@ -23,12 +25,14 @@ export class NavComponent implements OnInit, OnDestroy {
     private router: Router,
     private location: Location,
     private authService: AuthService,
+    private storageService: StorageMap,
+    private consts: CONSTS,
     private appComponent: AppComponent
   ) { }
 
   ngOnInit(): void {
     this.currentRoute = this.location.path();
-    this.authService.getUser().subscribe(user => this.isLoggedIn = user ? true : false);
+    this.storageService.watch(this.consts.APP_DATA.USER).subscribe(user => this.isLoggedIn = user ? true : false);
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(_ => this.currentRoute = this.location.path());
