@@ -17,6 +17,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { StorageModule } from '@ngx-pwa/local-storage';
+import { httpInterceptorProviders } from 'src/interceptors/interceptors';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { StorageModule } from '@ngx-pwa/local-storage';
   ],
   providers: [
     AngularFireAuth,
-    HttpClient
+    HttpClient,
+    httpInterceptorProviders
   ],
   bootstrap: [AppComponent]
 })

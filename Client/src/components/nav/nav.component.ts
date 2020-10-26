@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Location } from '@angular/common';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { loggedIn } from '@angular/fire/auth-guard';
@@ -8,6 +9,8 @@ import { filter } from 'rxjs/operators';
 import { AppComponent } from 'src/app/app.component';
 import { CONSTS } from 'src/assets/CONSTS';
 import { AuthService } from 'src/services/AuthService';
+import { PubSubService } from 'src/services/PubSubService';
+import { UserService } from 'src/services/UserService';
 
 @Component({
   selector: 'app-nav',
@@ -15,6 +18,12 @@ import { AuthService } from 'src/services/AuthService';
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit, OnDestroy {
+  private readonly SMALL_WIDTH_SCREEN = 720;
+  private smallScreen: boolean = false;
+  private $breakPoint: Subscription;
+  private $navEnd: Subscription;
+  private $logIn: Subscription;
+  private $logOut: Subscription;
 
   public opened: boolean;
   public isLoggedIn: boolean = false;
@@ -23,22 +32,30 @@ export class NavComponent implements OnInit, OnDestroy {
   @Output() toggleSidenav = new EventEmitter<void>();
   constructor(
     private router: Router,
+    private userService: UserService,
     private location: Location,
     private authService: AuthService,
-    private storageService: StorageMap,
     private consts: CONSTS,
-    private appComponent: AppComponent
+    private pubSubService: PubSubService,
+    private breakpointObserver: BreakpointObserver
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.isLoggedIn = await this.isUserInitiallyLoggedIn();
     this.currentRoute = this.location.path();
-    this.storageService.watch(this.consts.APP_DATA.USER).subscribe(user => this.isLoggedIn = user ? true : false);
-    this.router.events.pipe(
+    this.$logIn = this.pubSubService.$sub(this.consts.EVENTS.LOGGED_IN).subscribe(() => this.isLoggedIn = true);
+    this.$logOut = this.pubSubService.$sub(this.consts.EVENTS.LOGGED_OUT).subscribe(() => this.isLoggedIn = false);
+    this.$navEnd = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(_ => this.currentRoute = this.location.path());
+    this.$breakPoint = this.breakpointObserver.observe([`(max-width: ${this.SMALL_WIDTH_SCREEN}px)`]).subscribe(state => this.smallScreen = state.matches);
   }
 
   ngOnDestroy(): void {
+    this.$logIn.unsubscribe();
+    this.$logOut.unsubscribe();
+    this.$breakPoint.unsubscribe();
+    this.$navEnd.unsubscribe();
   }
 
   isActive(route: string): boolean {
@@ -46,13 +63,13 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   handleLink(route: string): void {
-    if (this.appComponent.smallScreen) {
+    if (this.smallScreen) { // hide drawer menu if on small device
       this.toggleSidenav.emit();
     }
-    if (!this.isLoggedIn || route === this.currentRoute) {
-      return;
+    if (!this.isLoggedIn || route === this.currentRoute) { // not logged in: menu disabled.  
+      return; // tap on active page, do nothing.
     }
-    if (route === '/logOut') {
+    if (route === '/logOut') { // tap logout, handle logout and redirect to login
       this.authService.logOut().then(_ => {
         this.router.navigateByUrl('/login');
       });
@@ -60,5 +77,10 @@ export class NavComponent implements OnInit, OnDestroy {
       this.currentRoute = route;
       // navigation logic
     }
+  }
+
+  private async isUserInitiallyLoggedIn(): Promise<boolean> {
+    const user = await this.userService.getUser();
+    return user ? true : false;
   }
 }

@@ -24,4 +24,8 @@ router.get('/bentest', async (req, res) => {
   res.send(data);
 });
 
+router.post('/bentest', (req, res) => {
+  res.send(req.body);
+});
+
 module.exports = router; //export our router so index.js can get it
