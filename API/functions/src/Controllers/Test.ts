@@ -1,5 +1,7 @@
 import * as express from 'express';
 import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
+
 
 admin.initializeApp(); //authenticates into your project's firestore
 const db = admin.firestore(); //gets a db object
@@ -21,10 +23,12 @@ router.get('/bentest', async (req, res) => {
   const data = {
     message: 'hello, ben'
   };
+  functions.logger.info(`inside GET /bentest.  returning data: ${JSON.stringify(data)}`);
   res.send(data);
 });
 
 router.post('/bentest', (req, res) => {
+  functions.logger.info(`inside POST /bentest.  request body object: ${JSON.stringify(req.body)}`);
   res.send(req.body);
 });
 

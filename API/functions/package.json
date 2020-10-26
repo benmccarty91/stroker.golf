@@ -1,6 +1,7 @@
 {
   "name": "functions",
   "scripts": {
+    "debug": "npm run build && firebase emulators:start --inspect-functions",
     "lint": "eslint 'src/**/*'",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
