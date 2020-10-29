@@ -4,30 +4,34 @@ mat-toolbar {
   padding: 0;
 
   @media (min-width: 720px) {
-    padding: 16px;
+    padding: 0 16px;
   }
-}
 
-.sidenavToggle {
-  display: none;
-
-  padding: 0;
-  margin: 8px;
-  min-width: $iconWidth;
+  .logo {
+    margin-top: 10px;
+    margin-left: 10px;
+    height: 1.5em
+  }
   
+  .sidenavToggle {
+    display: none;
 
-  @media (max-width: 720px) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 0;
+    margin: 8px;
+    min-width: $iconWidth;
+    
+    @media (max-width: 720px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    mat-icon {
+      font-size: 30px;
+      height: $iconWidth;
+      width: $iconWidth;
+      line-height: $iconWidth;
+      color: white;
+    }
   }
-
-  mat-icon {
-    font-size: 30px;
-    height: $iconWidth;
-    width: $iconWidth;
-    line-height: $iconWidth;
-    color: white;
-  }
-
 }
