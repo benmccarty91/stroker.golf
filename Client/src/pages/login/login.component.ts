@@ -22,8 +22,6 @@ export class LoginComponent extends BASE_PAGE implements OnInit {
   ) { super(pubsubService, consts); }
 
   ngOnInit(): void {
-    console.log(`isAndroid?: ${this.deviceService.isAndroid()}`);
-    console.log(`isIOS?: ${this.deviceService.isIOS()}`);
   }
 
   public isIOS(): boolean {
