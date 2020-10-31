@@ -23,14 +23,7 @@ export class FacebookSignInComponent implements OnInit {
 
   facebookAuth(): void {
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.authService.loginWithFacebook().then(success => {
-      if (success) {
-        this.router.navigateByUrl('/landing');
-      } else {
-        console.log('error logging in with facebook');
-        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
-      }
-    });
+    this.authService.loginWithFacebook().then(() => { });
   }
 
 }

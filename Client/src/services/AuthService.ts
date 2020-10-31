@@ -37,21 +37,11 @@ export class AuthService {
     }
   }
 
-  public async loginWithFacebook(): Promise<boolean> {
-    let cred: auth.UserCredential;
-    try {
-      cred = await this.fireAuth.signInWithPopup(new auth.FacebookAuthProvider());
-    } catch (error) {
-      console.log(`login failed with error: ${error}`);
-      return false;
-    }
-    if (cred) {
-      console.log(`logged in user: ${cred.user.displayName}`);
-      this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
-      return true;
-    } else {
-      return false;
-    }
+  public async loginWithFacebook(): Promise<void> {
+    await this.fireAuth.signInWithRedirect(new auth.FacebookAuthProvider());
+    this.fireAuth.getRedirectResult().then(cred => {
+      console.log(cred);
+    });
   }
 
   public async logOut(): Promise<void> {
@@ -61,6 +51,4 @@ export class AuthService {
     this.pubSubService.$pub(this.consts.EVENTS.LOGGED_OUT);
     return;
   }
-
-
 }
