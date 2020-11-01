@@ -66,7 +66,7 @@ export class NavComponent implements OnInit, OnDestroy {
     if (this.smallScreen) { // hide drawer menu if on small device
       this.toggleSidenav.emit();
     }
-    if (!this.isLoggedIn || route === this.currentRoute) { // not logged in: menu disabled.  
+    if (!this.isLoggedIn || route === this.currentRoute) { // not logged in: menu disabled.
       return; // tap on active page, do nothing.
     }
     if (route === '/logOut') { // tap logout, handle logout and redirect to login
