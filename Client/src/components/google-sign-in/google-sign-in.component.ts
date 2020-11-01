@@ -27,7 +27,7 @@ export class GoogleSignInComponent implements OnInit {
       if (success) {
         this.router.navigateByUrl('/landing');
       } else {
-        console.log('error logging in with google');
+        // console.log('error logging in with google');
         this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
       }
     });

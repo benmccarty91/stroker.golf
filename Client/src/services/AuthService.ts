@@ -25,11 +25,11 @@ export class AuthService {
     try {
       cred = await this.fireAuth.signInWithPopup(new auth.GoogleAuthProvider());
     } catch (error) {
-      console.log(`login failed with error: ${error}`);
+      // console.log(`login failed with error: ${error}`);
       return false;
     }
     if (cred) {
-      console.log(`logged in user: ${cred.user.displayName}`);
+      // console.log(`logged in user: ${cred.user.displayName}`);
       this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
       this.registerUser(cred.user);
       return true;
@@ -40,13 +40,10 @@ export class AuthService {
 
   public async loginWithFacebook(): Promise<void> {
     await this.fireAuth.signInWithRedirect(new auth.FacebookAuthProvider());
-    this.fireAuth.getRedirectResult().then(cred => {
-      console.log(cred);
-    });
   }
 
   public async logOut(): Promise<void> {
-    console.log('loging out user');
+    // console.log('loging out user');
     this.storageService.clear().subscribe(() => { });
     await this.fireAuth.signOut();
     this.pubSubService.$pub(this.consts.EVENTS.LOGGED_OUT);
@@ -54,7 +51,7 @@ export class AuthService {
   }
 
   public async registerUser(fireUser: firebase.User): Promise<void> {
-    console.log(`registering user: ${fireUser.displayName}`);
+    // console.log(`registering user: ${fireUser.displayName}`);
     return await this.userService.registerUser(fireUser);
   }
 }
