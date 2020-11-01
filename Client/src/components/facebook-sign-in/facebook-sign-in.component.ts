@@ -23,7 +23,14 @@ export class FacebookSignInComponent implements OnInit {
 
   facebookAuth(): void {
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.authService.loginWithFacebook().then(() => { });
+    this.authService.loginWithFacebook().then(success => {
+      if (success) {
+        this.router.navigateByUrl('/landing');
+      } else {
+        console.log('error logging in with google');
+        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+      }
+    });
   }
 
 }
