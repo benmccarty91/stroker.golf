@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { CONSTS } from 'src/assets/CONSTS';
 import { StrokerUser } from 'src/models/StrokerUser';
+import { ApiService } from './ApiService';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +15,9 @@ export class UserService {
   constructor(
     private fireAuth: AngularFireAuth,
     private storageService: StorageMap,
-    private consts: CONSTS
-  ){}
+    private consts: CONSTS,
+    private apiService: ApiService
+  ) { }
 
   public async saveUser(user: User): Promise<void> {
     const newUser: StrokerUser = {
@@ -43,5 +45,15 @@ export class UserService {
     const fireUser = await this.fireAuth.user.pipe(first()).toPromise();
     const token = await fireUser.getIdToken();
     return token;
+  }
+
+  public async registerUser(user: User): Promise<void> {
+    const newUser: StrokerUser = {
+      displayName: user.displayName,
+      email: user.email,
+      id: user.uid,
+      photoUrl: user.photoURL
+    };
+    await this.apiService.post('/user/register', newUser).subscribe(() => { });
   }
 }
