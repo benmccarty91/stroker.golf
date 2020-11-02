@@ -4,10 +4,11 @@
     "debug": "npm run build && firebase emulators:start --inspect-functions",
     "lint": "eslint 'src/**/*'",
     "build": "tsc",
-    "watch": "tsc -w",
+    "build:watch": "tsc -w",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "start": "firebase emulators:start --only functions",
+    "start": "npm run serve",
+    "start:debug": "firebase emulators:start --inspect-functions",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },

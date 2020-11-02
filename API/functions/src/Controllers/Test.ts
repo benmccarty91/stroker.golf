@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
 
-admin.initializeApp(); //authenticates into your project's firestore
+// admin.initializeApp(); //authenticates into your project's firestore
 const db = admin.firestore(); //gets a db object
 const testCollection = db.collection('Test'); //defines which collection we're working with
 
