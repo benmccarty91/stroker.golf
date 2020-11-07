@@ -1,10 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { from, Observable, of } from 'rxjs';
-import { catchError, first, map, mergeMap } from 'rxjs/operators';
-import { CONSTS } from 'src/assets/CONSTS';
-import { PubSubService } from './PubSubService';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,20 +8,7 @@ import { PubSubService } from './PubSubService';
 export class ApiService {
 
   constructor(
-    private httpClient: HttpClient,
-    private pubsubService: PubSubService,
-    private consts: CONSTS,
-    private fireAuth: AngularFireAuth
-  ) { }
-
-  // private registerNewUser(): void {
-  //     // const newUser = {
-  //     //   id: user.uid,
-  //     //   name: user.displayName,
-  //     //   email: user.email,
-  //     //   photoUrl: user.photoURL
-  //     // };
-  // }
+    private httpClient: HttpClient) { }
 
   public get(url: string, params?: any): Observable<any> {
     const httpOptions = {
