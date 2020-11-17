@@ -13,5 +13,6 @@ app.use(validateToken)
 
 app.use('/user', require('./Controllers/User'));
 app.use('/test', require('./Controllers/Test'));
+app.use('/course', require('./Controllers/Course'));
 
 export const api = functions.https.onRequest(app);

@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
+import { GolfCourse } from 'src/models/GolfCourse';
 import { StrokerUser } from 'src/models/StrokerUser';
 import { ApiService } from 'src/services/ApiService';
 import { AuthService } from 'src/services/AuthService';
 import { PubSubService } from 'src/services/PubSubService';
 import { UserService } from 'src/services/UserService';
+import { data } from '../../models/mocks/RiverBirch';
 
 @Component({
   selector: 'app-landing',
@@ -37,5 +39,13 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
     // this.api.post('/test/bentest', { clientMessage: 'bentest' }).subscribe((x) => {
     //   console.log(x);
     // });
+  }
+
+  runTest(): void {
+    console.log('test successful');
+    console.log(data);
+    this.api.post('/course', data).subscribe((x) => {
+      console.log(x);
+    });
   }
 }
