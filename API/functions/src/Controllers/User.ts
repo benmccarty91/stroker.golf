@@ -1,3 +1,5 @@
+import {StatusCodes} from 'http-status-codes';
+
 import * as express from 'express';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
@@ -22,11 +24,11 @@ router.post('/register', async (req, res) => {
   const oldUser = userQuery.data() as StrokerUser;
   if (oldUser) {
     functions.logger.info(`User already exists`);
-    res.status(200).send();
+    res.status(StatusCodes.OK).send();
   } else {
     await userCollection.doc(newUser.id).set(newUser);
     functions.logger.info(`Registering new user`);
-    res.status(201).send();
+    res.status(StatusCodes.CREATED).send();
   }
 });
 

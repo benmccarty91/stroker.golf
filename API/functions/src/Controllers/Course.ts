@@ -1,3 +1,4 @@
+import {StatusCodes} from 'http-status-codes';
 import * as express from 'express';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
@@ -9,11 +10,34 @@ const courseCollection = db.collection('course');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  const data = {
-    message: "here's a course"
-  };
-  res.status(200).send(data);
+router.get('/', async (req, res) => {
+  const retVal = [];
+  const snapshot = await courseCollection.get();
+  snapshot.forEach(doc => {
+    const course = doc.data() as GolfCourse;
+    retVal.push({
+      Id: doc.id,
+      Name: course.Name,
+      StreetAddress: course.StreetAddress,
+      City: course.City,
+      State: course.State
+    });
+  });
+  if (retVal.length > 0) {
+    res.status(200).send(retVal);
+  } else {
+    res.status(404).send();
+  }
+});
+
+router.get('/:courseId', async (req, res) => {
+  const courseId = req.params.courseId;
+  const course = (await courseCollection.doc(courseId).get()).data() as GolfCourse;
+  if (course) {
+    res.status(StatusCodes.OK).send(course);
+  } else {
+    res.status(StatusCodes.NOT_FOUND).send();
+  }  
 });
 
 router.post('/', async (req, res) => {
@@ -24,13 +48,13 @@ router.post('/', async (req, res) => {
     .get();
   if (existingCourse.size != 0) {
     functions.logger.info(`New golf course already exists: ${newCourse.Name}|${newCourse.StreetAddress}`);
-    res.status(409).send();
-    return;
-  }
+    res.status(StatusCodes.CONFLICT).send();
+  } else {
   const addedCourse = await courseCollection.add(newCourse);
   const id = addedCourse.id;
   functions.logger.info(`Added new course ${id}`);
-  res.status(201).send({ newCourseId: id });
+  res.status(StatusCodes.CREATED).send({ newCourseId: id });
+  }
 });
 
 module.exports = router;

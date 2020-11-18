@@ -33,19 +33,23 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
   async ngOnInit(): Promise<void> {
     this.user = await this.userService.getUser();
     this.displayName = this.user ? this.user.displayName : null;
-    // this.api.get('/test/bentest').subscribe(x => {
-    //   console.log(x);
-    // });
-    // this.api.post('/test/bentest', { clientMessage: 'bentest' }).subscribe((x) => {
-    //   console.log(x);
-    // });
   }
 
-  runTest(): void {
-    console.log('test successful');
-    console.log(data);
-    this.api.post('/course', data).subscribe((x) => {
-      console.log(x);
-    });
+  handleLink(path: string): void {
+    console.log(path);
   }
+
+  // getTest(): void {
+  //   this.api.get('/course').subscribe((x: GolfCourse) => {
+  //     console.log(x);
+  //   });
+  // }
+
+  // postTest(): void {
+  //   console.log('test successful');
+  //   console.log(data);
+  //   this.api.post('/course', data).subscribe((x) => {
+  //     console.log(x);
+  //   });
+  // }
 }

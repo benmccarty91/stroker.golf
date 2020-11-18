@@ -1,5 +1,14 @@
 <mat-card class="landing_card">
   <h2 *ngIf="displayName">Hello {{displayName}}</h2>
-  <p>There's some cool stuff coming soon!</p>
-  <button mat-raised-button (click)="runTest()">Basic</button>
+  <mat-list>
+    <mat-list-item>
+      <button class="landing_button" mat-raised-button (click)="handleLink('/newScore')">Record New Round</button>
+    </mat-list-item>
+    <mat-list-item>
+      <button class="landing_button" mat-raised-button (click)="handleLink('/liveGame')">Start Live Round</button>
+    </mat-list-item>
+    <mat-list-item>    
+      <button class="landing_button" mat-raised-button (click)="handleLink('/scores')">View Past Scores</button>
+    </mat-list-item>
+  </mat-list>
 </mat-card>
