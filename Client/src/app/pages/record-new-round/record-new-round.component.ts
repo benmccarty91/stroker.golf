@@ -18,32 +18,44 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   public selectedCourse: GolfCourse;
   public step: number = 1;
 
+  private stepHistory: number[];
+
   constructor(
     private apiService: ApiService,
     private pubsubService: PubSubService,
     private consts: CONSTS
   ) {
     super(pubsubService, consts);
+    this.stepHistory = new Array<number>();
   }
   async ngOnInit(): Promise<void> {
     this.courses = await this.getCourses();
   }
 
   public submitFirst(): void {
-    this.step++;
+    this.incrementStep();
     this.getCourse(this.selectedCourseId);
   }
 
   public submitSecond(answer: boolean): void {
-    this.step++;
-    if (!answer) {
-      this.step++;
+    if (answer) {
+      this.incrementStep(1);
+    } else {
+      this.incrementStep(2);
     }
   }
 
   public submitThird(): void {
     //TODO: get friends working!!!
-    this.step++;
+    this.incrementStep();
+  }
+
+  public hitBackButton(): void {
+    this.decrementStep();
+  }
+
+  public hideBackButton(): boolean {
+    return this.step === 1;
   }
 
   // retrieves the list of courses from the api and sorts
@@ -67,5 +79,15 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
     this.apiService.get(`/course/${id}`).subscribe(x => {
       this.selectedCourse = x;
     })
+  }
+
+  private incrementStep(inc: number = 1): void {
+    this.stepHistory.push(this.step);
+    this.step += inc;
+    console.log(this.stepHistory);
+  }
+
+  private decrementStep(): void {
+    this.step = this.stepHistory.pop();
   }
 }

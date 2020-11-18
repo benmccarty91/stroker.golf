@@ -1,4 +1,7 @@
 <mat-card>
+  <button mat-mini-fab color="primary"[ngClass]="{'hidden': hideBackButton()}" (click)="hitBackButton()">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
   <div id="firstQuestion" class="questionCards" *ngIf="step === 1">
     <h2>Which course did you play?</h2>
     <div class="formContainer">
