@@ -6,13 +6,13 @@ import { AppComponent } from './app.component';
 import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
-import { LoginModule } from 'src/pages/login/login.module';
-import { LandingModule } from 'src/pages/landing/landing.module';
+import { LoginModule } from 'src/app/pages/login/login.module';
+import { LandingModule } from 'src/app/pages/landing/landing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NavModule } from 'src/components/nav/nav.module';
+import { NavModule } from 'src/app/shared/components/nav/nav.module';
 
 import { MaterialModule } from './shared/material.module';
-import { HeaderModule } from 'src/components/header/header.module';
+import { HeaderModule } from 'src/app/shared/components/header/header.module';
 import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClient, HttpClientModule } from '@angular/common/http';

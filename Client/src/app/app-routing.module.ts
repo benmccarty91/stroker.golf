@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LandingComponent } from 'src/pages/landing/landing.component';
-import { LoginComponent } from 'src/pages/login/login.component';
-import { TestComponent } from 'src/pages/test/test.component';
+import { LandingComponent } from 'src/app/pages/landing/landing.component';
+import { LoginComponent } from 'src/app/pages/login/login.component';
+import { TestComponent } from 'src/app/pages/test/test.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { AuthRedirectGuard } from './route-guards/login-redirect-route-guard';
 

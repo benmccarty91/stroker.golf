@@ -9,7 +9,7 @@ import { ApiService } from 'src/services/ApiService';
 import { AuthService } from 'src/services/AuthService';
 import { PubSubService } from 'src/services/PubSubService';
 import { UserService } from 'src/services/UserService';
-import { data } from '../../models/mocks/RiverBirch';
+import { data } from '../../../models/mocks/RiverBirch';
 
 @Component({
   selector: 'app-landing',
