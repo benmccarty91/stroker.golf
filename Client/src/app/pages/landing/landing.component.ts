@@ -23,6 +23,7 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
 
   constructor(
     private userService: UserService,
+    private router: Router,
     private api: ApiService,
     private pubsubService: PubSubService,
     private consts: CONSTS,
@@ -36,7 +37,7 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
   }
 
   handleLink(path: string): void {
-    console.log(path);
+    this.router.navigateByUrl(path);
   }
 
   // getTest(): void {

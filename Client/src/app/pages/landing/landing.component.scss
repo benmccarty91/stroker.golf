@@ -1,7 +1,10 @@
 .landing_card {
 
   .landing_button {
-    min-width: 40%;
+    min-width: 100%;
     margin: 0 auto;
+    @media (min-width: 720px) {
+      min-width: 40%;
+    }
   }
 }

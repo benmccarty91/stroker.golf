@@ -5,6 +5,9 @@ import { LoginComponent } from 'src/app/pages/login/login.component';
 import { TestComponent } from 'src/app/pages/test/test.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { AuthRedirectGuard } from './route-guards/login-redirect-route-guard';
+import { RecordNewRoundComponent } from './pages/record-new-round/record-new-round.component';
+import { NewLiveGameComponent } from './pages/new-live-game/new-live-game.component';
+import { PastScoresComponent } from './pages/past-scores/past-scores.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToLanding = () => redirectLoggedInTo(['landing']);
@@ -24,8 +27,20 @@ const routes: Routes = [
     data: { authGuardPipe: redirectLoggedInToLanding }
   },
   {
-    path: 'test',
-    component: TestComponent,
+    path: 'newScore',
+    component: RecordNewRoundComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+  },
+  {
+    path: 'liveGame',
+    component: NewLiveGameComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+  },
+  {
+    path: 'scores',
+    component: PastScoresComponent,
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin }
   },

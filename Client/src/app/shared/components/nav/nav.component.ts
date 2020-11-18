@@ -74,8 +74,7 @@ export class NavComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('/login');
       });
     } else {
-      this.currentRoute = route;
-      // navigation logic
+      this.router.navigateByUrl(route);
     }
   }
 
