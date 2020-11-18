@@ -11,7 +11,7 @@ const courseCollection = db.collection('course');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const retVal = [];
+  const retVal: any[] = [];
   const snapshot = await courseCollection.get();
   snapshot.forEach(doc => {
     const course = doc.data() as GolfCourse;
