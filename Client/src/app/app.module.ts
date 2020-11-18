@@ -18,6 +18,9 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { StorageModule } from '@ngx-pwa/local-storage';
 import { httpInterceptorProviders } from 'src/interceptors/interceptors';
+import { NewLiveGameModule } from './pages/new-live-game/new-live-game.module';
+import { RecordNewRoundModule } from './pages/record-new-round/record-new-round.module';
+import { PastScoresModule } from './pages/past-scores/past-scores.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +39,9 @@ import { httpInterceptorProviders } from 'src/interceptors/interceptors';
     NavModule,
     HeaderModule,
     MaterialModule,
+    NewLiveGameModule,
+    RecordNewRoundModule,
+    PastScoresModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' })
   ],
   providers: [

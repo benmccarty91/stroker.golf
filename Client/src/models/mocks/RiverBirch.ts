@@ -1,6 +1,7 @@
 import { GolfCourse } from '../GolfCourse';
 
 export const data: GolfCourse = {
+  Id: '',
   Name: 'River Birch Golf Course',
   StreetAddress: '3740 N Pollard Ln',
   City: 'Star',

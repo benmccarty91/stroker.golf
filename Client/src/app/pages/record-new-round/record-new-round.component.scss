@@ -1,0 +1,30 @@
+.formContainer {
+
+  min-width: 100%;
+  // text-align: center;
+
+  mat-form-field {
+    clear: both;
+    min-width: 100%;
+  }
+  
+}
+
+#secondQuestion {
+  button {
+    min-width: 46%;
+    margin: 1%;
+  }
+}
+
+.questionCards {
+
+  .wideButton {
+    display: block;
+    min-width: 100%;
+  }
+
+  @media (min-width: 720px) {
+    max-width: 70%;
+  }
+}
