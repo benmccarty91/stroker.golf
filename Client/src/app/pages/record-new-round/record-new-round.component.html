@@ -53,18 +53,11 @@
   </div>
 
   <div id="scoreInput" class="questionCards" *ngIf="step === 6">
-    <!-- I DON"T LIKE HOW THIS LOOKS -->
     <h2>What did you score?</h2>
     <div class="formContainer">
-      <mat-form-field class="score-input-form">
-        <mat-label>Your Score</mat-label>
-        <input matInput type="number" autocomplete="off" [(ngModel)]="inputScore">
-        <button mat-button *ngIf="inputScore" matSuffix mat-icon-button aria-label="Clear" (click)="inputScore=''">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
+      <app-number-picker (outNumber)="selectScore($event)"></app-number-picker>
     </div>
-    <button mat-stroked-button class="wideButton" *ngIf="inputScore" (click)="submitScore()">Next</button>
+    <button mat-stroked-button class="wideButton" *ngIf="selectedScore > 0" (click)="submitScore()">Next</button>
   </div>
 
   <!-- TODO: Summary page + Final submit button -->

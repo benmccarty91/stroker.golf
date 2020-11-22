@@ -22,8 +22,8 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   public selectedCourse: GolfCourse;
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
-  public inputScore: number;
-  public step: number = 1;
+  public selectedScore: number;
+  public step: number = 6;
 
   private stepHistory: number[];
   private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
@@ -71,8 +71,13 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
     this.selectedDate = event.value;
   }
 
+  public selectScore(num: number): void {
+    this.selectedScore = num;
+    console.log(this.selectedScore);
+  }
+
   public submitScore(): void {
-    console.log(this.inputScore);
+    console.log(this.selectedScore);
   }
 
   public hitBackButton(): void {

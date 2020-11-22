@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecordNewRoundComponent } from './record-new-round.component';
 import { MaterialModule } from 'src/app/shared/material.module';
+import { NumberPickerModule } from 'src/app/shared/components/number-picker/number-picker.module';
 
 
 
@@ -9,7 +10,8 @@ import { MaterialModule } from 'src/app/shared/material.module';
   declarations: [RecordNewRoundComponent],
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    NumberPickerModule
   ]
 })
 export class RecordNewRoundModule { }
