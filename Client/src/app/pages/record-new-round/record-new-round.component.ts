@@ -97,7 +97,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
 
   public submitFinal(): void {
-
+    // TODO: submit the final score (not sure how we want to structure the data)
     console.log('submitted!');
   }
 
