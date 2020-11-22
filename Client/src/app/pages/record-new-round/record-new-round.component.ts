@@ -86,7 +86,8 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
       this.summary = {
         CourseId: this.selectedCourseId,
         CourseName: this.selectedCourse.Name,
-        Date: this.selectedDate.format(this.DATE_FORMAT),
+        Date: this.selectedDate.unix(),
+        PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
         Score: this.selectedScore,
         TeeboxColor: this.selectedTeebox.Color,
         PlayerId: x.id,
@@ -136,8 +137,10 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
     if (parScore < 0) {
       parScore = parScore * -1;
       return `${parScore} under par`;
-    } else {
+    } else if (parScore > 0) {
       return `${parScore} over par`;
+    } else {
+      return `Even par`;
     }
   }
 

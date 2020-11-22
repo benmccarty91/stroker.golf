@@ -4,6 +4,7 @@ export interface ScoreSubmission {
   CourseId: string;
   CourseName: string;
   TeeboxColor: string;
-  Date: string;
+  Date: number;
+  PrettyDate: string;
   Score: number;
 }
