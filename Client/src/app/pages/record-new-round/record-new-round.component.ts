@@ -1,8 +1,12 @@
 import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
 import { Component, OnInit } from '@angular/core';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import moment from 'moment';
+import { Moment } from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
+import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
 import { PubSubService } from 'src/services/PubSubService';
 
@@ -16,9 +20,13 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   public courses: GolfCourse[];
   public selectedCourseId: string;
   public selectedCourse: GolfCourse;
+  public selectedTeebox: TeeBox;
+  public selectedDate: Moment;
+  public inputScore: number;
   public step: number = 1;
 
   private stepHistory: number[];
+  private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
 
   constructor(
     private apiService: ApiService,
@@ -32,12 +40,17 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
     this.courses = await this.getCourses();
   }
 
-  public submitFirst(): void {
+  public submitCourse(): void {
     this.incrementStep();
     this.getCourse(this.selectedCourseId);
   }
 
-  public submitSecond(answer: boolean): void {
+  public submitTeebox(): void {
+    console.log(this.selectedTeebox);
+    this.incrementStep();
+  }
+
+  public submitFriendSelect(answer: boolean): void {
     if (answer) {
       this.incrementStep(1);
     } else {
@@ -45,9 +58,21 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
     }
   }
 
-  public submitThird(): void {
+  public submitFriendList(): void {
     //TODO: get friends working!!!
     this.incrementStep();
+  }
+
+  public submitDate(): void {
+    this.incrementStep();
+  }
+
+  public dateChange(event: MatDatepickerInputEvent<Moment>): void {
+    this.selectedDate = event.value;
+  }
+
+  public submitScore(): void {
+    console.log(this.inputScore);
   }
 
   public hitBackButton(): void {
@@ -76,15 +101,16 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
 
   private getCourse(id: string): void {
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
     this.apiService.get(`/course/${id}`).subscribe(x => {
       this.selectedCourse = x;
-    })
+      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+    });
   }
 
   private incrementStep(inc: number = 1): void {
     this.stepHistory.push(this.step);
     this.step += inc;
-    console.log(this.stepHistory);
   }
 
   private decrementStep(): void {
