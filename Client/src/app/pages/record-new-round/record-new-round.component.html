@@ -57,12 +57,19 @@
     <div class="formContainer">
       <app-number-picker [inNumber]="selectedScore" (outNumber)="selectScore($event)"></app-number-picker>
     </div>
-    <button mat-stroked-button class="wideButton" *ngIf="selectedScore > 0" (click)="submitScore()">Next</button>
+    <button mat-stroked-button class="wideButton" *ngIf="selectedScore > 0" (click)="buildSummary()">Next</button>
   </div>
 
   <div id="summary" class="questionCards" *ngIf="step === 7">
     <h2>Summary</h2>
-    <p>Here's your summary.</p>
+    <h3>{{summary.CourseName}}</h3>
+    <p>{{summary.Date}}</p>
+    <mat-card class="scoreSummaryCard">
+      <h4>{{summary.PlayerName}}</h4>
+      <p>{{summary.TeeboxColor}} teebox</p>
+      <p>Score: <b>{{summary.Score}}</b></p>
+      <p>{{getParSummary()}}</p>
+    </mat-card>
     <button mat-stroked-button class="wideButton" (click)="submitFinal()">Submit</button>
   </div>
 

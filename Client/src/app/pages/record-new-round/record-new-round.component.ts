@@ -6,9 +6,14 @@ import { Moment } from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
+import { ScoreSubmission } from 'src/models/ScoreSubmission';
+import { StrokerUser } from 'src/models/StrokerUser';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
+import { AuthService } from 'src/services/AuthService';
 import { PubSubService } from 'src/services/PubSubService';
+import { UserService } from 'src/services/UserService';
+import { data } from '../../../models/mocks/BenScore';
 
 @Component({
   selector: 'app-record-new-round',
@@ -23,13 +28,15 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
-  public step: number = 6;
+  public step: number = 1;
+  public summary: ScoreSubmission;
 
   private stepHistory: number[];
   private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
 
   constructor(
     private apiService: ApiService,
+    private userService: UserService,
     private pubsubService: PubSubService,
     private consts: CONSTS
   ) {
@@ -38,6 +45,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
   async ngOnInit(): Promise<void> {
     this.courses = await this.getCourses();
+    // this.summary = data;
   }
 
   public submitCourse(): void {
@@ -76,8 +84,24 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
     console.log(this.selectedScore);
   }
 
-  public submitScore(): void {
-    this.incrementStep();
+  public buildSummary(): void {
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+
+    this.userService.getUser().then(x => {
+      this.summary = {
+        CourseId: this.selectedCourseId,
+        CourseName: this.selectedCourse.Name,
+        Date: this.selectedDate.format(this.DATE_FORMAT),
+        Score: this.selectedScore,
+        TeeboxColor: this.selectedTeebox.Color,
+        PlayerId: x.id,
+        PlayerName: x.displayName
+      };
+
+      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+      console.log(this.summary);
+      this.incrementStep();
+    });
   }
 
   public submitFinal(): void {
@@ -90,6 +114,26 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
 
   public hideBackButton(): boolean {
     return this.step === 1;
+  }
+
+  private getCoursePar(): number {
+    let par = 0;
+    this.selectedCourse.Holes.map(x => {
+      par += x.Par;
+    });
+    return par;
+  }
+
+  public getParSummary(): string {
+    const score = this.selectedScore;
+    const coursePar = this.getCoursePar();
+    let parScore = score - coursePar;
+    if (parScore < 0) {
+      parScore = parScore * -1;
+      return `${parScore} under par`;
+    } else {
+      return `${parScore} over par`;
+    }
   }
 
   // retrieves the list of courses from the api and sorts
