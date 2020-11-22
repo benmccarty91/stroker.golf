@@ -1,19 +1,14 @@
-import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
 import { Component, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import moment from 'moment';
 import { Moment } from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
 import { ScoreSubmission } from 'src/models/ScoreSubmission';
-import { StrokerUser } from 'src/models/StrokerUser';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
-import { AuthService } from 'src/services/AuthService';
 import { PubSubService } from 'src/services/PubSubService';
 import { UserService } from 'src/services/UserService';
-import { data } from '../../../models/mocks/BenScore';
 
 @Component({
   selector: 'app-record-new-round',
@@ -54,7 +49,6 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
 
   public submitTeebox(): void {
-    console.log(this.selectedTeebox);
     this.incrementStep();
   }
 
@@ -81,7 +75,6 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
 
   public selectScore(num: number): void {
     this.selectedScore = num;
-    console.log(this.selectedScore);
   }
 
   public buildSummary(): void {
@@ -99,12 +92,12 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
       };
 
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
-      console.log(this.summary);
       this.incrementStep();
     });
   }
 
   public submitFinal(): void {
+
     console.log('submitted!');
   }
 
