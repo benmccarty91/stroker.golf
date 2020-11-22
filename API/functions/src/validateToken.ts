@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 
 const validateToken = async (req: any, res: any, next: Function) => {
-  console.log('Check if request is authorized with Firebase ID token');
+  // console.log('Check if request is authorized with Firebase ID token');
 
   if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
     console.error('No Firebase ID token was passed as a Bearer token in the Authorization header.',
@@ -13,7 +13,7 @@ const validateToken = async (req: any, res: any, next: Function) => {
 
   let idToken;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
-    console.log('Found "Authorization" header');
+    // console.log('Found "Authorization" header');
     // Read the ID Token from the Authorization header.
     idToken = req.headers.authorization.split('Bearer ')[1];
   } else {
@@ -24,7 +24,7 @@ const validateToken = async (req: any, res: any, next: Function) => {
 
   try {
     const decodedIdToken = await admin.auth().verifyIdToken(idToken);
-    console.log('ID Token correctly decoded', decodedIdToken);
+    // console.log('ID Token correctly decoded', decodedIdToken);
     req.user = decodedIdToken;
     next();
     return;

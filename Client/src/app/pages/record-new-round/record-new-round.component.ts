@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { Router } from '@angular/router';
 import { Moment } from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
@@ -32,6 +33,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   constructor(
     private apiService: ApiService,
     private userService: UserService,
+    private router: Router,
     private pubsubService: PubSubService,
     private consts: CONSTS
   ) {
@@ -99,6 +101,16 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   public submitFinal(): void {
     // TODO: submit the final score (not sure how we want to structure the data)
     console.log('submitted!');
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+    this.apiService.post('/score', this.summary).subscribe(x => {
+      console.log(x);
+      this.incrementStep();
+      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+    });
+  }
+
+  public goHome(): void {
+    this.router.navigateByUrl('/landing');
   }
 
   public hitBackButton(): void {
