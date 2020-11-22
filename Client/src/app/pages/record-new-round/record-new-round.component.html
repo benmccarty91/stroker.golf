@@ -55,11 +55,15 @@
   <div id="scoreInput" class="questionCards" *ngIf="step === 6">
     <h2>What did you score?</h2>
     <div class="formContainer">
-      <app-number-picker (outNumber)="selectScore($event)"></app-number-picker>
+      <app-number-picker [inNumber]="selectedScore" (outNumber)="selectScore($event)"></app-number-picker>
     </div>
     <button mat-stroked-button class="wideButton" *ngIf="selectedScore > 0" (click)="submitScore()">Next</button>
   </div>
 
-  <!-- TODO: Summary page + Final submit button -->
+  <div id="summary" class="questionCards" *ngIf="step === 7">
+    <h2>Summary</h2>
+    <p>Here's your summary.</p>
+    <button mat-stroked-button class="wideButton" (click)="submitFinal()">Submit</button>
+  </div>
 
 </mat-card>

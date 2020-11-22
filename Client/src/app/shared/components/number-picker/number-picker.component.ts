@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-number-picker',
@@ -7,12 +7,17 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 })
 export class NumberPickerComponent implements OnInit {
 
+  @Input() inNumber: number;
   @Output() outNumber = new EventEmitter<number>();
   public num: number;
 
   constructor() { }
 
   ngOnInit(): void {
+    if (this.inNumber) {
+      this.num = this.inNumber;
+      this.outNumber.emit(this.num);
+    }
   }
 
   public increment(): void {

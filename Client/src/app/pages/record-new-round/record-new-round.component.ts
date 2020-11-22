@@ -77,7 +77,11 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
 
   public submitScore(): void {
-    console.log(this.selectedScore);
+    this.incrementStep();
+  }
+
+  public submitFinal(): void {
+    console.log('submitted!');
   }
 
   public hitBackButton(): void {
