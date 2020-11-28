@@ -5,7 +5,7 @@ import { Moment } from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
-import { Score } from 'src/models/Score';
+import { RoundType, Score } from 'src/models/Score';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
 import { PubSubService } from 'src/services/PubSubService';
@@ -16,11 +16,12 @@ import { UserService } from 'src/services/UserService';
   templateUrl: './record-new-round.component.html',
   styleUrls: ['./record-new-round.component.scss']
 })
-export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
+export class RecordNewRoundComponent implements OnInit {
 
   public courses: GolfCourse[];
   public selectedCourseId: string;
   public selectedCourse: GolfCourse;
+  public selectedRoundType: RoundType = RoundType.FULL_18; // TODO: have the user choose this!
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
@@ -37,7 +38,6 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
     private pubsubService: PubSubService,
     private consts: CONSTS
   ) {
-    super(pubsubService, consts);
     this.stepHistory = new Array<number>();
   }
   async ngOnInit(): Promise<void> {
@@ -86,6 +86,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
       this.summary = {
         CourseId: this.selectedCourseId,
         CourseName: this.selectedCourse.Name,
+        RoundType: this.selectedRoundType,
         Date: this.selectedDate.unix(),
         PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
         Score: this.selectedScore,
@@ -101,7 +102,6 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
 
   public submitFinal(): void {
-    // TODO: submit the final score (not sure how we want to structure the data)
     console.log('submitted!');
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
     this.apiService.post('/score', this.summary).subscribe(x => {
@@ -120,7 +120,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
 
   public hideBackButton(): boolean {
-    return this.step === 1;
+    return this.step === 1 || this.step === 8; // start page or summary page
   }
 
   private getCoursePar(): number {
@@ -153,6 +153,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   // the list alphabetically
   private async getCourses(): Promise<GolfCourse[]> {
     const list = (await this.apiService.get<GolfCourse[]>('/course').toPromise());
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     return list.sort((a, b) => {
       const nameA = a.Name.toUpperCase();
       const nameB = b.Name.toUpperCase();
@@ -167,10 +168,10 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
 
   private getCourse(id: string): void {
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+    this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.apiService.get<GolfCourse>(`/course/${id}`).subscribe(x => {
       this.selectedCourse = x;
-      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
     });
   }
 

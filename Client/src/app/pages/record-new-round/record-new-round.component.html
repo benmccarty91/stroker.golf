@@ -68,12 +68,13 @@
       <h4>{{summary.PlayerName}}</h4>
       <p>{{summary.TeeboxColor}} teebox</p>
       <p>Score: <b>{{summary.Score}}</b></p>
+      <p>{{selectedRoundType}}</p>
       <p>{{getParSummary()}}</p>
     </mat-card>
     <button mat-stroked-button class="wideButton" (click)="submitFinal()">Submit</button>
   </div>
 
-  <div id="summary" class="questionCards" *ngIf="step === 8">
+  <div id="success" class="questionCards" *ngIf="step === 8">
     <h2>Success!</h2>
     <p>Your score has been recorded.</p>
     <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
