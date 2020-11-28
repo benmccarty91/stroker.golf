@@ -30,5 +30,37 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "PastScoreData",
+      "urls": ["/api/score/*"],
+      "cacheConfig": {
+        "maxAge": "1m",
+        "maxSize": 50,
+        "timeout": "10s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "CourseData",
+      "urls": ["/api/course*"],
+      "cacheConfig": {
+        "maxAge": "1d",
+        "maxSize": 50,
+        "timeout": "10s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "CourseData",
+      "urls": ["/api/*"],
+      "cacheConfig": {
+        "maxAge": "1d",
+        "maxSize": 50,
+        "timeout": "5s",
+        "strategy": "freshness"
+      }
+    }
   ]
 }
