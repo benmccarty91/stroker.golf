@@ -11,15 +11,13 @@ const userCollection = db.collection('user');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  const data = {
-    message: 'hello, paul'
-  };
-  res.send(data);
-});
-
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: any, res) => {
   const newUser: StrokerUser = req.body as StrokerUser;
+  if (newUser.id !== req.user.uid) {
+    res.status(StatusCodes.FORBIDDEN).send();
+    functions.logger.info(`Forbidden request inside POST user/register`);
+    return;
+  }
   const userQuery = await userCollection.doc(newUser.id).get();
   const oldUser = userQuery.data() as StrokerUser;
   if (oldUser) {

@@ -14,7 +14,7 @@ router.get('/:playerId/:year', async (req: any, res) => {
   const playerId = req.params.playerId;
   if (req.user.uid !== playerId) {
     res.status(StatusCodes.FORBIDDEN).send();
-    functions.logger.info(`Forbidden request inside GET Score`);
+    functions.logger.info(`Forbidden request inside GET score/:playerId/:year`);
     return;
   }
   const year = Number(req.params.year);
@@ -42,8 +42,13 @@ router.get('/:playerId/:year', async (req: any, res) => {
   });
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req: any, res) => {
   const newScore = req.body as ScoreSubmission;
+  if (newScore.PlayerId !== req.user.uid) {
+    res.status(StatusCodes.FORBIDDEN).send();
+    functions.logger.info(`Forbidden request inside POST score/`);
+    return;
+  }
   scoreCollection.add(newScore).then(x => {
     res.status(StatusCodes.CREATED).send({ id: x.id });
   }).catch(err => {
