@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { ScoreSubmission } from '../Models/ScoreSubmission';
+import { Score } from '../Models/ScoreSubmission';
 import * as express from 'express';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
@@ -32,7 +32,7 @@ router.get('/:playerId/:year', async (req: any, res) => {
 
   scoresPromise.then(scores => {
     scores.forEach(doc => {
-      const score = doc.data() as ScoreSubmission;
+      const score = doc.data() as Score;
       retVal.push(score);
     })
     res.status(StatusCodes.OK).send(retVal);
@@ -43,7 +43,7 @@ router.get('/:playerId/:year', async (req: any, res) => {
 });
 
 router.post('/', async (req: any, res) => {
-  const newScore = req.body as ScoreSubmission;
+  const newScore = req.body as Score;
   if (newScore.PlayerId !== req.user.uid) {
     res.status(StatusCodes.FORBIDDEN).send();
     functions.logger.info(`Forbidden request inside POST score/`);
