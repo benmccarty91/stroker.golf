@@ -47,6 +47,12 @@ export class UserService {
     return token;
   }
 
+  public async getUserId(): Promise<string> {
+    const fireUser = await this.fireAuth.user.pipe(first()).toPromise();
+    const id = await fireUser.uid;
+    return id;
+  }
+
   public async registerUser(user: User): Promise<void> {
     const newUser: StrokerUser = {
       displayName: user.displayName,

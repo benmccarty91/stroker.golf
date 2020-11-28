@@ -1,4 +1,4 @@
-export interface ScoreSubmission {
+export interface Score {
   PlayerId: string;
   PlayerName: string;
   CourseId: string;

@@ -10,18 +10,23 @@ const scoreCollection = db.collection('score');
 
 const router = express.Router();
 
-router.get('/:playerId/:year', async (req, res) => {
+router.get('/:playerId/:year', async (req: any, res) => {
   const playerId = req.params.playerId;
+  if (req.user.uid !== playerId) {
+    res.status(StatusCodes.FORBIDDEN).send();
+    functions.logger.info(`Forbidden request inside GET Score`);
+    return;
+  }
   const year = Number(req.params.year);
-  const startDate = moment({ year: year }).unix();
+  const startDate = moment({ year: year });
   const endDate = moment({ year: year, month: 11, day: 31 });
 
   const retVal: any[] = [];
-  functions.logger.info(`Inside GET Score.  PlayerId: ${playerId}.  Year: ${year}.  StartDate: ${startDate}.  EndDate: ${endDate}.`);
+  functions.logger.info(`Inside GET Score.  PlayerId: ${playerId}.  Year: ${year}.`);
 
   const scoresPromise = scoreCollection
     .where('PlayerId', '==', playerId)
-    .where('Date', '>=', startDate)
+    .where('Date', '>=', startDate.unix())
     .where('Date', '<=', endDate.unix())
     .get();
 

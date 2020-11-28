@@ -5,7 +5,7 @@ import { Moment } from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
-import { ScoreSubmission } from 'src/models/ScoreSubmission';
+import { Score } from 'src/models/ScoreSubmission';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
 import { PubSubService } from 'src/services/PubSubService';
@@ -25,7 +25,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   public selectedDate: Moment;
   public selectedScore: number;
   public step: number = 1;
-  public summary: ScoreSubmission;
+  public summary: Score;
 
   private stepHistory: number[];
   private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
@@ -147,7 +147,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   // retrieves the list of courses from the api and sorts
   // the list alphabetically
   private async getCourses(): Promise<GolfCourse[]> {
-    const list = (await this.apiService.get('/course').toPromise()) as GolfCourse[];
+    const list = (await this.apiService.get<GolfCourse[]>('/course').toPromise());
     return list.sort((a, b) => {
       const nameA = a.Name.toUpperCase();
       const nameB = b.Name.toUpperCase();
@@ -163,7 +163,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
 
   private getCourse(id: string): void {
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.apiService.get(`/course/${id}`).subscribe(x => {
+    this.apiService.get<GolfCourse>(`/course/${id}`).subscribe(x => {
       this.selectedCourse = x;
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     });
