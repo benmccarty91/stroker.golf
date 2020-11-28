@@ -36,6 +36,7 @@ export class PastScoresComponent implements OnInit {
     console.log(this.selectedYear);
     this.scores = [];
     this.loading = true;
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
     this.fetchScores(this.selectedYear);
   }
 

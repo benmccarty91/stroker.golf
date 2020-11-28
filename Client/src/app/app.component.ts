@@ -40,6 +40,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.appLoading = false;
     });
 
+    this.pubsubService.$sub(this.consts.EVENTS.DATA_LOAD_COMPLETE).subscribe(() => {
+      this.appLoading = false;
+    });
+
+    this.pubsubService.$sub(this.consts.EVENTS.DATA_LOAD_START).subscribe(() => {
+      this.appLoading = true;
+    });
+
     this.pubsubService.$sub(this.consts.EVENTS.PAGE_LOAD_START).subscribe(() => {
       this.appLoading = true;
     });
