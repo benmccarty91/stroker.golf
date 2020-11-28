@@ -7,4 +7,5 @@ export interface ScoreSubmission {
   Date: number;
   PrettyDate: string;
   Score: number;
+  RelativeScore: number;
 }

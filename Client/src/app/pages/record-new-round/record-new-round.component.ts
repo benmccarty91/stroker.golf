@@ -5,7 +5,7 @@ import { Moment } from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
-import { Score } from 'src/models/ScoreSubmission';
+import { Score } from 'src/models/Score';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
 import { PubSubService } from 'src/services/PubSubService';
@@ -89,6 +89,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
         Date: this.selectedDate.unix(),
         PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
         Score: this.selectedScore,
+        RelativeScore: this.getRelativeScore(),
         TeeboxColor: this.selectedTeebox.Color,
         PlayerId: x.id,
         PlayerName: x.displayName
@@ -131,9 +132,7 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
   }
 
   public getParSummary(): string {
-    const score = this.selectedScore;
-    const coursePar = this.getCoursePar();
-    let parScore = score - coursePar;
+    let parScore = this.getRelativeScore();
     if (parScore < 0) {
       parScore = parScore * -1;
       return `${parScore} under par`;
@@ -142,6 +141,12 @@ export class RecordNewRoundComponent extends BASE_PAGE implements OnInit {
     } else {
       return `Even par`;
     }
+  }
+
+  public getRelativeScore(): number {
+    const coursePar = this.getCoursePar();
+    const score = this.selectedScore;
+    return score - coursePar;
   }
 
   // retrieves the list of courses from the api and sorts

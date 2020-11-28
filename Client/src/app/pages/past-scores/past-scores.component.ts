@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import moment from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
-import { Score } from 'src/models/ScoreSubmission';
+import { Score } from 'src/models/Score';
 import { ApiService } from 'src/services/ApiService';
 import { PubSubService } from 'src/services/PubSubService';
 import { UserService } from 'src/services/UserService';

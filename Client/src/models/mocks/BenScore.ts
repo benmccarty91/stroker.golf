@@ -1,4 +1,4 @@
-import { Score } from '../ScoreSubmission';
+import { Score } from '../Score';
 
 export const data: Score = {
   CourseId: 'vwKV01U6dsCufPtB1oW7',

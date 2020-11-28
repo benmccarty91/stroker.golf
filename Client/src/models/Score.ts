@@ -7,4 +7,5 @@ export interface Score {
   Date: number;
   PrettyDate: string;
   Score: number;
+  RelativeScore: number;
 }

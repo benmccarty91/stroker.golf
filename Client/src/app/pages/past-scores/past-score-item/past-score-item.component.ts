@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import moment from 'moment';
-import { Score } from 'src/models/ScoreSubmission';
+import { Score } from 'src/models/Score';
 
 @Component({
   selector: 'app-past-score-item',
@@ -8,6 +8,7 @@ import { Score } from 'src/models/ScoreSubmission';
       <mat-list-item>
         <mat-card>
           <h1>{{score.Score}}</h1>
+          <p *ngIf="score.RelativeScore !== undefined">{{getParSummary(score.RelativeScore)}}</p>
           <h3>{{formatDate(score.Date)}}</h3>
           <p>{{score.CourseName}}</p>
           <p>From the {{score.TeeboxColor}} tees</p>
@@ -46,6 +47,18 @@ export class PastScoreItemComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.score);
+  }
+
+  public getParSummary(relativeScore: number): string {
+    let parScore = relativeScore;
+    if (parScore < 0) {
+      parScore = parScore * -1;
+      return `${parScore} under par`;
+    } else if (parScore > 0) {
+      return `${parScore} over par`;
+    } else {
+      return `Even par`;
+    }
   }
 
   public formatDate(timeStamp: number): string {
