@@ -1,1 +1,18 @@
-<p>past-scores works!</p>
+<mat-card id="pastScoreContainerCard">
+
+  <mat-button-toggle-group (change)="selectorChanged($event)" [(ngModel)]="selectedYear" class="yearSelect">
+    <mat-button-toggle value="2020">2020</mat-button-toggle>
+    <mat-button-toggle value="2019">2019</mat-button-toggle>
+    <mat-button-toggle value="2018">2018</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <div id="noScores" *ngIf="!getScores().length && !loading">
+    <h2>No Results</h2>
+    <p>You haven't posted any scores yet this year.</p>
+  </div>
+
+  <mat-list id="pastScoreList" *ngIf="getScores().length && !loading">
+    <app-past-score-item *ngFor="let score of getScores()" [score]="score"></app-past-score-item>
+  </mat-list>
+
+</mat-card>

@@ -1,0 +1,14 @@
+#pastScoreContainerCard {
+  .yearSelect {
+    width: 100%;
+    mat-button-toggle {
+      width: 33%;
+    }
+  }
+
+  #pastScoreList {
+    .pastScoreListItemCard {
+      width: 100%;
+    }
+  }
+}

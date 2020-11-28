@@ -14,7 +14,10 @@ import { UserService } from 'src/services/UserService';
 })
 export class PastScoresComponent implements OnInit {
 
-  private scores: Score[];
+  public loading: boolean = true;
+  public selectedYear: string = `${this.getYear()}`;
+
+  private scores: Score[] = [];
 
   constructor(
     private apiService: ApiService,
@@ -25,18 +28,32 @@ export class PastScoresComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.fetchScores(moment().year());
+    await this.fetchScores(this.selectedYear);
+  }
+
+  public selectorChanged(event: any): void {
+    console.log(this.selectedYear);
+    this.scores = [];
+    this.loading = true;
+    this.fetchScores(this.selectedYear);
   }
 
   public getScores(): Score[] {
-    return this.scores;
+    return this.scores.sort((a: Score, b: Score) => {
+      return b.Date - a.Date;
+    });
   }
 
-  private async fetchScores(year: number): Promise<void> {
+  public getYear(): number {
+    return moment().year();
+  }
+
+  private async fetchScores(year: string): Promise<void> {
     const userId = await this.userService.getUserId();
     this.apiService.get<Score[]>(`/score/${userId}/${year}`).subscribe(x => {
       this.scores = x;
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+      this.loading = false;
     });
   }
 
