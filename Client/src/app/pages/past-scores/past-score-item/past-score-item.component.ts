@@ -22,17 +22,18 @@ import { Score } from 'src/models/ScoreSubmission';
     }
     mat-card {
       width: 100%;
-      line-height:0.4em;
-      /* padding-top: 30px; */
     }
     h1 {
       font-size: 3em;
+      margin: 0;
     }
     h3 {
       font-size: 0.75em;
+      margin: 0;
     }
     p {
       font-size: 0.75em;
+      margin: 0;
     }
     `
   ]

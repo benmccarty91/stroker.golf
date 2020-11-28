@@ -16,6 +16,7 @@ export class PastScoresComponent implements OnInit {
 
   public loading: boolean = true;
   public selectedYear: string = `${this.getYear()}`;
+  public yearList: string[] = [this.selectedYear, `${this.getYear() - 1}`, `${this.getYear() - 2}`];
 
   private scores: Score[] = [];
 
