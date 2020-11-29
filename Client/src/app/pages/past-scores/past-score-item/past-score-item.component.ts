@@ -46,7 +46,6 @@ export class PastScoreItemComponent implements OnInit {
   @Input() score: Score;
 
   ngOnInit(): void {
-    console.log(this.score);
   }
 
   public getParSummary(relativeScore: number): string {

@@ -2,6 +2,7 @@
   <button mat-mini-fab color="primary" [ngClass]="{'hidden': hideBackButton()}" (click)="hitBackButton()">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
+
   <div id="courseSelect" class="questionCards" *ngIf="step === 1">
     <h2>Which course did you play?</h2>
     <div class="formContainer">
@@ -17,7 +18,21 @@
     </div>
   </div>
 
-  <div id="teeboxSelect" class="questionCards" *ngIf="step === 2">
+  <div id="dateSelect" class="questionCards" *ngIf="step === 2">
+    <h2>When did you play?</h2>
+    <div class="formContainer">
+      <mat-form-field appearance="fill">
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" autocomplete="off" [value]="selectedDate"
+          (dateChange)="dateChange($event)">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker touchUi #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <button mat-stroked-button class="wideButton" *ngIf="selectedDate" (click)="submitDate()">Next</button>
+  </div>
+
+  <div id="teeboxSelect" class="questionCards" *ngIf="step === 3">
     <h2>Which teebox did you play from?</h2>
     <mat-radio-group *ngIf="selectedCourse" class="my-radio-group" aria-label="Select an option"
       [(ngModel)]="selectedTeebox">
@@ -27,37 +42,24 @@
     <button mat-stroked-button class="wideButton" *ngIf="selectedTeebox" (click)="submitTeebox()">Next</button>
   </div>
 
-  <div id="friendSelect" class="questionCards" *ngIf="step === 3">
-    <h2>Did you play with any friends?</h2>
-    <button mat-stroked-button (click)="submitFriendSelect(true)">Yes</button>
-    <button mat-stroked-button (click)="submitFriendSelect(false)">No</button>
-  </div>
-
-  <div id="chooseFriends" class="questionCards" *ngIf="step === 4">
-    <h2>Who did you play with?</h2>
-    <p>Friends coming soon!</p>
-    <button mat-stroked-button class="wideButton" (click)="submitFriendList()">Next</button>
-  </div>
-
-  <div id="dateSelect" class="questionCards" *ngIf="step === 5">
-    <h2>When did you play?</h2>
-    <div class="formContainer">
-      <mat-form-field appearance="fill">
-        <mat-label>Choose a date</mat-label>
-        <input matInput [matDatepicker]="picker" autocomplete="off" [value]="selectedDate" (dateChange)="dateChange($event)">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker touchUi #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
-    <button mat-stroked-button class="wideButton" *ngIf="selectedDate" (click)="submitDate()">Next</button>
-  </div>
-
-  <div id="scoreInput" class="questionCards" *ngIf="step === 6">
+  <div id="scoreInput" class="questionCards" *ngIf="step === 4">
     <h2>What did you score?</h2>
     <div class="formContainer">
       <app-number-picker [inNumber]="selectedScore" (outNumber)="selectScore($event)"></app-number-picker>
     </div>
     <button mat-stroked-button class="wideButton" *ngIf="selectedScore > 0" (click)="buildSummary()">Next</button>
+  </div>
+
+  <div id="friendSelect" class="questionCards" *ngIf="step === 5">
+    <h2>Did you play with any friends?</h2>
+    <button mat-stroked-button (click)="submitFriendSelect(true)">Yes</button>
+    <button mat-stroked-button (click)="submitFriendSelect(false)">No</button>
+  </div>
+
+  <div id="chooseFriends" class="questionCards" *ngIf="step === 6">
+    <h2>Who did you play with?</h2>
+    <p>Friends coming soon!</p>
+    <button mat-stroked-button class="wideButton" (click)="submitFriendList()">Next</button>
   </div>
 
   <div id="summary" class="questionCards" *ngIf="step === 7">
