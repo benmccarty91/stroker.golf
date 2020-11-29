@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
+import { StorageMap } from '@ngx-pwa/local-storage';
 import { Moment } from 'moment';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
@@ -25,7 +26,7 @@ export class RecordNewRoundComponent implements OnInit {
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
-  public step: number = 1;
+  public step: number = -1;
   public summary: Score;
 
   private stepHistory: number[];
@@ -35,6 +36,7 @@ export class RecordNewRoundComponent implements OnInit {
     private apiService: ApiService,
     private userService: UserService,
     private router: Router,
+    private localStorage: StorageMap,
     private pubsubService: PubSubService,
     private consts: CONSTS
   ) {
@@ -108,7 +110,21 @@ export class RecordNewRoundComponent implements OnInit {
       console.log(x);
       this.incrementStep();
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
-    });
+    },
+      err => {
+        console.log('An error occurred trying to POST scores.');
+        this.localStorage.get(this.consts.APP_DATA.SCORE_SUBMISSIONS).subscribe(x => {
+          let y = x as Score[];
+          if (!y) {
+            y = new Array<Score>();
+          }
+          y.push(this.summary);
+          this.localStorage.set(this.consts.APP_DATA.SCORE_SUBMISSIONS, y).subscribe(() => {
+            this.step = -1;
+            this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+          });
+        });
+      });
   }
 
   public goHome(): void {
@@ -120,7 +136,9 @@ export class RecordNewRoundComponent implements OnInit {
   }
 
   public hideBackButton(): boolean {
-    return this.step === 1 || this.step === 8; // start page or summary page
+    return this.step === 1
+      || this.step === 8
+      || this.step < 0; // start page or summary page
   }
 
   private getCoursePar(): number {

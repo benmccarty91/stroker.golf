@@ -15,6 +15,7 @@ export class CONSTS {
   };
   public APP_DATA = {
     USER: 'currentUser',
-    API_TOKEN: 'apiToken'
-  }
+    API_TOKEN: 'apiToken',
+    SCORE_SUBMISSIONS: 'scoreSubmissions'
+  };
 }
