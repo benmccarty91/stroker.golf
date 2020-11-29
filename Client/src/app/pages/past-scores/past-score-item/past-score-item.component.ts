@@ -11,7 +11,7 @@ import { Score } from 'src/models/Score';
           <p *ngIf="score.RelativeScore !== undefined">{{getParSummary(score.RelativeScore)}}</p>
           <h3>{{formatDate(score.Date)}}</h3>
           <p>{{score.CourseName}}</p>
-          <p>From the {{score.TeeboxColor}} tees</p>
+          <p>{{score.RoundType}} from the {{score.TeeboxColor}} tees</p>
         </mat-card>
       </mat-list-item>
   `,
