@@ -18,7 +18,19 @@
     </div>
   </div>
 
-  <div id="dateSelect" class="questionCards" *ngIf="step === 2">
+  <div id="roundTypeSelect" class="questionCards" *ngIf="step === 2">
+    <h2>How many holes did you play?</h2>
+    <div class="formContainer">
+      <mat-button-toggle-group [(ngModel)]="selectedRoundType" class="roundTypeSelect">
+        <mat-button-toggle value="{{roundType.FULL_18}}">{{roundType.FULL_18}}</mat-button-toggle>
+        <mat-button-toggle value="{{roundType.FRONT_9}}">{{roundType.FRONT_9}}</mat-button-toggle>
+        <mat-button-toggle value="{{roundType.BACK_9}}">{{roundType.BACK_9}}</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button mat-stroked-button class="wideButton" (click)="submitRoundType()">Next</button>
+    </div>
+  </div>
+
+  <div id="dateSelect" class="questionCards" *ngIf="step === 3">
     <h2>When did you play?</h2>
     <div class="formContainer">
       <mat-form-field appearance="fill">
@@ -32,7 +44,7 @@
     <button mat-stroked-button class="wideButton" *ngIf="selectedDate" (click)="submitDate()">Next</button>
   </div>
 
-  <div id="teeboxSelect" class="questionCards" *ngIf="step === 3">
+  <div id="teeboxSelect" class="questionCards" *ngIf="step === 4">
     <h2>Which teebox did you play from?</h2>
     <mat-radio-group *ngIf="selectedCourse" class="my-radio-group" aria-label="Select an option"
       [(ngModel)]="selectedTeebox">
@@ -42,7 +54,7 @@
     <button mat-stroked-button class="wideButton" *ngIf="selectedTeebox" (click)="submitTeebox()">Next</button>
   </div>
 
-  <div id="scoreInput" class="questionCards" *ngIf="step === 4">
+  <div id="scoreInput" class="questionCards" *ngIf="step === 5">
     <h2>What did you score?</h2>
     <div class="formContainer">
       <app-number-picker [inNumber]="selectedScore" (outNumber)="selectScore($event)"></app-number-picker>
@@ -50,19 +62,19 @@
     <button mat-stroked-button class="wideButton" *ngIf="selectedScore > 0" (click)="buildSummary()">Next</button>
   </div>
 
-  <div id="friendSelect" class="questionCards" *ngIf="step === 5">
+  <div id="friendSelect" class="questionCards" *ngIf="step === 6">
     <h2>Did you play with any friends?</h2>
     <button mat-stroked-button (click)="submitFriendSelect(true)">Yes</button>
     <button mat-stroked-button (click)="submitFriendSelect(false)">No</button>
   </div>
 
-  <div id="chooseFriends" class="questionCards" *ngIf="step === 6">
+  <div id="chooseFriends" class="questionCards" *ngIf="step === 7">
     <h2>Who did you play with?</h2>
     <p>Friends coming soon!</p>
     <button mat-stroked-button class="wideButton" (click)="submitFriendList()">Next</button>
   </div>
 
-  <div id="summary" class="questionCards" *ngIf="step === 7">
+  <div id="summary" class="questionCards" *ngIf="step === 8">
     <h2>Summary</h2>
     <h3>{{summary.CourseName}}</h3>
     <p>{{summary.PrettyDate}}</p>
@@ -76,13 +88,13 @@
     <button mat-stroked-button class="wideButton" (click)="submitFinal()">Submit</button>
   </div>
 
-  <div id="success" class="questionCards" *ngIf="step === 8">
+  <div id="success" class="questionCards" *ngIf="step === 9">
     <h2>Success!</h2>
     <p>Your score has been recorded.</p>
     <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
   </div>
 
-  <div id="success" class="questionCards" *ngIf="step === -1">
+  <div id="failure" class="questionCards" *ngIf="step === -1">
     <h2>Failure :(</h2>
     <p>
       We couldn't submit your score because we couldn't connect to the interwebs.

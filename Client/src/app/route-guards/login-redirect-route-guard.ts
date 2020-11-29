@@ -22,7 +22,6 @@ export class AuthRedirectGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
     return this.fireAuth.getRedirectResult().then(cred => {
       if (cred.user != null) {
-        // console.log(`logged in user: ${cred.user.displayName}`);
         this.router.navigateByUrl('/landing');
         this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
         this.authService.registerUser(cred.user);

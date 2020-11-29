@@ -3,9 +3,9 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { Moment } from 'moment';
-import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
+import { GolfHole } from 'src/models/GolfHole';
 import { RoundType, Score } from 'src/models/Score';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
@@ -26,11 +26,12 @@ export class RecordNewRoundComponent implements OnInit {
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
-  public step: number = -1;
+  public step: number = 1;
   public summary: Score;
 
   private stepHistory: number[];
   private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
+  private originalCourseHoleList: GolfHole[];
 
   constructor(
     private apiService: ApiService,
@@ -44,12 +45,26 @@ export class RecordNewRoundComponent implements OnInit {
   }
   async ngOnInit(): Promise<void> {
     this.courses = await this.getCourses();
-    // this.summary = data;
   }
 
   public submitCourse(): void {
     this.incrementStep();
     this.getCourse(this.selectedCourseId);
+  }
+
+  public submitRoundType(): void {
+    switch (this.selectedRoundType) {
+      case (this.roundType.FULL_18):
+        this.selectedCourse.Holes = this.originalCourseHoleList;
+        break;
+      case (this.roundType.FRONT_9):
+        this.selectedCourse.Holes = this.originalCourseHoleList.slice(0, 9);
+        break;
+      case (this.roundType.BACK_9):
+        this.selectedCourse.Holes = this.originalCourseHoleList.slice(9);
+        break;
+    }
+    this.incrementStep();
   }
 
   public submitTeebox(): void {
@@ -104,15 +119,13 @@ export class RecordNewRoundComponent implements OnInit {
   }
 
   public submitFinal(): void {
-    console.log('submitted!');
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
     this.apiService.post('/score', this.summary).subscribe(x => {
-      console.log(x);
       this.incrementStep();
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     },
       err => {
-        console.log('An error occurred trying to POST scores.');
+        console.error('An error occurred trying to POST scores.');
         this.localStorage.get(this.consts.APP_DATA.SCORE_SUBMISSIONS).subscribe(x => {
           let y = x as Score[];
           if (!y) {
@@ -167,6 +180,10 @@ export class RecordNewRoundComponent implements OnInit {
     return score - coursePar;
   }
 
+  public get roundType(): typeof RoundType {
+    return RoundType;
+  }
+
   // retrieves the list of courses from the api and sorts
   // the list alphabetically
   private async getCourses(): Promise<GolfCourse[]> {
@@ -189,6 +206,10 @@ export class RecordNewRoundComponent implements OnInit {
     this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.apiService.get<GolfCourse>(`/course/${id}`).subscribe(x => {
       this.selectedCourse = x;
+      this.originalCourseHoleList = this.selectedCourse.Holes;
+      this.originalCourseHoleList.sort((a, b) => {
+        return a.Number - b.Number;
+      });
       this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
     });
   }

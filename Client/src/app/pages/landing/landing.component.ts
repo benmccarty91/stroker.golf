@@ -39,18 +39,4 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
   handleLink(path: string): void {
     this.router.navigateByUrl(path);
   }
-
-  // getTest(): void {
-  //   this.api.get('/course').subscribe((x: GolfCourse) => {
-  //     console.log(x);
-  //   });
-  // }
-
-  // postTest(): void {
-  //   console.log('test successful');
-  //   console.log(data);
-  //   this.api.post('/course', data).subscribe((x) => {
-  //     console.log(x);
-  //   });
-  // }
 }

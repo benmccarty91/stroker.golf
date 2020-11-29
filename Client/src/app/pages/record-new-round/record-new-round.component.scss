@@ -11,6 +11,14 @@
     clear: both;
     min-width: 100%;
   }
+
+  .roundTypeSelect {
+    width: 100%;
+    margin: 10px 0;
+    mat-button-toggle {
+      width: 33%;
+    }
+  }
   
 }
 
