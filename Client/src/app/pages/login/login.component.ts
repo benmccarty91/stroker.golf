@@ -24,6 +24,10 @@ export class LoginComponent extends BASE_PAGE implements OnInit {
   ngOnInit(): void {
   }
 
+  public getUserAgent(): string {
+    return this.deviceService.getUserAgent();
+  }
+
   public isIOS(): boolean {
     return this.deviceService.isIOS();
   }

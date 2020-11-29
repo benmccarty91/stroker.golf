@@ -15,4 +15,8 @@ export class DeviceService {
   public isAndroid(): boolean {
     return (/android/i.test(this.userAgent));
   }
+
+  public getUserAgent(): string {
+    return this.userAgent;
+  }
 }
