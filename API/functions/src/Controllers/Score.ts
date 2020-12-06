@@ -6,7 +6,7 @@ import * as functions from 'firebase-functions';
 import moment = require('moment');
 
 const db = admin.firestore();
-const scoreCollection = db.collection('score');
+const userCollection = db.collection('user');
 
 const router = express.Router();
 
@@ -17,6 +17,7 @@ router.get('/:playerId/:year', async (req: any, res) => {
     functions.logger.info(`Forbidden request inside GET score/:playerId/:year`);
     return;
   }
+
   const year = Number(req.params.year);
   const startDate = moment({ year: year });
   const endDate = moment({ year: year, month: 11, day: 31 });
@@ -24,8 +25,7 @@ router.get('/:playerId/:year', async (req: any, res) => {
   const retVal: any[] = [];
   functions.logger.info(`Inside GET Score.  PlayerId: ${playerId}.  Year: ${year}.`);
 
-  const scoresPromise = scoreCollection
-    .where('PlayerId', '==', playerId)
+  const scoresPromise = userCollection.doc(playerId).collection('score')
     .where('Date', '>=', startDate.unix())
     .where('Date', '<=', endDate.unix())
     .get();
@@ -49,7 +49,7 @@ router.post('/', async (req: any, res) => {
     functions.logger.info(`Forbidden request inside POST score/`);
     return;
   }
-  scoreCollection.add(newScore).then(x => {
+  userCollection.doc(newScore.PlayerId).collection('score').add(newScore).then(x => {
     res.status(StatusCodes.CREATED).send({ id: x.id });
   }).catch(err => {
     functions.logger.error(err);
