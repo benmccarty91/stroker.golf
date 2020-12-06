@@ -38,12 +38,12 @@ export class AddFriendComponent extends BASE_PAGE implements OnInit {
 
   addFriendClicked(): void {
     if (!this.emailFormControl.hasError('email') && !this.emailFormControl.hasError('required')) {
-      this.apiService.post('/friend', this.userInput).subscribe(x => {
+      this.apiService.post('/friend', { email: this.userInput }).subscribe(x => {
         this.submitStatus = 'success';
       },
-      err => {
-        this.submitStatus = 'fail';
-      });
+        err => {
+          this.submitStatus = 'fail';
+        });
     }
   }
 
