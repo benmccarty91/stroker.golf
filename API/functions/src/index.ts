@@ -15,5 +15,6 @@ app.use('/user', require('./Controllers/User'));
 app.use('/test', require('./Controllers/Test'));
 app.use('/course', require('./Controllers/Course'));
 app.use('/score', require('./Controllers/Score'));
+app.use('/friend', require('./Controllers/Friend'));
 
 export const api = functions.https.onRequest(app);
