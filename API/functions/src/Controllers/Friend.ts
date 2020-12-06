@@ -97,7 +97,7 @@ router.post('/', async (req: any, res) => {
   };
   friendCollection.doc(reciprocalFriend.FriendId).set(reciprocalFriend);
 
-  res.status(StatusCodes.CREATED).send(`/user/${newFriend.UserId}/friend/${newFriend.FriendId}/`);
+  res.status(StatusCodes.CREATED).send({ message: `/user/${newFriend.UserId}/friend/${newFriend.FriendId}/` });
   return;
 });
 

@@ -16,6 +16,7 @@ export class CONSTS {
   public APP_DATA = {
     USER: 'currentUser',
     API_TOKEN: 'apiToken',
-    SCORE_SUBMISSIONS: 'scoreSubmissions'
+    SCORE_SUBMISSIONS: 'scoreSubmissions',
+    SELECTED_FRIEND: 'selectedFriend'
   };
 }

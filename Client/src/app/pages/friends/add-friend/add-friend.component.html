@@ -3,7 +3,8 @@
     <form>
       <mat-form-field class="full-width">
         <mat-label>Friend's Email</mat-label>
-        <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher" [(ngModel)]="userInput">
+        <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+          [(ngModel)]="userInput">
         <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
           Please enter a valid email address
         </mat-error>
@@ -35,6 +36,7 @@
       Your friend needs to accept the request before you can become friends.
     </p>
     <button mat-stroked-button class="wideButton" (click)="findAnother()">Find Another Friend</button>
+    <button mat-stroked-button class="wideButton" (click)="friendList()">Friend List</button>
     <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
 
   </div>

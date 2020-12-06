@@ -10,6 +10,7 @@ import { NewLiveGameComponent } from './pages/new-live-game/new-live-game.compon
 import { PastScoresComponent } from './pages/past-scores/past-scores.component';
 import { FriendsComponent } from './pages/friends/friends.component';
 import { AddFriendComponent } from './pages/friends/add-friend/add-friend.component';
+import { FriendDetailsComponent } from './pages/friends/friend-details/friend-details.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToLanding = () => redirectLoggedInTo(['landing']);
@@ -55,6 +56,12 @@ const routes: Routes = [
   {
     path: 'friends/add',
     component: AddFriendComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+  },
+  {
+    path: 'friends/:id',
+    component: FriendDetailsComponent,
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin }
   },

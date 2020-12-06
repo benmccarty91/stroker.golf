@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
-import { CONSTS } from 'dist/Client/assets/CONSTS';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
+import { CONSTS } from 'src/assets/CONSTS';
 import { ApiService } from 'src/services/ApiService';
 import { PubSubService } from 'src/services/PubSubService';
 
@@ -50,6 +50,10 @@ export class AddFriendComponent extends BASE_PAGE implements OnInit {
   findAnother(): void {
     this.userInput = '';
     this.submitStatus = '';
+  }
+
+  friendList(): void {
+    this.router.navigateByUrl('/friends');
   }
 
   goHome(): void {
