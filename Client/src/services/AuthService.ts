@@ -20,20 +20,8 @@ export class AuthService {
     private userService: UserService,
   ) { }
 
-  public async loginWithGoogle(): Promise<boolean> {
-    let cred: auth.UserCredential;
-    try {
-      cred = await this.fireAuth.signInWithPopup(new auth.GoogleAuthProvider());
-    } catch (error) {
-      return false;
-    }
-    if (cred) {
-      this.pubSubService.$pub(this.consts.EVENTS.LOGGED_IN);
-      this.registerUser(cred.user);
-      return true;
-    } else {
-      return false;
-    }
+  public async loginWithGoogle(): Promise<void> {
+    await this.fireAuth.signInWithRedirect(new auth.GoogleAuthProvider());
   }
 
   public async loginWithFacebook(): Promise<void> {
