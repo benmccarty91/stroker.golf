@@ -24,6 +24,12 @@
       View Past Scores
     </mat-list-item>
   </a>
+
+  <a class="nav-link"  [ngClass]="{'active': isActive('/friends'), 'disabled': !isLoggedIn}" (click)="handleLink('/friends')">
+    <mat-list-item class="nav-item">
+      Friends
+    </mat-list-item>
+  </a>
   
   <a *ngIf="!isLoggedIn" class="nav-link"  [ngClass]="{'active': isActive('/login')}" (click)="handleLink('/login')">
     <mat-list-item class="nav-item">

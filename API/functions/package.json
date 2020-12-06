@@ -17,11 +17,13 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@types/uuid": "^8.3.0",
     "cors": "^2.8.5",
     "firebase-admin": "^9.2.0",
     "firebase-functions": "^3.11.0",
     "http-status-codes": "^2.1.4",
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.7",

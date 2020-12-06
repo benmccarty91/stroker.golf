@@ -1,0 +1,13 @@
+<mat-card *ngIf="!loading">
+  <button mat-stroked-button class="wideButton" (click)="addFriendClicked()">
+    Find Friends
+  </button>
+  <div *ngIf="!friends || friends.length === 0">
+    You don't have any friends :(
+  </div>
+  <div *ngIf="friends && friends.length !== 0">
+    <mat-list id="pastScoreList">
+      <app-friend-item *ngFor="let friend of friends" (click)="clickFriend(friend)" [friend]="friend"></app-friend-item>
+    </mat-list>
+  </div>
+</mat-card>

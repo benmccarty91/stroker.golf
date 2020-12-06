@@ -1,0 +1,43 @@
+<mat-card>
+  <div id="findFriend" *ngIf="submitStatus === ''">
+    <form>
+      <mat-form-field class="full-width">
+        <mat-label>Friend's Email</mat-label>
+        <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+          [(ngModel)]="userInput">
+        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <button mat-stroked-button class="wideButton" (click)="addFriendClicked()">Add Friend</button>
+    </form>
+  </div>
+
+  <div id="failure" *ngIf="submitStatus === 'fail'">
+    <h2>Failure :(</h2>
+    <p>
+      We couldn't submit your request because we couldn't connect to the interwebs.
+    </p>
+    <p>
+      Please try again later.
+    </p>
+    <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
+  </div>
+
+  <div id="success" *ngIf="submitStatus === 'success'">
+    <h2>Submitted!</h2>
+    <p>
+      Your request has been submitted!
+    </p>
+    <p>
+      Your friend needs to accept the request before you can become friends.
+    </p>
+    <button mat-stroked-button class="wideButton" (click)="findAnother()">Find Another Friend</button>
+    <button mat-stroked-button class="wideButton" (click)="friendList()">Friend List</button>
+    <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
+
+  </div>
+</mat-card>

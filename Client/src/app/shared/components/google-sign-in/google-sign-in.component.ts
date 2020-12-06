@@ -23,13 +23,7 @@ export class GoogleSignInComponent implements OnInit {
 
   googleAuth(): void {
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.authService.loginWithGoogle().then(success => {
-      if (success) {
-        this.router.navigateByUrl('/landing');
-      } else {
-        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
-      }
-    });
+    this.authService.loginWithGoogle().then(() => { });
   }
 
 }
