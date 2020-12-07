@@ -23,4 +23,18 @@ export class ApiService {
     };
     return this.httpClient.post<any>(url, body, httpOptions);
   }
+
+  public delete(url: string, params?: any): Observable<any> {
+    const httpOptions = {
+      params
+    };
+    return this.httpClient.delete(url, httpOptions);
+  }
+
+  public put(url: string, body: any, params?: any): Observable<any> {
+    const httpOptions = {
+      params
+    };
+    return this.httpClient.put(url, body, httpOptions);
+  }
 }

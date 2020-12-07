@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { StorageMap } from '@ngx-pwa/local-storage';
 import { Location } from '@angular/common';
 import { CONSTS } from 'src/assets/CONSTS';
 import { Friend, FriendStatus } from 'src/models/Friend';
 import { PubSubService } from 'src/services/PubSubService';
 import { UserService } from 'src/services/UserService';
 import { StrokerUser } from 'src/models/StrokerUser';
+import { FriendService } from 'src/services/FriendService';
+import { Route } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-friend-details',
@@ -21,14 +22,14 @@ import { StrokerUser } from 'src/models/StrokerUser';
           <img id="avatar" src="{{friend.PhotoUrl}}" />
           <div id="buttonGroup">
             <div *ngIf="!isAccepted() && hasApprovalAuth()">
-              <button class="appDen" mat-flat-button color="accent">Approve</button>
-              <button class="appDen" mat-flat-button color="primary">Decline</button>
+              <button class="appDen" mat-flat-button color="accent" (click)="approveRequest()">Approve</button>
+              <button class="appDen" mat-flat-button color="primary" (click)="declineRequest()">Decline</button>
             </div>
             <div *ngIf="!isAccepted() && !hasApprovalAuth()">
-              <button class="delRem" mat-flat-button color="warn">Delete Request</button>
+              <button class="delRem" mat-flat-button color="warn" (click)="deleteRequest()">Delete Request</button>
             </div>
             <div *ngIf="isAccepted()">
-              <button class="delRem" mat-flat-button color="warn">Remove Friend</button>
+              <button class="delRem" mat-stroked-button color="warn" (click)="removeFriend()">Remove Friend</button>
             </div>
           </div>
         </mat-card-content>
@@ -74,13 +75,14 @@ export class FriendDetailsComponent implements OnInit {
   constructor(
     private pubsubService: PubSubService,
     private consts: CONSTS,
-    private localStorage: StorageMap,
     private location: Location,
-    private userService: UserService
+    private userService: UserService,
+    private friendService: FriendService,
   ) { }
 
   ngOnInit(): void {
-    this.localStorage.get<Friend>(this.consts.APP_DATA.SELECTED_FRIEND).subscribe(friend => {
+    const id = this.location.path().split('/').reverse().shift();
+    this.friendService.getSelectedFriend(id).subscribe(friend => {
       this.friend = friend as Friend;
       this.userService.getUser().then(user => {
         this.self = user;
@@ -105,6 +107,37 @@ export class FriendDetailsComponent implements OnInit {
 
   hasApprovalAuth(): boolean {
     return (this.self.id === this.friend.ApprovalAuthority);
+  }
+
+  deleteRequest(): void {
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+    this.friendService.deleteRequest(this.friend.FriendId).subscribe(() => {
+      this.location.back();
+    });
+  }
+
+  removeFriend(): void {
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+    this.friendService.removeFriend(this.friend.FriendId).subscribe(() => {
+      this.location.back();
+    });
+  }
+
+  declineRequest(): void {
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+    this.friendService.declineRequest(this.friend.FriendId).subscribe(() => {
+      this.location.back();
+    });
+  }
+
+  approveRequest(): void {
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+    this.friendService.approveRequest(this.friend.FriendId).subscribe(() => {
+      this.friendService.getFriend(this.friend.FriendId).subscribe(friend => {
+        this.friend = friend;
+        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+      });
+    });
   }
 
 }

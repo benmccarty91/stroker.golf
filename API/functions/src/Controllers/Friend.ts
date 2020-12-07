@@ -28,6 +28,43 @@ router.get('/', async (req: any, res) => {
   return;
 });
 
+router.get('/:id', async (req: any, res) => {
+  const playerId = req.user.uid;
+  const friendId = req.params.id;
+
+  const query = await userCollection.doc(playerId).collection('friend')
+    .doc(friendId).get();
+
+  const retVal = query.data() as Friend;
+
+  if (retVal) {
+    res.status(StatusCodes.OK).send(retVal);
+    return;
+  }
+
+  res.status(StatusCodes.NOT_FOUND).send();
+  return;
+
+});
+
+router.delete('/:id', async (req: any, res) => {
+  const playerId = req.user.uid;
+  const friendId = req.params.id;
+
+  const friendRef = userCollection.doc(playerId)
+    .collection('friend')
+    .doc(friendId)
+    .delete();
+
+  const recRef = userCollection.doc(friendId)
+    .collection('friend')
+    .doc(playerId)
+    .delete();
+
+  res.status(StatusCodes.OK).send();
+  return;
+})
+
 router.post('/', async (req: any, res) => {
 
   // capture email from post body
@@ -99,6 +136,34 @@ router.post('/', async (req: any, res) => {
 
   res.status(StatusCodes.CREATED).send({ message: `/user/${newFriend.UserId}/friend/${newFriend.FriendId}/` });
   return;
+});
+
+router.put('/:id/approve', async (req: any, res) => {
+  const playerId = req.user.uid;
+  const friendId = req.params.id;
+
+  const friendRef = userCollection.doc(playerId)
+    .collection('friend')
+    .doc(friendId);
+
+  const friend = (await friendRef.get()).data() as Friend;
+  if (friend.ApprovalAuthority !== playerId) {
+    res.status(StatusCodes.FORBIDDEN).send();
+    return;
+  }
+
+  await friendRef.update({
+    "FriendStatus": FriendStatus.ACCEPTED
+  });
+
+  await userCollection.doc(friendId)
+    .collection('friend')
+    .doc(playerId)
+    .update({
+      "FriendStatus": FriendStatus.ACCEPTED
+    });
+
+  res.status(StatusCodes.OK).send();
 });
 
 const validateEmail = (email: string): boolean => {
