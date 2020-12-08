@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -22,6 +23,7 @@ export class AddFriendComponent extends BASE_PAGE implements OnInit {
   matcher = new MyErrorStateMatcher();
 
   public submitStatus: string = '';
+  public failureString: string = '';
   public userInput: string;
 
   constructor(
@@ -42,6 +44,9 @@ export class AddFriendComponent extends BASE_PAGE implements OnInit {
         this.submitStatus = 'success';
       },
         err => {
+          if (typeof(err === 'HttpErrorResponse')) {
+            this.handleApiPostError(err);
+          }
           this.submitStatus = 'fail';
         });
     }
@@ -58,6 +63,23 @@ export class AddFriendComponent extends BASE_PAGE implements OnInit {
 
   goHome(): void {
     this.router.navigateByUrl('/landing');
+  }
+
+  private handleApiPostError(err: HttpErrorResponse): void {
+    switch (err.status) {
+      case 404: // user doesn't exsit
+        this.failureString = `That person doesn't have an account.`;
+        break;
+      case 400: // not a valid email (or you searched for yourself)
+        this.failureString = `There's something wrong with the email address you provided.`;
+        break;
+      case 409: // you already have that friend
+        this.failureString = `You are already friends with that person, or you already have a pending friend request.`;
+        break;
+      default: // everything else
+        this.failureString = `We couldn't submit your request because we couldn't connect to the interwebs.`;
+        break;
+    }
   }
 
 }
