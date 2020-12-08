@@ -10,16 +10,23 @@ import { ApiService } from './ApiService';
   providedIn: 'root',
 })
 export class FriendService {
+
+  private numApprovals: number = 0;
+
   constructor(
     private apiService: ApiService,
     private localStorage: StorageMap,
     private consts: CONSTS
   ) { }
 
+  public getLandingBadge(): number {
+    return this.numApprovals;
+  }
+
   public getFriends(): Observable<Friend[]> {
     return this.apiService.get<Friend[]>('/friend').pipe(
       map(res => res),
-      catchError((err, caught) => {
+      catchError((err) => {
         console.error(err);
         return of(new Array<Friend>());
       })
@@ -55,25 +62,25 @@ export class FriendService {
 
   public removeFriend(friendId: string): Observable<void> {
     return this.apiService.delete(`/friend/${friendId}`).pipe(
-      map(res => { })
+      map(() => { })
     );
   }
 
   public deleteRequest(friendId: string): Observable<void> {
     return this.apiService.delete(`/friend/${friendId}`).pipe(
-      map(res => { })
+      map(() => { })
     );
   }
 
   public approveRequest(friendId: string): Observable<void> {
     return this.apiService.put(`/friend/${friendId}/approve`, null).pipe(
-      map(res => { })
+      map(() => { })
     );
   }
 
   public declineRequest(friendId: string): Observable<void> {
     return this.apiService.delete(`/friend/${friendId}`).pipe(
-      map(res => { })
+      map(() => { })
     );
   }
 }

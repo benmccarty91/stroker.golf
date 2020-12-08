@@ -1,11 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Friend } from 'src/models/Friend';
+import { Friend, FriendStatus } from 'src/models/Friend';
+import { StrokerUser } from 'src/models/StrokerUser';
+import { UserService } from 'src/services/UserService';
 
 @Component({
   selector: 'app-friend-item',
   template: `
     <mat-list-item>
-        <mat-card>
+        <mat-card matBadge="!" matBadgeColor="accent" matBadgePosition="before" matBadgeHidden="{{!showBadge()}}">
           <mat-grid-list cols="4">
             <mat-grid-tile [colspan]="1">
               <img id="avatar" src="{{friend.PhotoUrl}}" />
@@ -51,10 +53,21 @@ import { Friend } from 'src/models/Friend';
 export class FriendItemComponent implements OnInit {
 
   @Input() friend: Friend;
+  private self: string;
 
-  constructor() { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
+    this.userService.getUserId().then(x => {
+      this.self = x;
+    });
+  }
+
+  showBadge(): boolean {
+    const pendingStatus = this.friend.FriendStatus === FriendStatus.PENDING;
+    const approvalAuth = this.friend.ApprovalAuthority === this.self;
+    // console.log(`Pending: ${pendingStatus}, ApprovalAuth: ${approvalAuth}`);
+    return pendingStatus && approvalAuth;
   }
 
 }

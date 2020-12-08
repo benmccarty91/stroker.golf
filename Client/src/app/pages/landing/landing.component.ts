@@ -7,6 +7,7 @@ import { GolfCourse } from 'src/models/GolfCourse';
 import { StrokerUser } from 'src/models/StrokerUser';
 import { ApiService } from 'src/services/ApiService';
 import { AuthService } from 'src/services/AuthService';
+import { FriendService } from 'src/services/FriendService';
 import { PubSubService } from 'src/services/PubSubService';
 import { UserService } from 'src/services/UserService';
 import { data } from '../../../models/mocks/RiverBirch';
@@ -24,7 +25,7 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router,
-    private api: ApiService,
+    private friendService: FriendService,
     private pubsubService: PubSubService,
     private consts: CONSTS,
   ) {
@@ -38,5 +39,9 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
 
   handleLink(path: string): void {
     this.router.navigateByUrl(path);
+  }
+
+  getFriendBadge(): number {
+    return this.friendService.getLandingBadge();
   }
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -69,7 +70,8 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatBadgeModule
   ]
 })
 export class MaterialModule { }
