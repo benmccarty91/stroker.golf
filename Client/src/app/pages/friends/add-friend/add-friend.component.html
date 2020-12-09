@@ -19,11 +19,12 @@
   <div id="failure" *ngIf="submitStatus === 'fail'">
     <h2>Failure :(</h2>
     <p>
-      We couldn't submit your request because we couldn't connect to the interwebs.
+      {{failureString}}
     </p>
     <p>
       Please try again later.
     </p>
+    <button mat-stroked-button class="wideButton" (click)="friendList()">Friend List</button>
     <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
   </div>
 

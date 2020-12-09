@@ -7,6 +7,7 @@ import { GolfCourse } from 'src/models/GolfCourse';
 import { StrokerUser } from 'src/models/StrokerUser';
 import { ApiService } from 'src/services/ApiService';
 import { AuthService } from 'src/services/AuthService';
+import { FriendService } from 'src/services/FriendService';
 import { PubSubService } from 'src/services/PubSubService';
 import { UserService } from 'src/services/UserService';
 import { data } from '../../../models/mocks/RiverBirch';
@@ -21,10 +22,12 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
   public user: StrokerUser = null;
   public displayName = null;
 
+  public pendingFriends: string;
+
   constructor(
     private userService: UserService,
     private router: Router,
-    private api: ApiService,
+    private friendService: FriendService,
     private pubsubService: PubSubService,
     private consts: CONSTS,
   ) {
@@ -34,6 +37,9 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
   async ngOnInit(): Promise<void> {
     this.user = await this.userService.getUser();
     this.displayName = this.user ? this.user.displayName : null;
+    this.friendService.getLandingBadge().subscribe(num => {
+      this.pendingFriends = num >= 10 ? '+' : `${num}`;
+    });
   }
 
   handleLink(path: string): void {
