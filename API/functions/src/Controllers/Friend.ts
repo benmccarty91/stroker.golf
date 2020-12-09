@@ -13,6 +13,19 @@ const userCollection = db.collection('user');
 
 const router = express.Router();
 
+router.get('/pendingCount', async (req: any, res) => {
+  const playerId = req.user.uid;
+
+  const results = await userCollection.doc(playerId)
+    .collection('friend')
+    .where('FriendStatus', '==', FriendStatus.PENDING)
+    .where('ApprovalAuthority', '==', playerId)
+    .limit(10).get();
+
+  const size = results.size;
+  res.status(StatusCodes.OK).send({num: size});
+})
+
 router.get('/', async (req: any, res) => {
   const playerId = req.user.uid;
   const snapshot = await userCollection.doc(playerId).collection('friend').get();

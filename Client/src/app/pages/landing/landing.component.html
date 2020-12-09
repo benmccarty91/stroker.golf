@@ -11,7 +11,7 @@
       <button class="landing_button" mat-stroked-button (click)="handleLink('/scores')">View Past Scores</button>
     </mat-list-item>
     <mat-list-item>    
-      <button [matBadge]="getFriendBadge()" [matBadgeHidden]="!getFriendBadge()" matBadgeColor="accent" 
+      <button [matBadge]="pendingFriends" [matBadgeHidden]="!pendingFriends || pendingFriends === '0'" matBadgeColor="accent" 
         matBadgePosition="before" class="landing_button" mat-stroked-button (click)="handleLink('/friends')">
           Friends
       </button>

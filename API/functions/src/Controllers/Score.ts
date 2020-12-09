@@ -28,6 +28,7 @@ router.get('/:playerId/:year', async (req: any, res) => {
   const scoresPromise = userCollection.doc(playerId).collection('score')
     .where('Date', '>=', startDate.unix())
     .where('Date', '<=', endDate.unix())
+    .limit(100) // TODO: paginate this data
     .get();
 
   scoresPromise.then(scores => {

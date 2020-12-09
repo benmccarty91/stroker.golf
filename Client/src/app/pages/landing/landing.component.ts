@@ -22,6 +22,8 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
   public user: StrokerUser = null;
   public displayName = null;
 
+  public pendingFriends: string;
+
   constructor(
     private userService: UserService,
     private router: Router,
@@ -35,13 +37,12 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
   async ngOnInit(): Promise<void> {
     this.user = await this.userService.getUser();
     this.displayName = this.user ? this.user.displayName : null;
+    this.friendService.getLandingBadge().subscribe(num => {
+      this.pendingFriends = num >= 10 ? '+' : `${num}`;
+    });
   }
 
   handleLink(path: string): void {
     this.router.navigateByUrl(path);
-  }
-
-  getFriendBadge(): number {
-    return this.friendService.getLandingBadge();
   }
 }

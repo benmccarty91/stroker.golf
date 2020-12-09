@@ -19,8 +19,10 @@ export class FriendService {
     private consts: CONSTS
   ) { }
 
-  public getLandingBadge(): number {
-    return this.numApprovals;
+  public getLandingBadge(): Observable<number> {
+    return this.apiService.get<any>('/friend/pendingCount').pipe(
+      map(res => res.num)
+    );
   }
 
   public getFriends(): Observable<Friend[]> {
