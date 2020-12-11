@@ -10,6 +10,8 @@ import { Route } from '@angular/compiler/src/core';
 import { Score } from 'src/models/Score';
 import { ApiService } from 'src/services/ApiService';
 import { ScoreService } from 'src/services/ScoreService';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-friend-details',
@@ -81,6 +83,7 @@ export class FriendDetailsComponent implements OnInit {
     private pubsubService: PubSubService,
     private consts: CONSTS,
     private location: Location,
+    private dialog: MatDialog,
     private userService: UserService,
     private friendService: FriendService,
     private scoreService: ScoreService
@@ -103,6 +106,12 @@ export class FriendDetailsComponent implements OnInit {
   }
 
   hitBackButton(): void {
+    // const dialogRef = this.dialog.open(
+    //   ConfirmDialogComponent,
+    //   {}
+    // ).afterClosed().subscribe(result => {
+    //   console.log(result);
+    // });
     this.location.back();
   }
 
