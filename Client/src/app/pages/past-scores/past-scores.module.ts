@@ -11,6 +11,9 @@ import { PastScoreItemComponent } from './past-score-item/past-score-item.compon
   imports: [
     CommonModule,
     MaterialModule
+  ],
+  exports: [
+    PastScoreItemComponent
   ]
 })
 export class PastScoresModule { }

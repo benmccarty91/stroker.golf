@@ -7,33 +7,37 @@ import { UserService } from 'src/services/UserService';
 import { StrokerUser } from 'src/models/StrokerUser';
 import { FriendService } from 'src/services/FriendService';
 import { Route } from '@angular/compiler/src/core';
+import { Score } from 'src/models/Score';
+import { ApiService } from 'src/services/ApiService';
+import { ScoreService } from 'src/services/ScoreService';
 
 @Component({
   selector: 'app-friend-details',
   template: `
-      <mat-card *ngIf="!loading">
-        <button id="backButton" mat-mini-fab color="primary" (click)="hitBackButton()">
-          <mat-icon>keyboard_arrow_left</mat-icon>
-        </button>
-        <mat-card-content>
-          <h1>{{friend.Name}}</h1>
-          <p>{{friend.Email}}</p>
-          <h3 id="status" *ngIf="friend.FriendStatus === 'Pending'">{{friend.FriendStatus}}</h3>
-          <img id="avatar" src="{{friend.PhotoUrl}}" />
-          <div id="buttonGroup">
-            <div *ngIf="!isAccepted() && hasApprovalAuth()">
-              <button class="appDen" mat-flat-button color="accent" (click)="approveRequest()">Approve</button>
-              <button class="appDen" mat-flat-button color="primary" (click)="declineRequest()">Decline</button>
-            </div>
-            <div *ngIf="!isAccepted() && !hasApprovalAuth()">
-              <button class="delRem" mat-flat-button color="warn" (click)="deleteRequest()">Delete Request</button>
-            </div>
-            <div *ngIf="isAccepted()">
-              <button class="delRem" mat-stroked-button color="warn" (click)="removeFriend()">Remove Friend</button>
-            </div>
+    <mat-card *ngIf="!loading">
+      <button id="backButton" mat-mini-fab color="primary" (click)="hitBackButton()">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <mat-card-content>
+        <h1>{{friend.Name}}</h1>
+        <p>{{friend.Email}}</p>
+        <h3 id="status" *ngIf="friend.FriendStatus === 'Pending'">{{friend.FriendStatus}}</h3>
+        <img id="avatar" src="{{friend.PhotoUrl}}" />
+        <div id="buttonGroup">
+          <div *ngIf="!isAccepted() && hasApprovalAuth()">
+            <button class="appDen" mat-flat-button color="accent" (click)="approveRequest()">Approve</button>
+            <button class="appDen" mat-flat-button color="primary" (click)="declineRequest()">Decline</button>
           </div>
-        </mat-card-content>
-      </mat-card>
+          <div *ngIf="!isAccepted() && !hasApprovalAuth()">
+            <button class="delRem" mat-flat-button color="warn" (click)="deleteRequest()">Delete Request</button>
+          </div>
+          <div *ngIf="isAccepted()">
+            <button class="delRem" mat-stroked-button color="warn" (click)="removeFriend()">Remove Friend</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <app-friend-scores *ngIf="friendScores && friendScores.length > 0" [scores]="friendScores"></app-friend-scores>
   `,
   styles: [
     `
@@ -70,6 +74,7 @@ export class FriendDetailsComponent implements OnInit {
 
   public loading: boolean = true;
   public friend: Friend;
+  public friendScores: Score[];
   public self: StrokerUser;
 
   constructor(
@@ -78,6 +83,7 @@ export class FriendDetailsComponent implements OnInit {
     private location: Location,
     private userService: UserService,
     private friendService: FriendService,
+    private scoreService: ScoreService
   ) { }
 
   ngOnInit(): void {
@@ -91,10 +97,9 @@ export class FriendDetailsComponent implements OnInit {
       });
     });
 
-    // not sure why this would be necessary, but I got the url parsing to work
-    // this.route.paramMap.subscribe(x => {
-    //   console.log(x.get('id'));
-    // });
+    this.scoreService.getFriendScores(id).subscribe(scores => {
+      this.friendScores = scores;
+    });
   }
 
   hitBackButton(): void {

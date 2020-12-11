@@ -33,6 +33,18 @@
   ],
   "dataGroups": [
     {
+      "name": "FriendScores",
+      "urls": [
+        "/api/friend/*/score"
+      ],
+      "cacheConfig": {
+        "maxAge": "1h",
+        "maxSize": 50,
+        "timeout": "10s",
+        "strategy": "performance"
+      }
+    },
+    {
       "name": "PastScoreData",
       "urls": [
         "/api/score/*"
@@ -62,7 +74,7 @@
         "/api/friend/pendingCount"
       ],
       "cacheConfig": {
-        "maxAge": "1d",
+        "maxAge": "10m",
         "maxSize": 50,
         "timeout": "1s",
         "strategy": "freshness"
