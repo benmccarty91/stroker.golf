@@ -5,6 +5,7 @@ import { CONSTS } from 'src/assets/CONSTS';
 import { Score } from 'src/models/Score';
 import { ApiService } from 'src/services/ApiService';
 import { PubSubService } from 'src/services/PubSubService';
+import { ScoreService } from 'src/services/ScoreService';
 import { UserService } from 'src/services/UserService';
 
 @Component({
@@ -24,7 +25,8 @@ export class PastScoresComponent implements OnInit {
     private apiService: ApiService,
     private userService: UserService,
     private pubsubService: PubSubService,
-    private consts: CONSTS
+    private consts: CONSTS,
+    private scoreService: ScoreService
   ) {
   }
 
@@ -51,7 +53,7 @@ export class PastScoresComponent implements OnInit {
 
   private async fetchScores(year: string): Promise<void> {
     const userId = await this.userService.getUserId();
-    this.apiService.get<Score[]>(`/score/${userId}/${year}`).subscribe(x => {
+    this.scoreService.getScores(userId, year).subscribe(x => {
       this.scores = x;
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
       this.loading = false;

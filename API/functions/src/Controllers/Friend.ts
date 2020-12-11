@@ -6,6 +6,7 @@ import * as functions from 'firebase-functions';
 
 import { Friend, FriendStatus } from '../Models/Friend';
 import { StrokerUser } from '../Models/StrokerUser';
+import { Score } from '../Models/ScoreSubmission';
 
 
 const db = admin.firestore();
@@ -23,7 +24,10 @@ router.get('/pendingCount', async (req: any, res) => {
     .limit(10).get();
 
   const size = results.size;
-  res.status(StatusCodes.OK).send({num: size});
+
+  functions.logger.info(`/friends/pendingCount returned ${size}`);
+
+  res.status(StatusCodes.OK).send({ num: size });
 })
 
 router.get('/', async (req: any, res) => {
@@ -58,6 +62,30 @@ router.get('/:id', async (req: any, res) => {
   res.status(StatusCodes.NOT_FOUND).send();
   return;
 
+});
+
+router.get('/:id/score', async (req: any, res) => {
+  const playerId = req.user.uid;
+  const friendId = req.params.id;
+
+  const friendRef = await userCollection.doc(playerId).collection('friend').doc(friendId).get();
+  const friendData = friendRef.data() as Friend;
+
+  // not requesting a friend's score either
+  if (!friendData || friendData.FriendStatus === FriendStatus.PENDING) {
+    functions.logger.info('but they\'re not friends!');
+    res.status(StatusCodes.FORBIDDEN).send();
+    return;
+  }
+
+  const scoresRef = await userCollection.doc(friendId).collection('score').orderBy('Date', 'desc').limit(10).get();
+  const retVal: Score[] = [];
+
+  scoresRef.forEach(score => {
+    retVal.push(score.data() as Score);
+  });
+
+  res.status(StatusCodes.OK).send(retVal);
 });
 
 router.delete('/:id', async (req: any, res) => {

@@ -7,17 +7,28 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
 import { ReactiveFormsModule } from '@angular/forms';
 import { FriendItemComponent } from './friend-item/friend-item.component';
 import { FriendDetailsComponent } from './friend-details/friend-details.component';
+import { FriendScoresComponent } from './friend-scores/friend-scores.component';
+import { PastScoresModule } from '../past-scores/past-scores.module';
+import { PastScoreItemComponent } from '../past-scores/past-score-item/past-score-item.component';
 
 
 
 @NgModule({
-  declarations: [FriendsComponent, AddFriendComponent, FriendItemComponent, FriendDetailsComponent],
+  declarations: [
+    FriendsComponent,
+    AddFriendComponent,
+    FriendItemComponent,
+    FriendDetailsComponent,
+    FriendScoresComponent,
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    PastScoresModule
   ],
   providers: [
-    {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}
-  ]})
+    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }
+  ]
+})
 export class FriendsModule { }

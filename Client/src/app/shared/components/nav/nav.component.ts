@@ -59,7 +59,7 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   isActive(route: string): boolean {
-    return this.currentRoute === route;
+    return this.currentRoute.includes(route);
   }
 
   handleLink(route: string): void {
