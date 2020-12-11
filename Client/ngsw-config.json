@@ -34,7 +34,9 @@
   "dataGroups": [
     {
       "name": "PastScoreData",
-      "urls": ["/api/score/*"],
+      "urls": [
+        "/api/score/*"
+      ],
       "cacheConfig": {
         "maxAge": "1m",
         "maxSize": 50,
@@ -44,7 +46,9 @@
     },
     {
       "name": "CourseData",
-      "urls": ["/api/course*"],
+      "urls": [
+        "/api/course*"
+      ],
       "cacheConfig": {
         "maxAge": "1d",
         "maxSize": 50,
@@ -53,8 +57,22 @@
       }
     },
     {
+      "name": "Pending Friend Count",
+      "urls": [
+        "/api/friend/pendingCount"
+      ],
+      "cacheConfig": {
+        "maxAge": "1d",
+        "maxSize": 50,
+        "timeout": "1s",
+        "strategy": "freshness"
+      }
+    },
+    {
       "name": "CourseData",
-      "urls": ["/api/*"],
+      "urls": [
+        "/api/*"
+      ],
       "cacheConfig": {
         "maxAge": "1d",
         "maxSize": 50,

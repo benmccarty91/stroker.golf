@@ -23,7 +23,10 @@ router.get('/pendingCount', async (req: any, res) => {
     .limit(10).get();
 
   const size = results.size;
-  res.status(StatusCodes.OK).send({num: size});
+
+  functions.logger.info(`/friends/pendingCount returned ${size}`);
+
+  res.status(StatusCodes.OK).send({ num: size });
 })
 
 router.get('/', async (req: any, res) => {
