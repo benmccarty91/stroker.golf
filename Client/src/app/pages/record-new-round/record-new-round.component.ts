@@ -4,11 +4,13 @@ import { Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { Moment } from 'moment';
 import { CONSTS } from 'src/assets/CONSTS';
+import { Friend, FriendStatus } from 'src/models/Friend';
 import { GolfCourse } from 'src/models/GolfCourse';
 import { GolfHole } from 'src/models/GolfHole';
 import { RoundType, Score } from 'src/models/Score';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
+import { FriendService } from 'src/services/FriendService';
 import { PubSubService } from 'src/services/PubSubService';
 import { UserService } from 'src/services/UserService';
 
@@ -20,13 +22,15 @@ import { UserService } from 'src/services/UserService';
 export class RecordNewRoundComponent implements OnInit {
 
   public courses: GolfCourse[];
+  public friends: Friend[];
+  public selectedFriends: Friend[];
   public selectedCourseId: string;
   public selectedCourse: GolfCourse;
   public selectedRoundType: RoundType = RoundType.FULL_18; // TODO: have the user choose this!
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
-  public step: number = 1;
+  public step: number = 6;
   public summary: Score;
 
   private stepHistory: number[];
@@ -36,6 +40,7 @@ export class RecordNewRoundComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private userService: UserService,
+    private friendService: FriendService,
     private router: Router,
     private localStorage: StorageMap,
     private pubsubService: PubSubService,
@@ -43,6 +48,7 @@ export class RecordNewRoundComponent implements OnInit {
   ) {
     this.stepHistory = new Array<number>();
   }
+
   async ngOnInit(): Promise<void> {
     this.courses = await this.getCourses();
   }
@@ -73,6 +79,11 @@ export class RecordNewRoundComponent implements OnInit {
 
   public submitFriendSelect(answer: boolean): void {
     if (answer) {
+      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
+      this.friendService.getFriends().subscribe(friends => {
+        this.friends = friends.filter(friend => friend.FriendStatus === FriendStatus.ACCEPTED);
+        this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+      });
       this.incrementStep(1);
     } else {
       this.incrementStep(2);
@@ -80,6 +91,7 @@ export class RecordNewRoundComponent implements OnInit {
   }
 
   public submitFriendList(): void {
+
     //TODO: get friends working!!!
     this.incrementStep();
   }
@@ -138,6 +150,19 @@ export class RecordNewRoundComponent implements OnInit {
           });
         });
       });
+  }
+
+  public selectFriend(friend: Friend): void {
+    if (!this.selectedFriends) { // if list hasn't been initialized
+      this.selectedFriends = [];
+    }
+    const existingIndex = this.selectedFriends.indexOf(friend);
+    if (existingIndex > -1) { // friend has already been selected 
+      this.selectedFriends.splice(existingIndex, 1); // then remove it (deselect)
+    } else {
+      this.selectedFriends.push(friend); // otherwise, add the friend to the list
+    }
+    console.log(this.selectedFriends);
   }
 
   public goHome(): void {

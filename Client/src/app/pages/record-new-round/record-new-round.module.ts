@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RecordNewRoundComponent } from './record-new-round.component';
 import { MaterialModule } from 'src/app/shared/material.module';
 import { NumberPickerModule } from 'src/app/shared/components/number-picker/number-picker.module';
+import { FriendsModule } from '../friends/friends.module';
 
 
 
@@ -11,7 +12,8 @@ import { NumberPickerModule } from 'src/app/shared/components/number-picker/numb
   imports: [
     CommonModule,
     MaterialModule,
-    NumberPickerModule
+    NumberPickerModule,
+    FriendsModule
   ]
 })
 export class RecordNewRoundModule { }

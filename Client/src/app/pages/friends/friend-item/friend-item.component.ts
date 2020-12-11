@@ -10,6 +10,7 @@ import { UserService } from 'src/services/UserService';
         <mat-card matBadge="!" matBadgeColor="accent" matBadgePosition="before" matBadgeHidden="{{!showBadge()}}">
           <mat-grid-list cols="4">
             <mat-grid-tile [colspan]="1">
+              <ng-content></ng-content>
               <img id="avatar" src="{{friend.PhotoUrl}}" />
             </mat-grid-tile>
             <mat-grid-tile [colspan]="3">

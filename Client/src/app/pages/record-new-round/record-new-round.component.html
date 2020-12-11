@@ -70,7 +70,14 @@
 
   <div id="chooseFriends" class="questionCards" *ngIf="step === 7">
     <h2>Who did you play with?</h2>
-    <p>Friends coming soon!</p>
+    <mat-list>
+      <!-- TODO: change the style of the selected friends! -->
+      <app-friend-item 
+        *ngFor="let friend of friends" 
+        [friend]="friend"
+        (click)="selectFriend(friend)"
+      ></app-friend-item>
+    </mat-list>
     <button mat-stroked-button class="wideButton" (click)="submitFriendList()">Next</button>
   </div>
 
