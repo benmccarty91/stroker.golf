@@ -106,12 +106,6 @@ export class FriendDetailsComponent implements OnInit {
   }
 
   hitBackButton(): void {
-    // const dialogRef = this.dialog.open(
-    //   ConfirmDialogComponent,
-    //   {}
-    // ).afterClosed().subscribe(result => {
-    //   console.log(result);
-    // });
     this.location.back();
   }
 
@@ -124,16 +118,24 @@ export class FriendDetailsComponent implements OnInit {
   }
 
   deleteRequest(): void {
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.friendService.deleteRequest(this.friend.FriendId).subscribe(() => {
-      this.location.back();
+    this.dialog.open(ConfirmDialogComponent).afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+        this.friendService.deleteRequest(this.friend.FriendId).subscribe(() => {
+          this.location.back();
+        });
+      }
     });
   }
 
   removeFriend(): void {
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.friendService.removeFriend(this.friend.FriendId).subscribe(() => {
-      this.location.back();
+    this.dialog.open(ConfirmDialogComponent).afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+        this.friendService.removeFriend(this.friend.FriendId).subscribe(() => {
+          this.location.back();
+        });
+      }
     });
   }
 

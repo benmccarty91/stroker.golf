@@ -8,13 +8,22 @@ import { MatDialogRef } from '@angular/material/dialog';
       Are you sure?
     </h2>
     <p>You can't un-delete a friend.</p>
-    <button (click)="confirm()">Confirm</button>
-    <button (click)="cancel()">Cancel</button>
+    <button mat-stroked-button color="warn" (click)="confirm()">Confirm</button>
+    <button mat-flat-button color="primary" cdkFocusInitial (click)="cancel()">Cancel</button>
   `,
   styles: [
     `
     * {
       margin: 0;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    button {
+      width: 46%;
+      margin: 0 2%;
     }
     `
   ]
