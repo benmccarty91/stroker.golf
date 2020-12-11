@@ -9,7 +9,7 @@ import { FriendItemComponent } from './friend-item/friend-item.component';
 import { FriendDetailsComponent } from './friend-details/friend-details.component';
 import { FriendScoresComponent } from './friend-scores/friend-scores.component';
 import { PastScoresModule } from '../past-scores/past-scores.module';
-import { PastScoreItemComponent } from '../past-scores/past-score-item/past-score-item.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 
 
@@ -20,6 +20,7 @@ import { PastScoreItemComponent } from '../past-scores/past-score-item/past-scor
     FriendItemComponent,
     FriendDetailsComponent,
     FriendScoresComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     CommonModule,

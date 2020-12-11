@@ -10,6 +10,8 @@ import { Route } from '@angular/compiler/src/core';
 import { Score } from 'src/models/Score';
 import { ApiService } from 'src/services/ApiService';
 import { ScoreService } from 'src/services/ScoreService';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-friend-details',
@@ -81,6 +83,7 @@ export class FriendDetailsComponent implements OnInit {
     private pubsubService: PubSubService,
     private consts: CONSTS,
     private location: Location,
+    private dialog: MatDialog,
     private userService: UserService,
     private friendService: FriendService,
     private scoreService: ScoreService
@@ -115,16 +118,24 @@ export class FriendDetailsComponent implements OnInit {
   }
 
   deleteRequest(): void {
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.friendService.deleteRequest(this.friend.FriendId).subscribe(() => {
-      this.location.back();
+    this.dialog.open(ConfirmDialogComponent).afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+        this.friendService.deleteRequest(this.friend.FriendId).subscribe(() => {
+          this.location.back();
+        });
+      }
     });
   }
 
   removeFriend(): void {
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.friendService.removeFriend(this.friend.FriendId).subscribe(() => {
-      this.location.back();
+    this.dialog.open(ConfirmDialogComponent).afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+        this.friendService.removeFriend(this.friend.FriendId).subscribe(() => {
+          this.location.back();
+        });
+      }
     });
   }
 
