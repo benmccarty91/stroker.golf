@@ -30,8 +30,9 @@ export class RecordNewRoundComponent implements OnInit {
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
-  public step: number = 6;
+  public step: number = 1;
   public summary: Score;
+  public friendSummary: Score[];
 
   private stepHistory: number[];
   private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
@@ -86,13 +87,35 @@ export class RecordNewRoundComponent implements OnInit {
       });
       this.incrementStep(1);
     } else {
-      this.incrementStep(2);
+      this.incrementStep(3);
     }
   }
 
   public submitFriendList(): void {
+    this.friendSummary = [];
+    if (this.selectedFriends && this.selectedFriends.length > 0) {
+      this.selectedFriends.forEach(friend => {
+        this.friendSummary.push({
+          CourseId: this.selectedCourseId,
+          CourseName: this.selectedCourse.Name,
+          Date: this.selectedDate.unix(),
+          PlayerId: friend.FriendId,
+          PlayerName: friend.Name,
+          PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
+          RoundType: this.selectedRoundType,
+          Score: this.selectedScore,
+          TeeboxColor: this.selectedTeebox.Color,
+          RelativeScore: this.getRelativeScore(this.selectedScore)
+        });
+      })
+      this.incrementStep();
+    } else {
+      this.incrementStep(2);
+    }
+  }
 
-    //TODO: get friends working!!!
+  public submitFriendsScores(): void {
+    console.log(this.friendSummary);
     this.incrementStep();
   }
 
@@ -108,8 +131,13 @@ export class RecordNewRoundComponent implements OnInit {
     this.selectedScore = num;
   }
 
+  public friendScorePickerHandler(score: Score, num: number): void {
+    score.Score = num;
+    score.RelativeScore = this.getRelativeScore(num);
+  }
+
   public buildSummary(): void {
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+    // this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
 
     this.userService.getUser().then(x => {
       this.summary = {
@@ -119,13 +147,13 @@ export class RecordNewRoundComponent implements OnInit {
         Date: this.selectedDate.unix(),
         PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
         Score: this.selectedScore,
-        RelativeScore: this.getRelativeScore(),
+        RelativeScore: this.getRelativeScore(this.selectedScore),
         TeeboxColor: this.selectedTeebox.Color,
         PlayerId: x.id,
         PlayerName: x.displayName
       };
 
-      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+      // this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
       this.incrementStep();
     });
   }
@@ -165,6 +193,10 @@ export class RecordNewRoundComponent implements OnInit {
     console.log(this.selectedFriends);
   }
 
+  public isFriendSelected(friend: Friend): boolean {
+    return this.selectedFriends && this.selectedFriends.includes(friend);
+  }
+
   public goHome(): void {
     this.router.navigateByUrl('/landing');
   }
@@ -175,7 +207,7 @@ export class RecordNewRoundComponent implements OnInit {
 
   public hideBackButton(): boolean {
     return this.step === 1
-      || this.step === 8
+      || this.step === 10
       || this.step < 0; // start page or summary page
   }
 
@@ -187,8 +219,8 @@ export class RecordNewRoundComponent implements OnInit {
     return par;
   }
 
-  public getParSummary(): string {
-    let parScore = this.getRelativeScore();
+  public getParSummary(score?: number): string {
+    let parScore = this.getRelativeScore(score || this.selectedScore);
     if (parScore < 0) {
       parScore = parScore * -1;
       return `${parScore} under par`;
@@ -199,10 +231,9 @@ export class RecordNewRoundComponent implements OnInit {
     }
   }
 
-  public getRelativeScore(): number {
+  public getRelativeScore(num: number): number {
     const coursePar = this.getCoursePar();
-    const score = this.selectedScore;
-    return score - coursePar;
+    return num - coursePar;
   }
 
   public get roundType(): typeof RoundType {

@@ -7,7 +7,7 @@ import { UserService } from 'src/services/UserService';
   selector: 'app-friend-item',
   template: `
     <mat-list-item>
-        <mat-card matBadge="!" matBadgeColor="accent" matBadgePosition="before" matBadgeHidden="{{!showBadge()}}">
+        <mat-card [ngClass]="{selectedCard: isSelected}" matBadge="!" matBadgeColor="accent" matBadgePosition="before" matBadgeHidden="{{!showBadge()}}">
           <mat-grid-list cols="4">
             <mat-grid-tile [colspan]="1">
               <ng-content></ng-content>
@@ -34,6 +34,10 @@ import { UserService } from 'src/services/UserService';
       width: 100%;
     }
 
+    .selectedCard {
+      background-color: #9e9e9e;
+    }
+
     .content {
       width: 100%;
       padding: 15px;
@@ -54,6 +58,7 @@ import { UserService } from 'src/services/UserService';
 export class FriendItemComponent implements OnInit {
 
   @Input() friend: Friend;
+  @Input() isSelected: boolean = false;
   private self: string;
 
   constructor(private userService: UserService) { }

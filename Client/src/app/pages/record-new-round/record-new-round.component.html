@@ -72,16 +72,40 @@
     <h2>Who did you play with?</h2>
     <mat-list>
       <!-- TODO: change the style of the selected friends! -->
-      <app-friend-item 
-        *ngFor="let friend of friends" 
-        [friend]="friend"
-        (click)="selectFriend(friend)"
-      ></app-friend-item>
+      <app-friend-item *ngFor="let friend of friends" [friend]="friend" (click)="selectFriend(friend)"
+        [isSelected]="isFriendSelected(friend)"></app-friend-item>
     </mat-list>
     <button mat-stroked-button class="wideButton" (click)="submitFriendList()">Next</button>
   </div>
 
-  <div id="summary" class="questionCards" *ngIf="step === 8">
+  <div id="friendScores" class="questionCards" *ngIf="step === 8 && selectedFriends && selectedFriends.length > 0">
+    <h2>How did they play?</h2>
+    <mat-card class="friendScoreCard" *ngFor="let friend of friendSummary">
+      <mat-grid-list cols=2 rowHeight="2:1">
+        <mat-grid-tile>{{friend.PlayerName}}</mat-grid-tile>
+        <mat-grid-tile>
+          <app-number-picker class="friendScorePicker" [inNumber]="friend.Score"
+            (outNumber)="friendScorePickerHandler(friend, $event)">
+          </app-number-picker>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2">
+          <mat-form-field appearance="fill">
+            <mat-label>Teebox</mat-label>
+            <mat-select [(value)]="friend.TeeboxColor">
+              <mat-option *ngFor="let teebox of selectedCourse.TeeBoxes" [value]="teebox.Color">
+                {{teebox.Color}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </mat-card>
+    <button mat-stroked-button class="wideButton" (click)="submitFriendsScores()">
+      Next
+    </button>
+  </div>
+
+  <div id="summary" class="questionCards" *ngIf="step === 9">
     <h2>Summary</h2>
     <h3>{{summary.CourseName}}</h3>
     <p>{{summary.PrettyDate}}</p>
@@ -92,10 +116,17 @@
       <p>{{selectedRoundType}}</p>
       <p>{{getParSummary()}}</p>
     </mat-card>
+    <mat-card class="scoreSummaryCard" *ngFor="let friend of friendSummary">
+      <h4>{{friend.PlayerName}}</h4>
+      <p>{{friend.TeeboxColor}} teebox</p>
+      <p>Score: <b>{{friend.Score}}</b></p>
+      <p>{{friend.RoundType}}</p>
+      <p>{{getParSummary(friend.Score)}}</p>
+    </mat-card>
     <button mat-stroked-button class="wideButton" (click)="submitFinal()">Submit</button>
   </div>
 
-  <div id="success" class="questionCards" *ngIf="step === 9">
+  <div id="success" class="questionCards" *ngIf="step === 10">
     <h2>Success!</h2>
     <p>Your score has been recorded.</p>
     <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
