@@ -10,8 +10,10 @@ import { GolfHole } from 'src/models/GolfHole';
 import { RoundType, Score } from 'src/models/Score';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
+import { CourseService } from 'src/services/CourseService';
 import { FriendService } from 'src/services/FriendService';
 import { PubSubService } from 'src/services/PubSubService';
+import { ScoreService } from 'src/services/ScoreService';
 import { UserService } from 'src/services/UserService';
 
 @Component({
@@ -39,9 +41,10 @@ export class RecordNewRoundComponent implements OnInit {
   private originalCourseHoleList: GolfHole[];
 
   constructor(
-    private apiService: ApiService,
     private userService: UserService,
     private friendService: FriendService,
+    private scoreService: ScoreService,
+    private courseService: CourseService,
     private router: Router,
     private localStorage: StorageMap,
     private pubsubService: PubSubService,
@@ -115,7 +118,6 @@ export class RecordNewRoundComponent implements OnInit {
   }
 
   public submitFriendsScores(): void {
-    console.log(this.friendSummary);
     this.incrementStep();
   }
 
@@ -137,8 +139,6 @@ export class RecordNewRoundComponent implements OnInit {
   }
 
   public buildSummary(): void {
-    // this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-
     this.userService.getUser().then(x => {
       this.summary = {
         CourseId: this.selectedCourseId,
@@ -152,15 +152,19 @@ export class RecordNewRoundComponent implements OnInit {
         PlayerId: x.id,
         PlayerName: x.displayName
       };
-
-      // this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
       this.incrementStep();
     });
   }
 
   public submitFinal(): void {
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.apiService.post('/score', this.summary).subscribe(x => {
+    let scores = new Array<Score>();
+    scores.push(this.summary);
+    if (this.friendSummary && this.friendSummary.length > 0) {
+      scores = scores.concat(this.friendSummary);
+    }
+
+    this.scoreService.postScores(scores).subscribe(x => {
       this.incrementStep();
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     },
@@ -190,7 +194,6 @@ export class RecordNewRoundComponent implements OnInit {
     } else {
       this.selectedFriends.push(friend); // otherwise, add the friend to the list
     }
-    console.log(this.selectedFriends);
   }
 
   public isFriendSelected(friend: Friend): boolean {
@@ -243,7 +246,7 @@ export class RecordNewRoundComponent implements OnInit {
   // retrieves the list of courses from the api and sorts
   // the list alphabetically
   private async getCourses(): Promise<GolfCourse[]> {
-    const list = (await this.apiService.get<GolfCourse[]>('/course').toPromise());
+    const list = (await this.courseService.getCourses().toPromise());
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     return list.sort((a, b) => {
       const nameA = a.Name.toUpperCase();
@@ -260,7 +263,7 @@ export class RecordNewRoundComponent implements OnInit {
 
   private getCourse(id: string): void {
     this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
-    this.apiService.get<GolfCourse>(`/course/${id}`).subscribe(x => {
+    this.courseService.getCourse(id).subscribe(x => {
       this.selectedCourse = x;
       this.originalCourseHoleList = this.selectedCourse.Holes;
       this.originalCourseHoleList.sort((a, b) => {

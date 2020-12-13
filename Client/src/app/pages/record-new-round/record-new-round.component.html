@@ -82,21 +82,25 @@
     <h2>How did they play?</h2>
     <mat-card class="friendScoreCard" *ngFor="let friend of friendSummary">
       <mat-grid-list cols=2 rowHeight="2:1">
-        <mat-grid-tile>{{friend.PlayerName}}</mat-grid-tile>
+        <mat-grid-tile>
+          <h4>{{friend.PlayerName}}</h4>
+        </mat-grid-tile>
         <mat-grid-tile>
           <app-number-picker class="friendScorePicker" [inNumber]="friend.Score"
             (outNumber)="friendScorePickerHandler(friend, $event)">
           </app-number-picker>
         </mat-grid-tile>
         <mat-grid-tile [colspan]="2">
-          <mat-form-field appearance="fill">
-            <mat-label>Teebox</mat-label>
-            <mat-select [(value)]="friend.TeeboxColor">
-              <mat-option *ngFor="let teebox of selectedCourse.TeeBoxes" [value]="teebox.Color">
-                {{teebox.Color}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="formContainer">
+            <mat-form-field appearance="fill">
+              <mat-label>Teebox</mat-label>
+              <mat-select [(value)]="friend.TeeboxColor">
+                <mat-option *ngFor="let teebox of selectedCourse.TeeBoxes" [value]="teebox.Color">
+                  {{teebox.Color}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
         </mat-grid-tile>
       </mat-grid-list>
     </mat-card>
