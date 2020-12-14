@@ -41,6 +41,15 @@
     line-height: 0px;
   }
 
+  .friendScoreCard {
+    * {
+      margin: 0;
+    }
+
+    // width: 100%;
+    margin: 10px 0;
+  }
+
   @media (min-width: 720px) {
     max-width: 70%;
   }

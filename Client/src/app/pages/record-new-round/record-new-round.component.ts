@@ -4,12 +4,16 @@ import { Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { Moment } from 'moment';
 import { CONSTS } from 'src/assets/CONSTS';
+import { Friend, FriendStatus } from 'src/models/Friend';
 import { GolfCourse } from 'src/models/GolfCourse';
 import { GolfHole } from 'src/models/GolfHole';
 import { RoundType, Score } from 'src/models/Score';
 import { TeeBox } from 'src/models/TeeBox';
 import { ApiService } from 'src/services/ApiService';
+import { CourseService } from 'src/services/CourseService';
+import { FriendService } from 'src/services/FriendService';
 import { PubSubService } from 'src/services/PubSubService';
+import { ScoreService } from 'src/services/ScoreService';
 import { UserService } from 'src/services/UserService';
 
 @Component({
@@ -20,6 +24,8 @@ import { UserService } from 'src/services/UserService';
 export class RecordNewRoundComponent implements OnInit {
 
   public courses: GolfCourse[];
+  public friends: Friend[];
+  public selectedFriends: Friend[];
   public selectedCourseId: string;
   public selectedCourse: GolfCourse;
   public selectedRoundType: RoundType = RoundType.FULL_18; // TODO: have the user choose this!
@@ -28,14 +34,17 @@ export class RecordNewRoundComponent implements OnInit {
   public selectedScore: number;
   public step: number = 1;
   public summary: Score;
+  public friendSummary: Score[];
 
   private stepHistory: number[];
   private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
   private originalCourseHoleList: GolfHole[];
 
   constructor(
-    private apiService: ApiService,
     private userService: UserService,
+    private friendService: FriendService,
+    private scoreService: ScoreService,
+    private courseService: CourseService,
     private router: Router,
     private localStorage: StorageMap,
     private pubsubService: PubSubService,
@@ -43,6 +52,7 @@ export class RecordNewRoundComponent implements OnInit {
   ) {
     this.stepHistory = new Array<number>();
   }
+
   async ngOnInit(): Promise<void> {
     this.courses = await this.getCourses();
   }
@@ -73,14 +83,41 @@ export class RecordNewRoundComponent implements OnInit {
 
   public submitFriendSelect(answer: boolean): void {
     if (answer) {
+      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
+      this.friendService.getFriends().subscribe(friends => {
+        this.friends = friends.filter(friend => friend.FriendStatus === FriendStatus.ACCEPTED);
+        this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+      });
       this.incrementStep(1);
+    } else {
+      this.incrementStep(3);
+    }
+  }
+
+  public submitFriendList(): void {
+    this.friendSummary = [];
+    if (this.selectedFriends && this.selectedFriends.length > 0) {
+      this.selectedFriends.forEach(friend => {
+        this.friendSummary.push({
+          CourseId: this.selectedCourseId,
+          CourseName: this.selectedCourse.Name,
+          Date: this.selectedDate.unix(),
+          PlayerId: friend.FriendId,
+          PlayerName: friend.Name,
+          PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
+          RoundType: this.selectedRoundType,
+          Score: this.selectedScore,
+          TeeboxColor: this.selectedTeebox.Color,
+          RelativeScore: this.getRelativeScore(this.selectedScore)
+        });
+      })
+      this.incrementStep();
     } else {
       this.incrementStep(2);
     }
   }
 
-  public submitFriendList(): void {
-    //TODO: get friends working!!!
+  public submitFriendsScores(): void {
     this.incrementStep();
   }
 
@@ -96,9 +133,12 @@ export class RecordNewRoundComponent implements OnInit {
     this.selectedScore = num;
   }
 
-  public buildSummary(): void {
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
+  public friendScorePickerHandler(score: Score, num: number): void {
+    score.Score = num;
+    score.RelativeScore = this.getRelativeScore(num);
+  }
 
+  public buildSummary(): void {
     this.userService.getUser().then(x => {
       this.summary = {
         CourseId: this.selectedCourseId,
@@ -107,20 +147,24 @@ export class RecordNewRoundComponent implements OnInit {
         Date: this.selectedDate.unix(),
         PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
         Score: this.selectedScore,
-        RelativeScore: this.getRelativeScore(),
+        RelativeScore: this.getRelativeScore(this.selectedScore),
         TeeboxColor: this.selectedTeebox.Color,
         PlayerId: x.id,
         PlayerName: x.displayName
       };
-
-      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
       this.incrementStep();
     });
   }
 
   public submitFinal(): void {
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.apiService.post('/score', this.summary).subscribe(x => {
+    let scores = new Array<Score>();
+    scores.push(this.summary);
+    if (this.friendSummary && this.friendSummary.length > 0) {
+      scores = scores.concat(this.friendSummary);
+    }
+
+    this.scoreService.postScores(scores).subscribe(x => {
       this.incrementStep();
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     },
@@ -140,6 +184,22 @@ export class RecordNewRoundComponent implements OnInit {
       });
   }
 
+  public selectFriend(friend: Friend): void {
+    if (!this.selectedFriends) { // if list hasn't been initialized
+      this.selectedFriends = [];
+    }
+    const existingIndex = this.selectedFriends.indexOf(friend);
+    if (existingIndex > -1) { // friend has already been selected 
+      this.selectedFriends.splice(existingIndex, 1); // then remove it (deselect)
+    } else {
+      this.selectedFriends.push(friend); // otherwise, add the friend to the list
+    }
+  }
+
+  public isFriendSelected(friend: Friend): boolean {
+    return this.selectedFriends && this.selectedFriends.includes(friend);
+  }
+
   public goHome(): void {
     this.router.navigateByUrl('/landing');
   }
@@ -150,7 +210,7 @@ export class RecordNewRoundComponent implements OnInit {
 
   public hideBackButton(): boolean {
     return this.step === 1
-      || this.step === 8
+      || this.step === 10
       || this.step < 0; // start page or summary page
   }
 
@@ -162,8 +222,8 @@ export class RecordNewRoundComponent implements OnInit {
     return par;
   }
 
-  public getParSummary(): string {
-    let parScore = this.getRelativeScore();
+  public getParSummary(score?: number): string {
+    let parScore = this.getRelativeScore(score || this.selectedScore);
     if (parScore < 0) {
       parScore = parScore * -1;
       return `${parScore} under par`;
@@ -174,10 +234,9 @@ export class RecordNewRoundComponent implements OnInit {
     }
   }
 
-  public getRelativeScore(): number {
+  public getRelativeScore(num: number): number {
     const coursePar = this.getCoursePar();
-    const score = this.selectedScore;
-    return score - coursePar;
+    return num - coursePar;
   }
 
   public get roundType(): typeof RoundType {
@@ -187,7 +246,7 @@ export class RecordNewRoundComponent implements OnInit {
   // retrieves the list of courses from the api and sorts
   // the list alphabetically
   private async getCourses(): Promise<GolfCourse[]> {
-    const list = (await this.apiService.get<GolfCourse[]>('/course').toPromise());
+    const list = (await this.courseService.getCourses().toPromise());
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     return list.sort((a, b) => {
       const nameA = a.Name.toUpperCase();
@@ -204,7 +263,7 @@ export class RecordNewRoundComponent implements OnInit {
 
   private getCourse(id: string): void {
     this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
-    this.apiService.get<GolfCourse>(`/course/${id}`).subscribe(x => {
+    this.courseService.getCourse(id).subscribe(x => {
       this.selectedCourse = x;
       this.originalCourseHoleList = this.selectedCourse.Holes;
       this.originalCourseHoleList.sort((a, b) => {

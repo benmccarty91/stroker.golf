@@ -28,6 +28,9 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     MaterialModule,
     PastScoresModule
   ],
+  exports: [
+    FriendItemComponent
+  ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }
   ]

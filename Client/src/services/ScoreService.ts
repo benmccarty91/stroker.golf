@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Score } from 'src/models/Score';
 import { ApiService } from './ApiService';
 
@@ -18,5 +18,13 @@ export class ScoreService {
 
   getFriendScores(friendId: string): Observable<Score[]> {
     return this.apiService.get<Score[]>(`/friend/${friendId}/score`);
+  }
+
+  postScores(scores: Score[]): Observable<any> {
+    if (scores && scores.length > 0) {
+      return this.apiService.post('/score', scores);
+    } else {
+      throw Error('cannot post empty scores');
+    }
   }
 }
