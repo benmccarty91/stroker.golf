@@ -21,12 +21,10 @@ export class ScoreService {
   }
 
   postScores(scores: Score[]): Observable<any> {
-    console.log(scores);
-    return of('ok!');
-    // if (scores && scores.length > 0) {
-    //   return this.apiService.post('/score', scores);
-    // } else {
-    //   throw Error('cannot post empty scores');
-    // }
+    if (scores && scores.length > 0) {
+      return this.apiService.post('/score', scores);
+    } else {
+      throw Error('cannot post empty scores');
+    }
   }
 }
