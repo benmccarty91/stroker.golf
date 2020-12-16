@@ -9,12 +9,12 @@ import { GolfCourse } from 'src/models/GolfCourse';
 import { GolfHole } from 'src/models/GolfHole';
 import { RoundType, Score } from 'src/models/Score';
 import { TeeBox } from 'src/models/TeeBox';
-import { ApiService } from 'src/services/ApiService';
 import { CourseService } from 'src/services/CourseService';
 import { FriendService } from 'src/services/FriendService';
 import { PubSubService } from 'src/services/PubSubService';
 import { ScoreService } from 'src/services/ScoreService';
 import { UserService } from 'src/services/UserService';
+import { v4 as uuid } from 'uuid';
 
 @Component({
   selector: 'app-record-new-round',
@@ -99,6 +99,7 @@ export class RecordNewRoundComponent implements OnInit {
     if (this.selectedFriends && this.selectedFriends.length > 0) {
       this.selectedFriends.forEach(friend => {
         this.friendSummary.push({
+          ScoreId: uuid(),
           CourseId: this.selectedCourseId,
           CourseName: this.selectedCourse.Name,
           Date: this.selectedDate.unix(),
@@ -141,6 +142,7 @@ export class RecordNewRoundComponent implements OnInit {
   public buildSummary(): void {
     this.userService.getUser().then(x => {
       this.summary = {
+        ScoreId: uuid(),
         CourseId: this.selectedCourseId,
         CourseName: this.selectedCourse.Name,
         RoundType: this.selectedRoundType,

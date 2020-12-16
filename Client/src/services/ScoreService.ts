@@ -27,12 +27,12 @@ export class ScoreService {
     );
   }
 
-  confirmPendingScore(score: Score): Observable<void> {
-    return of();
+  confirmPendingScore(score: Score): Observable<any> {
+    return this.apiService.post('/score/pending', score);
   }
 
-  deletePendingScore(score: Score): Observable<void> {
-    return of();
+  deletePendingScore(score: Score): Observable<any> {
+    return this.apiService.delete(`/score/pending/${score.ScoreId}`);
   }
 
   postScores(scores: Score[]): Observable<any> {

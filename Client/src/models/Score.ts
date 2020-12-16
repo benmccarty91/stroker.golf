@@ -1,4 +1,5 @@
 export interface Score {
+  ScoreId: string;
   PlayerId: string;
   PlayerName: string;
   CourseId: string;

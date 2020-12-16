@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { Score } from 'src/models/Score';
@@ -45,12 +46,16 @@ export class PendingScoresComponent implements OnInit {
     private storageService: StorageMap,
     private dialog: MatDialog,
     private scoreService: ScoreService,
+    private router: Router,
     private consts: CONSTS
   ) { }
 
   ngOnInit(): void {
     this.storageService.get<Score[]>(this.consts.APP_DATA.PENDING_SCORES).subscribe(x => {
       this.scores = x as Score[];
+      if (!this.scores || this.scores.length < 1) {
+        this.router.navigateByUrl('/landing');
+      }
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     })
   }
@@ -58,7 +63,13 @@ export class PendingScoresComponent implements OnInit {
   confirm(score: Score): void {
     this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.scoreService.confirmPendingScore(score).subscribe(() => {
-      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+      const index = this.scores.indexOf(score);
+      this.scores.splice(index, 1);
+      if (this.scores.length < 1) {
+        this.router.navigateByUrl('/landing');
+      } else {
+        this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+      }
     })
   }
 
@@ -66,10 +77,14 @@ export class PendingScoresComponent implements OnInit {
     this.dialog.open(ConfirmDialogComponent).afterClosed().subscribe(result => {
       if (result === 'confirm') {
         this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
-        const index = this.scores.indexOf(score);
-        this.scores.splice(index, 1);
         this.scoreService.deletePendingScore(score).subscribe(() => {
-          this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+          const index = this.scores.indexOf(score);
+          this.scores.splice(index, 1);
+          if (this.scores.length < 1) {
+            this.router.navigateByUrl('/landing');
+          } else {
+            this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+          }
         });
       }
     })
