@@ -41,10 +41,12 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
     this.friendService.getLandingBadge().subscribe(num => {
       this.pendingFriends = num >= 10 ? '+' : `${num}`;
     });
-    this.storageService.delete(this.consts.APP_DATA.PENDING_SCORES).subscribe(() => { });
-    this.scoreService.getPendingScores().subscribe(scores => {
-      this.pendingScores = scores;
-      this.storageService.set(this.consts.APP_DATA.PENDING_SCORES, this.pendingScores).subscribe(() => { });
+    this.storageService.delete(this.consts.APP_DATA.PENDING_SCORES).subscribe(() => { //delete pending scores from local storage
+      this.scoreService.getPendingScores().subscribe(scores => { //get fresh scores from api
+        this.storageService.set(this.consts.APP_DATA.PENDING_SCORES, scores).subscribe(() => { //save fresh scores to local storage
+          this.pendingScores = scores; //set global var so template updates
+        });
+      });
     });
   }
 

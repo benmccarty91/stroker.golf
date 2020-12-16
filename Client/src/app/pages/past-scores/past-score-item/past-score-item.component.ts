@@ -12,6 +12,7 @@ import { Score } from 'src/models/Score';
           <h3>{{formatDate(score.Date)}}</h3>
           <p>{{score.CourseName}}</p>
           <p>{{score.RoundType}} from the {{score.TeeboxColor}} tees</p>
+          <ng-content></ng-content>
         </mat-card>
       </mat-list-item>
   `,

@@ -11,6 +11,7 @@ import { PastScoresComponent } from './pages/past-scores/past-scores.component';
 import { FriendsComponent } from './pages/friends/friends.component';
 import { AddFriendComponent } from './pages/friends/add-friend/add-friend.component';
 import { FriendDetailsComponent } from './pages/friends/friend-details/friend-details.component';
+import { PendingScoresComponent } from './pages/pending-scores/pending-scores.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToLanding = () => redirectLoggedInTo(['landing']);
@@ -44,6 +45,12 @@ const routes: Routes = [
   {
     path: 'scores',
     component: PastScoresComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+  },
+  {
+    path: 'scores/pending',
+    component: PendingScoresComponent,
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin }
   },

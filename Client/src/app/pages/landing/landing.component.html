@@ -4,7 +4,7 @@
     <mat-list-item *ngIf="pendingScores && pendingScores.length > 0">
       <button [matBadge]="pendingScores.length" [matBadgeHidden]="!pendingScores || pendingScores.length === 0"
         matBadgeColor="accent" matBadgePosition="before" class="landing_button" mat-stroked-button
-        (click)="handleLink('/pendingScores')">
+        (click)="handleLink('/scores/pending')">
         Review Scores
       </button>
     </mat-list-item>
