@@ -1,19 +1,27 @@
 <mat-card class="landing_card">
   <h2 *ngIf="displayName">Hello {{displayName}}</h2>
   <mat-list>
+    <mat-list-item *ngIf="pendingScores && pendingScores.length > 0">
+      <button [matBadge]="pendingScores.length" [matBadgeHidden]="!pendingScores || pendingScores.length === 0"
+        matBadgeColor="accent" matBadgePosition="before" class="landing_button" mat-stroked-button
+        (click)="handleLink('/scores/pending')">
+        Review Scores
+      </button>
+    </mat-list-item>
     <mat-list-item>
       <button class="landing_button" mat-stroked-button (click)="handleLink('/newScore')">Record New Round</button>
     </mat-list-item>
     <mat-list-item>
       <button class="landing_button" mat-stroked-button (click)="handleLink('/liveGame')">Start Live Round</button>
     </mat-list-item>
-    <mat-list-item>    
+    <mat-list-item>
       <button class="landing_button" mat-stroked-button (click)="handleLink('/scores')">View Past Scores</button>
     </mat-list-item>
-    <mat-list-item>    
-      <button [matBadge]="pendingFriends" [matBadgeHidden]="!pendingFriends || pendingFriends === '0'" matBadgeColor="accent" 
-        matBadgePosition="before" class="landing_button" mat-stroked-button (click)="handleLink('/friends')">
-          Friends
+    <mat-list-item>
+      <button [matBadge]="pendingFriends" [matBadgeHidden]="!pendingFriends || pendingFriends === '0'"
+        matBadgeColor="accent" matBadgePosition="before" class="landing_button" mat-stroked-button
+        (click)="handleLink('/friends')">
+        Friends
       </button>
     </mat-list-item>
   </mat-list>

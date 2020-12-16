@@ -10,6 +10,23 @@ const userCollection = db.collection('user');
 
 const router = express.Router();
 
+router.get('/pending', async (req: any, res) => {
+  const playerId = req.user.uid;
+  // TODO: paginate this data
+  const pendingScoresRef = await userCollection.doc(playerId).collection('pendingScores').limit(10).get();
+  const retVal: Score[] = [];
+
+  pendingScoresRef.forEach(data => {
+    const score = data.data() as Score;
+    if (!score.ScoreId) {
+      score.ScoreId = data.id;
+    }
+    retVal.push(score);
+  })
+
+  return res.status(StatusCodes.OK).send(retVal);
+});
+
 router.get('/:playerId/:year', async (req: any, res) => {
   const playerId = req.params.playerId;
   if (req.user.uid !== playerId) {
@@ -34,6 +51,9 @@ router.get('/:playerId/:year', async (req: any, res) => {
   scoresPromise.then(scores => {
     scores.forEach(doc => {
       const score = doc.data() as Score;
+      if (!score.ScoreId) {
+        score.ScoreId = doc.id;
+      }
       retVal.push(score);
     })
     res.status(StatusCodes.OK).send(retVal);
@@ -55,19 +75,19 @@ router.post('/', async (req: any, res) => {
   }
 
   const selfScore = allScores[selfScoreId];
-  allScores.splice(selfScoreId,1); // remove "self" from array
+  allScores.splice(selfScoreId, 1); // remove "self" from array
 
   const addOps = new Array<Promise<any>>(); // array of promises to allow for concurrent add operations
 
   try {
-    addOps.push(userCollection.doc(selfScore.PlayerId).collection('score').add(selfScore));
+    addOps.push(userCollection.doc(selfScore.PlayerId).collection('score').doc(selfScore.ScoreId).set(selfScore));
 
     if (allScores && allScores.length > 0) { // if there are friend scores to proccess
       functions.logger.info(`trying to post ${allScores.length} friend\'s scores`);
       for (const friendScore of allScores) {
         const friendRecord = await userCollection.doc(friendScore.PlayerId).collection('friend').doc(playerId).get();
         if (friendRecord.exists) { // check to make sure the "friend" record exists before adding scores
-          addOps.push(userCollection.doc(friendScore.PlayerId).collection('pendingScores').add(friendScore));
+          addOps.push(userCollection.doc(friendScore.PlayerId).collection('pendingScores').doc(friendScore.ScoreId).set(friendScore));
           functions.logger.info(`posted friend ${friendScore.PlayerId} score`);
         }
       }
@@ -75,10 +95,29 @@ router.post('/', async (req: any, res) => {
 
     await Promise.all(addOps); // perform the add operations
     res.status(StatusCodes.OK).send();
-  } catch(err) {
+  } catch (err) {
     functions.logger.error(err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }
+});
+
+router.post('/pending', async (req: any, res, next) => {
+  const playerId = req.user.uid;
+  const score = req.body as Score;
+
+  await userCollection.doc(playerId).collection('pendingScores').doc(score.ScoreId).delete();
+  await userCollection.doc(playerId).collection('score').doc(score.ScoreId).set(score);
+
+  return res.status(StatusCodes.OK).send();
+});
+
+router.delete('/pending/:id', async (req: any, res, next) => {
+  const playerId = req.user.uid;
+  const scoreId = req.params.id;
+
+  await userCollection.doc(playerId).collection('pendingScores').doc(scoreId).delete();
+
+  return res.status(StatusCodes.OK).send();
 });
 
 module.exports = router;

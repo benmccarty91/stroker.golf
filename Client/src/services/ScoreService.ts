@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from 'rxjs';
+import { map } from "rxjs/operators";
 import { Score } from 'src/models/Score';
 import { ApiService } from './ApiService';
 
@@ -18,6 +19,20 @@ export class ScoreService {
 
   getFriendScores(friendId: string): Observable<Score[]> {
     return this.apiService.get<Score[]>(`/friend/${friendId}/score`);
+  }
+
+  getPendingScores(): Observable<Score[]> {
+    return this.apiService.get<Score[]>('/score/pending').pipe(
+      map((x: Score[]) => x.sort((y, z) => z.Date - y.Date)) // sorted descending by date
+    );
+  }
+
+  confirmPendingScore(score: Score): Observable<any> {
+    return this.apiService.post('/score/pending', score);
+  }
+
+  deletePendingScore(score: Score): Observable<any> {
+    return this.apiService.delete(`/score/pending/${score.ScoreId}`);
   }
 
   postScores(scores: Score[]): Observable<any> {

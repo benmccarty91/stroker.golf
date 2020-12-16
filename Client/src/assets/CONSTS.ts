@@ -17,6 +17,7 @@ export class CONSTS {
     USER: 'currentUser',
     API_TOKEN: 'apiToken',
     SCORE_SUBMISSIONS: 'scoreSubmissions',
-    SELECTED_FRIEND: 'selectedFriend'
+    SELECTED_FRIEND: 'selectedFriend',
+    PENDING_SCORES: 'pendingScores',
   };
 }
