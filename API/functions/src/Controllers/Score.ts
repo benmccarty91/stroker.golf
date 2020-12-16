@@ -10,6 +10,18 @@ const userCollection = db.collection('user');
 
 const router = express.Router();
 
+router.get('/pending', async (req: any, res) => {
+  const playerId = req.user.uid;
+  const pendingScoresRef = await userCollection.doc(playerId).collection('pendingScores').limit(10).get();
+  const retVal: Score[] = [];
+
+  pendingScoresRef.forEach(score => {
+    retVal.push(score.data() as Score);
+  })
+
+  return res.status(StatusCodes.OK).send(retVal);
+});
+
 router.get('/:playerId/:year', async (req: any, res) => {
   const playerId = req.params.playerId;
   if (req.user.uid !== playerId) {
@@ -55,7 +67,7 @@ router.post('/', async (req: any, res) => {
   }
 
   const selfScore = allScores[selfScoreId];
-  allScores.splice(selfScoreId,1); // remove "self" from array
+  allScores.splice(selfScoreId, 1); // remove "self" from array
 
   const addOps = new Array<Promise<any>>(); // array of promises to allow for concurrent add operations
 
@@ -75,7 +87,7 @@ router.post('/', async (req: any, res) => {
 
     await Promise.all(addOps); // perform the add operations
     res.status(StatusCodes.OK).send();
-  } catch(err) {
+  } catch (err) {
     functions.logger.error(err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }

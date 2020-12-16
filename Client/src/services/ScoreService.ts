@@ -20,6 +20,10 @@ export class ScoreService {
     return this.apiService.get<Score[]>(`/friend/${friendId}/score`);
   }
 
+  getPendingScores(): Observable<Score[]> {
+    return this.apiService.get<Score[]>('/score/pending');
+  }
+
   postScores(scores: Score[]): Observable<any> {
     if (scores && scores.length > 0) {
       return this.apiService.post('/score', scores);
