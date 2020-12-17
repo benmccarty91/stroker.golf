@@ -6,10 +6,12 @@
 }
 
 app-header {
-  // position: fixed;
   width: 100%;
   min-width: 100%;
-  // z-index: 99;
+  position: sticky;
+  position: -webkit-sticky; /* For macOS/iOS Safari */
+  top: 0; /* Sets the sticky toolbar to be on top */
+  z-index: 1000;
 }
 
 .app-sidenav-container {
