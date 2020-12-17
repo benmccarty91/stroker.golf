@@ -7,7 +7,7 @@ import { UserService } from 'src/services/UserService';
   selector: 'app-friend-item',
   template: `
     <mat-list-item>
-        <mat-card>
+        <mat-card [ngClass]="{selectedCard: isSelected}" matBadge="!" matBadgeColor="accent" matBadgePosition="before" matBadgeHidden="{{!showBadge()}}">
           <div id="container">
             <img id="avatar" src="{{friend.PhotoUrl}}" />
             <div class="content">
