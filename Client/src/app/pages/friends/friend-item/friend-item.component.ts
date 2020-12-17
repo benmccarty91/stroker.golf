@@ -7,50 +7,55 @@ import { UserService } from 'src/services/UserService';
   selector: 'app-friend-item',
   template: `
     <mat-list-item>
-        <mat-card [ngClass]="{selectedCard: isSelected}" matBadge="!" matBadgeColor="accent" matBadgePosition="before" matBadgeHidden="{{!showBadge()}}">
-          <mat-grid-list cols="4">
-            <mat-grid-tile [colspan]="1">
-              <ng-content></ng-content>
-              <img id="avatar" src="{{friend.PhotoUrl}}" />
-            </mat-grid-tile>
-            <mat-grid-tile [colspan]="3">
-              <div class="content">
-                <h2>{{friend.Name}}</h2>
-                <h4 *ngIf="friend.FriendStatus === 'Pending'">{{friend.FriendStatus}}</h4>
-                <p>{{friend.Email}}</p>
-              </div>
-            </mat-grid-tile>
-          </mat-grid-list>
+        <mat-card>
+          <div id="container">
+            <img id="avatar" src="{{friend.PhotoUrl}}" />
+            <div class="content">
+              <h2>{{friend.Name}}</h2>
+              <p *ngIf="friend.FriendStatus === 'Pending'">{{friend.FriendStatus}}</p>
+            </div>
+          </div>
         </mat-card>
       </mat-list-item>
   `,
   styles: [
     `
+    * {
+      margin: 0;
+    }
+
     mat-list-item {
       margin: 25px 0;
       height: auto !important;
     }
+
     mat-card {
       width: 100%;
     }
 
-    .selectedCard {
-      background-color: #9e9e9e;
+    #container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+    }
+    
+    #avatar {
+      min-width: 75px;
+      min-height: 75px;
+      max-width: 75px;
+      max-height: 75px;
     }
 
     .content {
-      width: 100%;
-      padding: 15px;
-      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 0 0 20px;
     }
 
-    h2, h4, p {
-      margin: 0;
-    }
-
-    #avatar {
-      width: 100%;
-      margin: 0;
+    .selectedCard {
+      background-color: #9e9e9e;
     }
     `
   ]
