@@ -115,30 +115,45 @@ export class RecordNewRoundComponent implements OnInit {
     this.incrementStep(1);
   }
 
-  public submitFriendsScores(): void {
-    this.incrementStep();
+  public submitFriendsScores = (): void => {
+    console.log(this.workingSummary);
+    this.buildSummary();
   }
 
-  public friendScorePickerHandler(score: Score, num: number): void {
-    score.Score = num;
-    score.RelativeScore = this.getRelativeScore(num);
-  }
-
-  public buildSummary(): void {
+  private buildSummary(): void {
     this.userService.getUser().then(x => {
       this.summary = {
         ScoreId: uuid(),
-        CourseId: this.selectedCourseId,
-        CourseName: this.selectedCourse.Name,
-        RoundType: this.selectedRoundType,
-        Date: this.selectedDate.unix(),
-        PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
-        Score: this.selectedScore,
-        RelativeScore: this.getRelativeScore(this.selectedScore),
-        TeeboxColor: this.selectedTeebox.Color,
+        CourseId: this.workingSummary.selectedCourseId,
+        CourseName: this.workingSummary.selectedCourse.Name,
+        RoundType: this.workingSummary.selectedRoundType,
+        Date: this.workingSummary.selectedDate.unix(),
+        PrettyDate: this.workingSummary.selectedDate.format(this.DATE_FORMAT),
+        Score: this.workingSummary.selectedScore,
+        RelativeScore: this.getRelativeScore(this.workingSummary.selectedScore, this.workingSummary.selectedCourse),
+        TeeboxColor: this.workingSummary.selectedTeebox.Color,
         PlayerId: x.id,
         PlayerName: x.displayName
       };
+
+      if (this.workingSummary.friendSummary && this.workingSummary.friendSummary.length > 0) {
+        this.friendSummary = [];
+        this.workingSummary.friendSummary.map(y => {
+          this.friendSummary.push({
+            ScoreId: uuid(),
+            CourseId: this.workingSummary.selectedCourseId,
+            CourseName: this.workingSummary.selectedCourse.Name,
+            RoundType: this.workingSummary.selectedRoundType,
+            Date: this.workingSummary.selectedDate.unix(),
+            PrettyDate: this.workingSummary.selectedDate.format(this.DATE_FORMAT),
+            Score: y.Score,
+            RelativeScore: this.getRelativeScore(y.Score, this.workingSummary.selectedCourse),
+            TeeboxColor: y.Teebox.Color,
+            PlayerId: y.Friend.FriendId,
+            PlayerName: y.Friend.Name
+          })
+        })
+      }
       this.incrementStep();
     });
   }
@@ -185,16 +200,8 @@ export class RecordNewRoundComponent implements OnInit {
       || this.step < 0; // start page or summary page
   }
 
-  private getCoursePar(): number {
-    let par = 0;
-    this.selectedCourse.Holes.map(x => {
-      par += x.Par;
-    });
-    return par;
-  }
-
   public getParSummary(score?: number): string {
-    let parScore = this.getRelativeScore(score || this.selectedScore);
+    let parScore = this.getRelativeScore(score, this.workingSummary.selectedCourse);
     if (parScore < 0) {
       parScore = parScore * -1;
       return `${parScore} under par`;
@@ -205,9 +212,13 @@ export class RecordNewRoundComponent implements OnInit {
     }
   }
 
-  public getRelativeScore(num: number): number {
-    const coursePar = this.getCoursePar();
-    return num - coursePar;
+  public getRelativeScore(num: number, course: GolfCourse): number {
+    let par = 0;
+    course.Holes.map(x => {
+      par += x.Par;
+    })
+
+    return num - par;
   }
 
   public get roundType(): typeof RoundType {

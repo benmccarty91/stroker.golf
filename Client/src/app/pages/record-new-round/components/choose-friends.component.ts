@@ -82,7 +82,6 @@ export class ChooseFriendsComponent implements OnInit {
         this.friends = friends.filter(friend => friend.FriendStatus === FriendStatus.ACCEPTED);
         this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
       });
-      // this.incrementStep(1);
     } else {
       this.skipFriends();
     }
