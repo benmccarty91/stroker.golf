@@ -5,7 +5,7 @@ import { RoundType } from 'src/models/Score';
   selector: 'app-choose-round-type',
   template: `
     <div id="container">
-      <h2>How many holes did you play?</h2>
+      <h2>How many holes?</h2>
       <mat-button-toggle-group [(ngModel)]="workingSummary.selectedRoundType">
         <mat-button-toggle value="{{roundType.FULL_18}}">{{roundType.FULL_18}}</mat-button-toggle>
         <mat-button-toggle value="{{roundType.FRONT_9}}">{{roundType.FRONT_9}}</mat-button-toggle>
@@ -20,17 +20,15 @@ import { RoundType } from 'src/models/Score';
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      align-items: stretch;
-    }
-
-    mat-button-toggle-group {
-      display: flex;
-      flex-direction: row;
-      margin-bottom: 15px;
+      align-content: stretch;
     }
     
     mat-button-toggle {
       width: 33%;
+    }
+
+    button {
+      margin: 15px 0 0 0;
     }
     `
   ]

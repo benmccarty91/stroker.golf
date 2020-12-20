@@ -35,7 +35,7 @@ export class RecordNewRoundComponent implements OnInit {
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
-  public step: number = 3;
+  public step: number = 5;
   public summary: Score;
   public friendSummary: Score[];
 
@@ -95,7 +95,11 @@ export class RecordNewRoundComponent implements OnInit {
     this.incrementStep();
   }
 
-  public submitTeebox(): void {
+  public submitTeebox = (): void => {
+    this.incrementStep();
+  }
+
+  public submitScore = (): void => {
     this.incrementStep();
   }
 
@@ -138,10 +142,6 @@ export class RecordNewRoundComponent implements OnInit {
 
   public submitFriendsScores(): void {
     this.incrementStep();
-  }
-
-  public selectScore(num: number): void {
-    this.selectedScore = num;
   }
 
   public friendScorePickerHandler(score: Score, num: number): void {

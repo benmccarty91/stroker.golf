@@ -6,7 +6,7 @@ import { GolfCourse } from 'src/models/GolfCourse';
   template: `
     <div>
       <div id="container">
-        <h2>Which course did you play?</h2>
+        <h2>Which course?</h2>
         <mat-form-field appearance="fill">
           <mat-label>Select Course</mat-label>
           <mat-select [(value)]="workingSummary.selectedCourseId">
@@ -25,7 +25,7 @@ import { GolfCourse } from 'src/models/GolfCourse';
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      align-items: stretch;
+      align-content: stretch;
     }
     `
   ]

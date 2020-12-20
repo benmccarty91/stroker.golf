@@ -10,23 +10,9 @@
 
   <app-choose-date *ngIf="step === 3" [submitHandler]="submitDate" [workingSummary]="workingSummary"></app-choose-date>
 
-  <div id="teeboxSelect" class="questionCards" *ngIf="step === 4">
-    <h2>Which teebox did you play from?</h2>
-    <mat-radio-group *ngIf="selectedCourse" class="my-radio-group" aria-label="Select an option"
-      [(ngModel)]="selectedTeebox">
-      <mat-radio-button class="my-radio-button" *ngFor="let box of selectedCourse.TeeBoxes" [value]="box">
-        {{box.Color}}</mat-radio-button>
-    </mat-radio-group>
-    <button mat-stroked-button class="wideButton" *ngIf="selectedTeebox" (click)="submitTeebox()">Next</button>
-  </div>
+  <app-choose-teebox *ngIf="step === 4" [submitHandler]="submitTeebox" [workingSummary]="workingSummary"></app-choose-teebox>
 
-  <div id="scoreInput" class="questionCards" *ngIf="step === 5">
-    <h2>What did you score?</h2>
-    <div class="formContainer">
-      <app-number-picker [inNumber]="selectedScore" (outNumber)="selectScore($event)"></app-number-picker>
-    </div>
-    <button mat-stroked-button class="wideButton" *ngIf="selectedScore > 0" (click)="buildSummary()">Next</button>
-  </div>
+  <app-choose-score *ngIf="step === 5" [submitHandler]="submitScore" [workingSummary]="workingSummary"></app-choose-score>
 
   <div id="friendSelect" class="questionCards" *ngIf="step === 6">
     <h2>Did you play with any friends?</h2>
