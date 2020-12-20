@@ -25,7 +25,7 @@ import { UserService } from 'src/services/UserService';
     }
 
     mat-list-item {
-      margin: 25px 0;
+      margin: 0 0 25px 0;
       height: auto !important;
     }
 

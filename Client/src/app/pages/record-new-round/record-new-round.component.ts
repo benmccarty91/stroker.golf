@@ -35,7 +35,7 @@ export class RecordNewRoundComponent implements OnInit {
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
-  public step: number = 5;
+  public step: number = 1;
   public summary: Score;
   public friendSummary: Score[];
 
@@ -96,48 +96,23 @@ export class RecordNewRoundComponent implements OnInit {
   }
 
   public submitTeebox = (): void => {
+    console.log(this.workingSummary);
     this.incrementStep();
   }
 
   public submitScore = (): void => {
+    console.log(this.workingSummary);
     this.incrementStep();
   }
 
-  public submitFriendSelect(answer: boolean): void {
-    if (answer) {
-      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
-      this.friendService.getFriends().subscribe(friends => {
-        this.friends = friends.filter(friend => friend.FriendStatus === FriendStatus.ACCEPTED);
-        this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
-      });
-      this.incrementStep(1);
-    } else {
-      this.incrementStep(3);
-    }
+  public skipFriends = (): void => {
+    console.log(this.workingSummary);
+    this.incrementStep(2);
   }
 
-  public submitFriendList(): void {
-    this.friendSummary = [];
-    if (this.selectedFriends && this.selectedFriends.length > 0) {
-      this.selectedFriends.forEach(friend => {
-        this.friendSummary.push({
-          ScoreId: uuid(),
-          CourseId: this.selectedCourseId,
-          CourseName: this.selectedCourse.Name,
-          Date: this.selectedDate.unix(),
-          PlayerId: friend.FriendId,
-          PlayerName: friend.Name,
-          PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
-          RoundType: this.selectedRoundType,
-          Score: this.selectedScore,
-          TeeboxColor: this.selectedTeebox.Color,
-          RelativeScore: this.getRelativeScore(this.selectedScore)
-        });
-      })
-      this.incrementStep();
-    } else {
-      this.incrementStep(2);
-    }
+  public submitFriendList = (): void => {
+    console.log(this.workingSummary);
+    this.incrementStep(1);
   }
 
   public submitFriendsScores(): void {
@@ -194,22 +169,6 @@ export class RecordNewRoundComponent implements OnInit {
           });
         });
       });
-  }
-
-  public selectFriend(friend: Friend): void {
-    if (!this.selectedFriends) { // if list hasn't been initialized
-      this.selectedFriends = [];
-    }
-    const existingIndex = this.selectedFriends.indexOf(friend);
-    if (existingIndex > -1) { // friend has already been selected 
-      this.selectedFriends.splice(existingIndex, 1); // then remove it (deselect)
-    } else {
-      this.selectedFriends.push(friend); // otherwise, add the friend to the list
-    }
-  }
-
-  public isFriendSelected(friend: Friend): boolean {
-    return this.selectedFriends && this.selectedFriends.includes(friend);
   }
 
   public goHome(): void {
@@ -276,9 +235,11 @@ export class RecordNewRoundComponent implements OnInit {
   private incrementStep(inc: number = 1): void {
     this.stepHistory.push(this.step);
     this.step += inc;
+    console.log(`step: ${this.step}`)
   }
 
   private decrementStep(): void {
     this.step = this.stepHistory.pop();
+    console.log(`step: ${this.step}`)
   }
 }

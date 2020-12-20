@@ -14,21 +14,9 @@
 
   <app-choose-score *ngIf="step === 5" [submitHandler]="submitScore" [workingSummary]="workingSummary"></app-choose-score>
 
-  <div id="friendSelect" class="questionCards" *ngIf="step === 6">
-    <h2>Did you play with any friends?</h2>
-    <button mat-stroked-button (click)="submitFriendSelect(true)">Yes</button>
-    <button mat-stroked-button (click)="submitFriendSelect(false)">No</button>
-  </div>
+  <app-choose-friends *ngIf="step === 6" [submitHandler]="submitFriendList" [workingSummary]="workingSummary" [skipFriends]="skipFriends"></app-choose-friends>
 
-  <div id="chooseFriends" class="questionCards" *ngIf="step === 7">
-    <h2>Who did you play with?</h2>
-    <mat-list>
-      <!-- TODO: change the style of the selected friends! -->
-      <app-friend-item *ngFor="let friend of friends" [friend]="friend" (click)="selectFriend(friend)"
-        [isSelected]="isFriendSelected(friend)"></app-friend-item>
-    </mat-list>
-    <button mat-stroked-button class="wideButton" (click)="submitFriendList()">Next</button>
-  </div>
+  <app-choose-friends-scores *ngIf="step === 7"></app-choose-friends-scores>
 
   <div id="friendScores" class="questionCards" *ngIf="step === 8 && selectedFriends && selectedFriends.length > 0">
     <h2>How did they play?</h2>
