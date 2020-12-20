@@ -24,9 +24,10 @@ import { v4 as uuid } from 'uuid';
 export class RecordNewRoundComponent implements OnInit {
 
   public courses: GolfCourse[];
+  public selectedCourseId: string;
+
   public friends: Friend[];
   public selectedFriends: Friend[];
-  public selectedCourseId: string;
   public selectedCourse: GolfCourse;
   public selectedRoundType: RoundType = RoundType.FULL_18; // TODO: have the user choose this!
   public selectedTeebox: TeeBox;
@@ -57,7 +58,8 @@ export class RecordNewRoundComponent implements OnInit {
     this.courses = await this.getCourses();
   }
 
-  public submitCourse(): void {
+  public submitCourse = (courseId: string) => {
+    this.selectedCourseId = courseId;
     this.incrementStep();
     this.getCourse(this.selectedCourseId);
   }
