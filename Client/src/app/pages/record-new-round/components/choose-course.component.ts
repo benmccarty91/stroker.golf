@@ -20,6 +20,12 @@ import { GolfCourse } from 'src/models/GolfCourse';
     </div>
   `,
   styles: [
+    `
+    .formContainer {
+      display: flex;
+      flex-direction: column;
+    }
+    `
   ]
 })
 export class ChooseCourseComponent implements OnInit {

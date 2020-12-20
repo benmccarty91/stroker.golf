@@ -58,10 +58,18 @@ export class RecordNewRoundComponent implements OnInit {
     this.courses = await this.getCourses();
   }
 
-  public submitCourse = (courseId: string) => {
+  public submitCourse = (courseId: string): void => {
     this.selectedCourseId = courseId;
-    this.incrementStep();
-    this.getCourse(this.selectedCourseId);
+    this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
+    this.courseService.getCourse(courseId).subscribe(x => {
+      this.selectedCourse = x;
+      this.originalCourseHoleList = this.selectedCourse.Holes;
+      this.originalCourseHoleList.sort((a, b) => {
+        return a.Number - b.Number;
+      });
+      this.incrementStep();
+      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+    });
   }
 
   public submitRoundType(): void {
@@ -262,18 +270,6 @@ export class RecordNewRoundComponent implements OnInit {
         return 1;
       }
       return 0;
-    });
-  }
-
-  private getCourse(id: string): void {
-    this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
-    this.courseService.getCourse(id).subscribe(x => {
-      this.selectedCourse = x;
-      this.originalCourseHoleList = this.selectedCourse.Holes;
-      this.originalCourseHoleList.sort((a, b) => {
-        return a.Number - b.Number;
-      });
-      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
     });
   }
 

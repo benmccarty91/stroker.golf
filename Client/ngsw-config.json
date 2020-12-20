@@ -93,7 +93,7 @@
       }
     },
     {
-      "name": "CourseData",
+      "name": "DefaultRule",
       "urls": [
         "/api/*"
       ],
