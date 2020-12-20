@@ -107,7 +107,7 @@ export class RecordNewRoundComponent implements OnInit {
 
   public skipFriends = (): void => {
     console.log(this.workingSummary);
-    this.incrementStep(2);
+    this.buildSummary(2);
   }
 
   public submitFriendList = (): void => {
@@ -117,10 +117,10 @@ export class RecordNewRoundComponent implements OnInit {
 
   public submitFriendsScores = (): void => {
     console.log(this.workingSummary);
-    this.buildSummary();
+    this.buildSummary(1);
   }
 
-  private buildSummary(): void {
+  private buildSummary(skipNum: number): void {
     this.userService.getUser().then(x => {
       this.summary = {
         ScoreId: uuid(),
@@ -154,7 +154,7 @@ export class RecordNewRoundComponent implements OnInit {
           })
         })
       }
-      this.incrementStep();
+      this.incrementStep(skipNum);
     });
   }
 
