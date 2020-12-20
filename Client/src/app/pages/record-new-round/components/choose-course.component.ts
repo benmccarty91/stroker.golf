@@ -4,34 +4,36 @@ import { GolfCourse } from 'src/models/GolfCourse';
 @Component({
   selector: 'app-choose-course',
   template: `
-    <div id="courseSelect" class="questionCards">
-      <h2>Which course did you play?</h2>
-      <div class="formContainer">
+    <div>
+      <div id="container">
+        <h2>Which course did you play?</h2>
         <mat-form-field appearance="fill">
           <mat-label>Select Course</mat-label>
-          <mat-select [(value)]="selectedCourseId">
+          <mat-select [(value)]="workingSummary.selectedCourseId">
             <mat-option *ngFor="let course of courses" [value]="course.Id">
               {{course.Name}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <button mat-stroked-button class="wideButton" *ngIf="selectedCourseId" (click)="submitCourse()">Next</button>
+        <button mat-stroked-button *ngIf="workingSummary.selectedCourseId" (click)="submitCourse()">Next</button>
       </div>
     </div>
   `,
   styles: [
     `
-    .formContainer {
+    #container {
       display: flex;
       flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
     }
     `
   ]
 })
 export class ChooseCourseComponent implements OnInit {
 
+  @Input() workingSummary: any;
   @Input() courses: GolfCourse[];
-  @Input() selectedCourseId: string;
   @Input() submitHandler: Function;
 
   constructor() { }
@@ -40,7 +42,7 @@ export class ChooseCourseComponent implements OnInit {
   }
 
   submitCourse(): void {
-    this.submitHandler(this.selectedCourseId);
+    this.submitHandler();
   }
 
 }

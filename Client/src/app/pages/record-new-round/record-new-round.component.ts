@@ -24,6 +24,8 @@ import { v4 as uuid } from 'uuid';
 export class RecordNewRoundComponent implements OnInit {
 
   public courses: GolfCourse[];
+  public workingSummary: any = {};
+
   public selectedCourseId: string;
 
   public friends: Friend[];
@@ -33,7 +35,7 @@ export class RecordNewRoundComponent implements OnInit {
   public selectedTeebox: TeeBox;
   public selectedDate: Moment;
   public selectedScore: number;
-  public step: number = 1;
+  public step: number = 3;
   public summary: Score;
   public friendSummary: Score[];
 
@@ -58,32 +60,38 @@ export class RecordNewRoundComponent implements OnInit {
     this.courses = await this.getCourses();
   }
 
-  public submitCourse = (courseId: string): void => {
-    this.selectedCourseId = courseId;
+  public submitCourse = (): void => {
     this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
-    this.courseService.getCourse(courseId).subscribe(x => {
-      this.selectedCourse = x;
-      this.originalCourseHoleList = this.selectedCourse.Holes;
-      this.originalCourseHoleList.sort((a, b) => {
+    this.courseService.getCourse(this.workingSummary.selectedCourseId).subscribe(x => {
+      this.workingSummary.selectedCourse = x;
+      this.workingSummary.originalCourseHoleList = this.workingSummary.selectedCourse.Holes;
+      this.workingSummary.originalCourseHoleList.sort((a, b) => {
         return a.Number - b.Number;
       });
       this.incrementStep();
       this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+      console.log(this.workingSummary);
     });
   }
 
-  public submitRoundType(): void {
-    switch (this.selectedRoundType) {
+  public submitRoundType = (): void => {
+    switch (this.workingSummary.selectedRoundType) {
       case (this.roundType.FULL_18):
-        this.selectedCourse.Holes = this.originalCourseHoleList;
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList;
         break;
       case (this.roundType.FRONT_9):
-        this.selectedCourse.Holes = this.originalCourseHoleList.slice(0, 9);
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList.slice(0, 9);
         break;
       case (this.roundType.BACK_9):
-        this.selectedCourse.Holes = this.originalCourseHoleList.slice(9);
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList.slice(9);
         break;
     }
+    this.incrementStep();
+    console.log(this.workingSummary);
+  }
+
+  public submitDate = (): void => {
+    console.log(this.workingSummary);
     this.incrementStep();
   }
 
@@ -130,14 +138,6 @@ export class RecordNewRoundComponent implements OnInit {
 
   public submitFriendsScores(): void {
     this.incrementStep();
-  }
-
-  public submitDate(): void {
-    this.incrementStep();
-  }
-
-  public dateChange(event: MatDatepickerInputEvent<Moment>): void {
-    this.selectedDate = event.value;
   }
 
   public selectScore(num: number): void {

@@ -3,34 +3,12 @@
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
-  <app-choose-course *ngIf="step === 1" [submitHandler]="submitCourse" [selectedCourseId]="selectedCourseId"
+  <app-choose-course *ngIf="step === 1" [submitHandler]="submitCourse" [workingSummary]="workingSummary"
     [courses]="courses"></app-choose-course>
 
-  <div id="roundTypeSelect" class="questionCards" *ngIf="step === 2">
-    <h2>How many holes did you play?</h2>
-    <div class="formContainer">
-      <mat-button-toggle-group [(ngModel)]="selectedRoundType" class="roundTypeSelect">
-        <mat-button-toggle value="{{roundType.FULL_18}}">{{roundType.FULL_18}}</mat-button-toggle>
-        <mat-button-toggle value="{{roundType.FRONT_9}}">{{roundType.FRONT_9}}</mat-button-toggle>
-        <mat-button-toggle value="{{roundType.BACK_9}}">{{roundType.BACK_9}}</mat-button-toggle>
-      </mat-button-toggle-group>
-      <button mat-stroked-button class="wideButton" (click)="submitRoundType()">Next</button>
-    </div>
-  </div>
+  <app-choose-round-type *ngIf="step === 2" [submitHandler]="submitRoundType" [workingSummary]="workingSummary"></app-choose-round-type>
 
-  <div id="dateSelect" class="questionCards" *ngIf="step === 3">
-    <h2>When did you play?</h2>
-    <div class="formContainer">
-      <mat-form-field appearance="fill">
-        <mat-label>Choose a date</mat-label>
-        <input matInput [matDatepicker]="picker" autocomplete="off" [value]="selectedDate"
-          (dateChange)="dateChange($event)">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker touchUi #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
-    <button mat-stroked-button class="wideButton" *ngIf="selectedDate" (click)="submitDate()">Next</button>
-  </div>
+  <app-choose-date *ngIf="step === 3" [submitHandler]="submitDate" [workingSummary]="workingSummary"></app-choose-date>
 
   <div id="teeboxSelect" class="questionCards" *ngIf="step === 4">
     <h2>Which teebox did you play from?</h2>
