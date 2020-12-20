@@ -107,6 +107,7 @@ export class RecordNewRoundComponent implements OnInit {
 
   public skipFriends = (): void => {
     console.log(this.workingSummary);
+    this.workingSummary.friendSummary = null;
     this.buildSummary(2);
   }
 
@@ -136,8 +137,8 @@ export class RecordNewRoundComponent implements OnInit {
         PlayerName: x.displayName
       };
 
+      this.friendSummary = [];
       if (this.workingSummary.friendSummary && this.workingSummary.friendSummary.length > 0) {
-        this.friendSummary = [];
         this.workingSummary.friendSummary.map(y => {
           this.friendSummary.push({
             ScoreId: uuid(),
@@ -196,7 +197,7 @@ export class RecordNewRoundComponent implements OnInit {
 
   public hideBackButton(): boolean {
     return this.step === 1
-      || this.step === 10
+      // || this.step === 9 // TODO undo this
       || this.step < 0; // start page or summary page
   }
 

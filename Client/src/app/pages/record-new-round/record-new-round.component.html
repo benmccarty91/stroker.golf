@@ -18,6 +18,7 @@
 
   <app-choose-friends-scores *ngIf="step === 7" [submitHandler]="submitFriendsScores" [workingSummary]="workingSummary"></app-choose-friends-scores>
 
+  <!-- TODO pull summary out of this component-->
   <div id="summary" class="questionCards" *ngIf="step === 8">
     <h2>Summary</h2>
     <h3>{{summary.CourseName}}</h3>

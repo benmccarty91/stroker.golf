@@ -39,7 +39,7 @@ export class ScoreService {
     if (scores && scores.length > 0) {
       console.log(JSON.stringify(scores));
       return of(true);
-      // return this.apiService.post('/score', scores);
+      // return this.apiService.post('/score', scores); //TODO undo this
     } else {
       throw Error('cannot post empty scores');
     }
