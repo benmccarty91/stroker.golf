@@ -1,16 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
-import { Moment } from 'moment';
 import { CONSTS } from 'src/assets/CONSTS';
-import { Friend, FriendStatus } from 'src/models/Friend';
 import { GolfCourse } from 'src/models/GolfCourse';
-import { GolfHole } from 'src/models/GolfHole';
 import { RoundType, Score } from 'src/models/Score';
-import { TeeBox } from 'src/models/TeeBox';
 import { CourseService } from 'src/services/CourseService';
-import { FriendService } from 'src/services/FriendService';
 import { PubSubService } from 'src/services/PubSubService';
 import { ScoreService } from 'src/services/ScoreService';
 import { UserService } from 'src/services/UserService';
@@ -25,27 +19,16 @@ export class RecordNewRoundComponent implements OnInit {
 
   public courses: GolfCourse[];
   public workingSummary: any = {};
-
   public selectedCourseId: string;
-
-  public friends: Friend[];
-  public selectedFriends: Friend[];
-  public selectedCourse: GolfCourse;
-  public selectedRoundType: RoundType = RoundType.FULL_18; // TODO: have the user choose this!
-  public selectedTeebox: TeeBox;
-  public selectedDate: Moment;
-  public selectedScore: number;
   public step: number = 1;
   public summary: Score;
   public friendSummary: Score[];
 
   private stepHistory: number[];
   private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
-  private originalCourseHoleList: GolfHole[];
 
   constructor(
     private userService: UserService,
-    private friendService: FriendService,
     private scoreService: ScoreService,
     private courseService: CourseService,
     private router: Router,
@@ -214,11 +197,9 @@ export class RecordNewRoundComponent implements OnInit {
   private incrementStep(inc: number = 1): void {
     this.stepHistory.push(this.step);
     this.step += inc;
-    // console.log(`step: ${this.step}`)
   }
 
   private decrementStep(): void {
     this.step = this.stepHistory.pop();
-    // console.log(`step: ${this.step}`)
   }
 }
