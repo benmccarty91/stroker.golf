@@ -38,9 +38,7 @@ export class ScoreService {
 
   postScores(scores: Score[]): Observable<any> {
     if (scores && scores.length > 0) {
-      console.log(JSON.stringify(scores));
-      return of(true);
-      // return this.apiService.post('/score', scores); //TODO undo this
+      return this.apiService.post('/score', scores);
     } else {
       throw Error('cannot post empty scores');
     }
