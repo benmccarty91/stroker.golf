@@ -1,16 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
-import { Moment } from 'moment';
 import { CONSTS } from 'src/assets/CONSTS';
-import { Friend, FriendStatus } from 'src/models/Friend';
 import { GolfCourse } from 'src/models/GolfCourse';
-import { GolfHole } from 'src/models/GolfHole';
 import { RoundType, Score } from 'src/models/Score';
-import { TeeBox } from 'src/models/TeeBox';
 import { CourseService } from 'src/services/CourseService';
-import { FriendService } from 'src/services/FriendService';
 import { PubSubService } from 'src/services/PubSubService';
 import { ScoreService } from 'src/services/ScoreService';
 import { UserService } from 'src/services/UserService';
@@ -24,25 +18,17 @@ import { v4 as uuid } from 'uuid';
 export class RecordNewRoundComponent implements OnInit {
 
   public courses: GolfCourse[];
-  public friends: Friend[];
-  public selectedFriends: Friend[];
+  public workingSummary: any = {};
   public selectedCourseId: string;
-  public selectedCourse: GolfCourse;
-  public selectedRoundType: RoundType = RoundType.FULL_18; // TODO: have the user choose this!
-  public selectedTeebox: TeeBox;
-  public selectedDate: Moment;
-  public selectedScore: number;
   public step: number = 1;
   public summary: Score;
   public friendSummary: Score[];
 
   private stepHistory: number[];
   private readonly DATE_FORMAT: string = 'MM-DD-YYYY';
-  private originalCourseHoleList: GolfHole[];
 
   constructor(
     private userService: UserService,
-    private friendService: FriendService,
     private scoreService: ScoreService,
     private courseService: CourseService,
     private router: Router,
@@ -54,111 +40,78 @@ export class RecordNewRoundComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.courses = await this.getCourses();
-  }
-
-  public submitCourse(): void {
-    this.incrementStep();
-    this.getCourse(this.selectedCourseId);
-  }
-
-  public submitRoundType(): void {
-    switch (this.selectedRoundType) {
-      case (this.roundType.FULL_18):
-        this.selectedCourse.Holes = this.originalCourseHoleList;
-        break;
-      case (this.roundType.FRONT_9):
-        this.selectedCourse.Holes = this.originalCourseHoleList.slice(0, 9);
-        break;
-      case (this.roundType.BACK_9):
-        this.selectedCourse.Holes = this.originalCourseHoleList.slice(9);
-        break;
-    }
-    this.incrementStep();
-  }
-
-  public submitTeebox(): void {
-    this.incrementStep();
-  }
-
-  public submitFriendSelect(answer: boolean): void {
-    if (answer) {
-      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
-      this.friendService.getFriends().subscribe(friends => {
-        this.friends = friends.filter(friend => friend.FriendStatus === FriendStatus.ACCEPTED);
-        this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+    this.courseService.getCourses().subscribe(courses => {
+      this.courses = courses.sort((a, b) => {
+        const nameA = a.Name.toUpperCase();
+        const nameB = b.Name.toUpperCase();
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameB < nameA) {
+          return 1;
+        }
+        return 0;
       });
-      this.incrementStep(1);
-    } else {
-      this.incrementStep(3);
-    }
-  }
-
-  public submitFriendList(): void {
-    this.friendSummary = [];
-    if (this.selectedFriends && this.selectedFriends.length > 0) {
-      this.selectedFriends.forEach(friend => {
-        this.friendSummary.push({
-          ScoreId: uuid(),
-          CourseId: this.selectedCourseId,
-          CourseName: this.selectedCourse.Name,
-          Date: this.selectedDate.unix(),
-          PlayerId: friend.FriendId,
-          PlayerName: friend.Name,
-          PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
-          RoundType: this.selectedRoundType,
-          Score: this.selectedScore,
-          TeeboxColor: this.selectedTeebox.Color,
-          RelativeScore: this.getRelativeScore(this.selectedScore)
-        });
-      })
-      this.incrementStep();
-    } else {
-      this.incrementStep(2);
-    }
-  }
-
-  public submitFriendsScores(): void {
-    this.incrementStep();
-  }
-
-  public submitDate(): void {
-    this.incrementStep();
-  }
-
-  public dateChange(event: MatDatepickerInputEvent<Moment>): void {
-    this.selectedDate = event.value;
-  }
-
-  public selectScore(num: number): void {
-    this.selectedScore = num;
-  }
-
-  public friendScorePickerHandler(score: Score, num: number): void {
-    score.Score = num;
-    score.RelativeScore = this.getRelativeScore(num);
-  }
-
-  public buildSummary(): void {
-    this.userService.getUser().then(x => {
-      this.summary = {
-        ScoreId: uuid(),
-        CourseId: this.selectedCourseId,
-        CourseName: this.selectedCourse.Name,
-        RoundType: this.selectedRoundType,
-        Date: this.selectedDate.unix(),
-        PrettyDate: this.selectedDate.format(this.DATE_FORMAT),
-        Score: this.selectedScore,
-        RelativeScore: this.getRelativeScore(this.selectedScore),
-        TeeboxColor: this.selectedTeebox.Color,
-        PlayerId: x.id,
-        PlayerName: x.displayName
-      };
-      this.incrementStep();
+      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     });
   }
 
-  public submitFinal(): void {
+  public submitCourse = (): void => {
+    this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
+    this.courseService.getCourse(this.workingSummary.selectedCourseId).subscribe(x => {
+      this.workingSummary.selectedCourse = x;
+      this.workingSummary.originalCourseHoleList = this.workingSummary.selectedCourse.Holes;
+      this.workingSummary.originalCourseHoleList.sort((a, b) => {
+        return a.Number - b.Number;
+      });
+      this.incrementStep();
+      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+      // console.log(this.workingSummary);
+    });
+  }
+
+  public submitRoundType = (): void => {
+    switch (this.workingSummary.selectedRoundType) {
+      case (this.roundType.FULL_18):
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList;
+        break;
+      case (this.roundType.FRONT_9):
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList.slice(0, 9);
+        break;
+      case (this.roundType.BACK_9):
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList.slice(9);
+        break;
+    }
+    this.incrementStep();
+    // console.log(this.workingSummary);
+  }
+
+  public submitDate = (): void => {
+    this.incrementStep();
+  }
+
+  public submitTeebox = (): void => {
+    this.incrementStep();
+  }
+
+  public submitScore = (): void => {
+    this.incrementStep();
+  }
+
+  public skipFriends = (): void => {
+    this.workingSummary.friendSummary = null;
+    this.buildSummary(2);
+  }
+
+  public submitFriendList = (): void => {
+    this.incrementStep(1);
+  }
+
+  public submitFriendsScores = (): void => {
+    this.buildSummary(1);
+  }
+
+  public submitFinal = (): void => {
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
     let scores = new Array<Score>();
     scores.push(this.summary);
@@ -186,93 +139,59 @@ export class RecordNewRoundComponent implements OnInit {
       });
   }
 
-  public selectFriend(friend: Friend): void {
-    if (!this.selectedFriends) { // if list hasn't been initialized
-      this.selectedFriends = [];
-    }
-    const existingIndex = this.selectedFriends.indexOf(friend);
-    if (existingIndex > -1) { // friend has already been selected 
-      this.selectedFriends.splice(existingIndex, 1); // then remove it (deselect)
-    } else {
-      this.selectedFriends.push(friend); // otherwise, add the friend to the list
-    }
-  }
-
-  public isFriendSelected(friend: Friend): boolean {
-    return this.selectedFriends && this.selectedFriends.includes(friend);
-  }
-
-  public goHome(): void {
+  public goHome = (): void => {
     this.router.navigateByUrl('/landing');
   }
-
+  
   public hitBackButton(): void {
     this.decrementStep();
   }
 
   public hideBackButton(): boolean {
-    return this.step === 1
-      || this.step === 10
-      || this.step < 0; // start page or summary page
+    return this.step <= 1
+      || this.step === 9 
   }
 
-  private getCoursePar(): number {
-    let par = 0;
-    this.selectedCourse.Holes.map(x => {
-      par += x.Par;
+  private buildSummary(skipNum: number): void {
+    this.userService.getUser().then(x => {
+      this.summary = {
+        ScoreId: uuid(),
+        CourseId: this.workingSummary.selectedCourseId,
+        CourseName: this.workingSummary.selectedCourse.Name,
+        RoundType: this.workingSummary.selectedRoundType,
+        Date: this.workingSummary.selectedDate.unix(),
+        PrettyDate: this.workingSummary.selectedDate.format(this.DATE_FORMAT),
+        Score: this.workingSummary.selectedScore,
+        RelativeScore: ScoreService.getRelativeScore(this.workingSummary.selectedScore, this.workingSummary.selectedCourse),
+        TeeboxColor: this.workingSummary.selectedTeebox.Color,
+        PlayerId: x.id,
+        PlayerName: x.displayName
+      };
+
+      this.friendSummary = [];
+      if (this.workingSummary.friendSummary && this.workingSummary.friendSummary.length > 0) {
+        this.workingSummary.friendSummary.map(y => {
+          this.friendSummary.push({
+            ScoreId: uuid(),
+            CourseId: this.workingSummary.selectedCourseId,
+            CourseName: this.workingSummary.selectedCourse.Name,
+            RoundType: this.workingSummary.selectedRoundType,
+            Date: this.workingSummary.selectedDate.unix(),
+            PrettyDate: this.workingSummary.selectedDate.format(this.DATE_FORMAT),
+            Score: y.Score,
+            RelativeScore: ScoreService.getRelativeScore(y.Score, this.workingSummary.selectedCourse),
+            TeeboxColor: y.Teebox.Color,
+            PlayerId: y.Friend.FriendId,
+            PlayerName: y.Friend.Name
+          })
+        })
+      }
+      this.incrementStep(skipNum);
     });
-    return par;
-  }
-
-  public getParSummary(score?: number): string {
-    let parScore = this.getRelativeScore(score || this.selectedScore);
-    if (parScore < 0) {
-      parScore = parScore * -1;
-      return `${parScore} under par`;
-    } else if (parScore > 0) {
-      return `${parScore} over par`;
-    } else {
-      return `Even par`;
-    }
-  }
-
-  public getRelativeScore(num: number): number {
-    const coursePar = this.getCoursePar();
-    return num - coursePar;
   }
 
   public get roundType(): typeof RoundType {
     return RoundType;
-  }
-
-  // retrieves the list of courses from the api and sorts
-  // the list alphabetically
-  private async getCourses(): Promise<GolfCourse[]> {
-    const list = (await this.courseService.getCourses().toPromise());
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
-    return list.sort((a, b) => {
-      const nameA = a.Name.toUpperCase();
-      const nameB = b.Name.toUpperCase();
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameB < nameA) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
-  private getCourse(id: string): void {
-    this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_START);
-    this.courseService.getCourse(id).subscribe(x => {
-      this.selectedCourse = x;
-      this.originalCourseHoleList = this.selectedCourse.Holes;
-      this.originalCourseHoleList.sort((a, b) => {
-        return a.Number - b.Number;
-      });
-      this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
-    });
   }
 
   private incrementStep(inc: number = 1): void {

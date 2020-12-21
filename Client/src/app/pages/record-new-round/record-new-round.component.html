@@ -3,148 +3,26 @@
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
-  <div id="courseSelect" class="questionCards" *ngIf="step === 1">
-    <h2>Which course did you play?</h2>
-    <div class="formContainer">
-      <mat-form-field appearance="fill">
-        <mat-label>Select Course</mat-label>
-        <mat-select [(value)]="selectedCourseId">
-          <mat-option *ngFor="let course of courses" [value]="course.Id">
-            {{course.Name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button mat-stroked-button class="wideButton" *ngIf="selectedCourseId" (click)="submitCourse()">Next</button>
-    </div>
-  </div>
+  <!-- This page is a series of child components, driven by the 'step' number. -->
 
-  <div id="roundTypeSelect" class="questionCards" *ngIf="step === 2">
-    <h2>How many holes did you play?</h2>
-    <div class="formContainer">
-      <mat-button-toggle-group [(ngModel)]="selectedRoundType" class="roundTypeSelect">
-        <mat-button-toggle value="{{roundType.FULL_18}}">{{roundType.FULL_18}}</mat-button-toggle>
-        <mat-button-toggle value="{{roundType.FRONT_9}}">{{roundType.FRONT_9}}</mat-button-toggle>
-        <mat-button-toggle value="{{roundType.BACK_9}}">{{roundType.BACK_9}}</mat-button-toggle>
-      </mat-button-toggle-group>
-      <button mat-stroked-button class="wideButton" (click)="submitRoundType()">Next</button>
-    </div>
-  </div>
+  <app-choose-course *ngIf="step === 1" [submitHandler]="submitCourse" [workingSummary]="workingSummary" [courses]="courses"></app-choose-course>
 
-  <div id="dateSelect" class="questionCards" *ngIf="step === 3">
-    <h2>When did you play?</h2>
-    <div class="formContainer">
-      <mat-form-field appearance="fill">
-        <mat-label>Choose a date</mat-label>
-        <input matInput [matDatepicker]="picker" autocomplete="off" [value]="selectedDate"
-          (dateChange)="dateChange($event)">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker touchUi #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
-    <button mat-stroked-button class="wideButton" *ngIf="selectedDate" (click)="submitDate()">Next</button>
-  </div>
+  <app-choose-round-type *ngIf="step === 2" [submitHandler]="submitRoundType" [workingSummary]="workingSummary"></app-choose-round-type>
 
-  <div id="teeboxSelect" class="questionCards" *ngIf="step === 4">
-    <h2>Which teebox did you play from?</h2>
-    <mat-radio-group *ngIf="selectedCourse" class="my-radio-group" aria-label="Select an option"
-      [(ngModel)]="selectedTeebox">
-      <mat-radio-button class="my-radio-button" *ngFor="let box of selectedCourse.TeeBoxes" [value]="box">
-        {{box.Color}}</mat-radio-button>
-    </mat-radio-group>
-    <button mat-stroked-button class="wideButton" *ngIf="selectedTeebox" (click)="submitTeebox()">Next</button>
-  </div>
+  <app-choose-date *ngIf="step === 3" [submitHandler]="submitDate" [workingSummary]="workingSummary"></app-choose-date>
 
-  <div id="scoreInput" class="questionCards" *ngIf="step === 5">
-    <h2>What did you score?</h2>
-    <div class="formContainer">
-      <app-number-picker [inNumber]="selectedScore" (outNumber)="selectScore($event)"></app-number-picker>
-    </div>
-    <button mat-stroked-button class="wideButton" *ngIf="selectedScore > 0" (click)="buildSummary()">Next</button>
-  </div>
+  <app-choose-teebox *ngIf="step === 4" [submitHandler]="submitTeebox" [workingSummary]="workingSummary"></app-choose-teebox>
 
-  <div id="friendSelect" class="questionCards" *ngIf="step === 6">
-    <h2>Did you play with any friends?</h2>
-    <button mat-stroked-button (click)="submitFriendSelect(true)">Yes</button>
-    <button mat-stroked-button (click)="submitFriendSelect(false)">No</button>
-  </div>
+  <app-choose-score *ngIf="step === 5" [submitHandler]="submitScore" [workingSummary]="workingSummary"></app-choose-score>
 
-  <div id="chooseFriends" class="questionCards" *ngIf="step === 7">
-    <h2>Who did you play with?</h2>
-    <mat-list>
-      <!-- TODO: change the style of the selected friends! -->
-      <app-friend-item *ngFor="let friend of friends" [friend]="friend" (click)="selectFriend(friend)"
-        [isSelected]="isFriendSelected(friend)"></app-friend-item>
-    </mat-list>
-    <button mat-stroked-button class="wideButton" (click)="submitFriendList()">Next</button>
-  </div>
+  <app-choose-friends *ngIf="step === 6" [submitHandler]="submitFriendList" [workingSummary]="workingSummary" [skipFriends]="skipFriends"></app-choose-friends>
 
-  <div id="friendScores" class="questionCards" *ngIf="step === 8 && selectedFriends && selectedFriends.length > 0">
-    <h2>How did they play?</h2>
-    <mat-card class="friendScoreCard" *ngFor="let friend of friendSummary">
-      <mat-grid-list cols=2 rowHeight="2:1">
-        <mat-grid-tile>
-          <h4>{{friend.PlayerName}}</h4>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <app-number-picker class="friendScorePicker" [inNumber]="friend.Score"
-            (outNumber)="friendScorePickerHandler(friend, $event)">
-          </app-number-picker>
-        </mat-grid-tile>
-        <mat-grid-tile [colspan]="2">
-          <div class="formContainer">
-            <mat-form-field appearance="fill">
-              <mat-label>Teebox</mat-label>
-              <mat-select [(value)]="friend.TeeboxColor">
-                <mat-option *ngFor="let teebox of selectedCourse.TeeBoxes" [value]="teebox.Color">
-                  {{teebox.Color}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </mat-grid-tile>
-      </mat-grid-list>
-    </mat-card>
-    <button mat-stroked-button class="wideButton" (click)="submitFriendsScores()">
-      Next
-    </button>
-  </div>
+  <app-choose-friends-scores *ngIf="step === 7" [submitHandler]="submitFriendsScores" [workingSummary]="workingSummary"></app-choose-friends-scores>
 
-  <div id="summary" class="questionCards" *ngIf="step === 9">
-    <h2>Summary</h2>
-    <h3>{{summary.CourseName}}</h3>
-    <p>{{summary.PrettyDate}}</p>
-    <mat-card class="scoreSummaryCard">
-      <h4>{{summary.PlayerName}}</h4>
-      <p>{{summary.TeeboxColor}} teebox</p>
-      <p>Score: <b>{{summary.Score}}</b></p>
-      <p>{{selectedRoundType}}</p>
-      <p>{{getParSummary()}}</p>
-    </mat-card>
-    <mat-card class="scoreSummaryCard" *ngFor="let friend of friendSummary">
-      <h4>{{friend.PlayerName}}</h4>
-      <p>{{friend.TeeboxColor}} teebox</p>
-      <p>Score: <b>{{friend.Score}}</b></p>
-      <p>{{friend.RoundType}}</p>
-      <p>{{getParSummary(friend.Score)}}</p>
-    </mat-card>
-    <button mat-stroked-button class="wideButton" (click)="submitFinal()">Submit</button>
-  </div>
+  <app-confirm-summary *ngIf="step === 8" [submitHandler]="submitFinal" [workingSummary]="workingSummary" [summary]="summary" [friendSummary]="friendSummary"></app-confirm-summary>
 
-  <div id="success" class="questionCards" *ngIf="step === 10">
-    <h2>Success!</h2>
-    <p>Your score has been recorded.</p>
-    <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
-  </div>
+  <app-submit-success *ngIf="step === 9" [submitHandler]="goHome"></app-submit-success>
 
-  <div id="failure" class="questionCards" *ngIf="step === -1">
-    <h2>Failure :(</h2>
-    <p>
-      We couldn't submit your score because we couldn't connect to the interwebs.
-    </p>
-    <p>
-      Don't worry, your round has been saved and you can try submitting it again later.
-    </p>
-    <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
-  </div>
+  <app-submit-failure *ngIf="step === -1" [submitHandler]="goHome"></app-submit-failure>
 
 </mat-card>
