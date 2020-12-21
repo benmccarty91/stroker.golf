@@ -3,8 +3,9 @@
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
 
-  <app-choose-course *ngIf="step === 1" [submitHandler]="submitCourse" [workingSummary]="workingSummary"
-    [courses]="courses"></app-choose-course>
+  <!-- This page is a series of child components, driven by the 'step' number. -->
+
+  <app-choose-course *ngIf="step === 1" [submitHandler]="submitCourse" [workingSummary]="workingSummary" [courses]="courses"></app-choose-course>
 
   <app-choose-round-type *ngIf="step === 2" [submitHandler]="submitRoundType" [workingSummary]="workingSummary"></app-choose-round-type>
 
@@ -18,43 +19,10 @@
 
   <app-choose-friends-scores *ngIf="step === 7" [submitHandler]="submitFriendsScores" [workingSummary]="workingSummary"></app-choose-friends-scores>
 
-  <!-- TODO pull summary out of this component-->
-  <div id="summary" class="questionCards" *ngIf="step === 8">
-    <h2>Summary</h2>
-    <h3>{{summary.CourseName}}</h3>
-    <p>{{summary.PrettyDate}}</p>
-    <mat-card class="scoreSummaryCard">
-      <h4>{{summary.PlayerName}}</h4>
-      <p>{{summary.TeeboxColor}} teebox</p>
-      <p>Score: <b>{{summary.Score}}</b></p>
-      <p>{{summary.RoundType}}</p>
-      <p>{{getParSummary(summary.Score)}}</p>
-    </mat-card>
-    <mat-card class="scoreSummaryCard" *ngFor="let friend of friendSummary">
-      <h4>{{friend.PlayerName}}</h4>
-      <p>{{friend.TeeboxColor}} teebox</p>
-      <p>Score: <b>{{friend.Score}}</b></p>
-      <p>{{friend.RoundType}}</p>
-      <p>{{getParSummary(friend.Score)}}</p>
-    </mat-card>
-    <button mat-stroked-button class="wideButton" (click)="submitFinal()">Submit</button>
-  </div>
+  <app-confirm-summary *ngIf="step === 8" [submitHandler]="submitFinal" [workingSummary]="workingSummary" [summary]="summary" [friendSummary]="friendSummary"></app-confirm-summary>
 
-  <div id="success" class="questionCards" *ngIf="step === 9">
-    <h2>Success!</h2>
-    <p>Your score has been recorded.</p>
-    <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
-  </div>
+  <app-submit-success *ngIf="step === 9" [submitHandler]="goHome"></app-submit-success>
 
-  <div id="failure" class="questionCards" *ngIf="step === -1">
-    <h2>Failure :(</h2>
-    <p>
-      We couldn't submit your score because we couldn't connect to the interwebs.
-    </p>
-    <p>
-      Don't worry, your round has been saved and you can try submitting it again later.
-    </p>
-    <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
-  </div>
+  <app-submit-failure *ngIf="step === -1" [submitHandler]="goHome"></app-submit-failure>
 
 </mat-card>

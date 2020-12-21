@@ -57,7 +57,20 @@ export class RecordNewRoundComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.courses = await this.getCourses();
+    this.courseService.getCourses().subscribe(courses => {
+      this.courses = courses.sort((a, b) => {
+        const nameA = a.Name.toUpperCase();
+        const nameB = b.Name.toUpperCase();
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameB < nameA) {
+          return 1;
+        }
+        return 0;
+      });
+      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+    });
   }
 
   public submitCourse = (): void => {
@@ -70,7 +83,7 @@ export class RecordNewRoundComponent implements OnInit {
       });
       this.incrementStep();
       this.pubsubService.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
-      console.log(this.workingSummary);
+      // console.log(this.workingSummary);
     });
   }
 
@@ -87,79 +100,35 @@ export class RecordNewRoundComponent implements OnInit {
         break;
     }
     this.incrementStep();
-    console.log(this.workingSummary);
+    // console.log(this.workingSummary);
   }
 
   public submitDate = (): void => {
-    console.log(this.workingSummary);
     this.incrementStep();
   }
 
   public submitTeebox = (): void => {
-    console.log(this.workingSummary);
     this.incrementStep();
   }
 
   public submitScore = (): void => {
-    console.log(this.workingSummary);
     this.incrementStep();
   }
 
   public skipFriends = (): void => {
-    console.log(this.workingSummary);
     this.workingSummary.friendSummary = null;
     this.buildSummary(2);
   }
 
   public submitFriendList = (): void => {
-    console.log(this.workingSummary);
     this.incrementStep(1);
   }
 
   public submitFriendsScores = (): void => {
-    console.log(this.workingSummary);
     this.buildSummary(1);
   }
 
-  private buildSummary(skipNum: number): void {
-    this.userService.getUser().then(x => {
-      this.summary = {
-        ScoreId: uuid(),
-        CourseId: this.workingSummary.selectedCourseId,
-        CourseName: this.workingSummary.selectedCourse.Name,
-        RoundType: this.workingSummary.selectedRoundType,
-        Date: this.workingSummary.selectedDate.unix(),
-        PrettyDate: this.workingSummary.selectedDate.format(this.DATE_FORMAT),
-        Score: this.workingSummary.selectedScore,
-        RelativeScore: this.getRelativeScore(this.workingSummary.selectedScore, this.workingSummary.selectedCourse),
-        TeeboxColor: this.workingSummary.selectedTeebox.Color,
-        PlayerId: x.id,
-        PlayerName: x.displayName
-      };
-
-      this.friendSummary = [];
-      if (this.workingSummary.friendSummary && this.workingSummary.friendSummary.length > 0) {
-        this.workingSummary.friendSummary.map(y => {
-          this.friendSummary.push({
-            ScoreId: uuid(),
-            CourseId: this.workingSummary.selectedCourseId,
-            CourseName: this.workingSummary.selectedCourse.Name,
-            RoundType: this.workingSummary.selectedRoundType,
-            Date: this.workingSummary.selectedDate.unix(),
-            PrettyDate: this.workingSummary.selectedDate.format(this.DATE_FORMAT),
-            Score: y.Score,
-            RelativeScore: this.getRelativeScore(y.Score, this.workingSummary.selectedCourse),
-            TeeboxColor: y.Teebox.Color,
-            PlayerId: y.Friend.FriendId,
-            PlayerName: y.Friend.Name
-          })
-        })
-      }
-      this.incrementStep(skipNum);
-    });
-  }
-
-  public submitFinal(): void {
+  public submitFinal = (): void => {
     this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
     let scores = new Array<Score>();
     scores.push(this.summary);
@@ -187,71 +156,69 @@ export class RecordNewRoundComponent implements OnInit {
       });
   }
 
-  public goHome(): void {
+  public goHome = (): void => {
     this.router.navigateByUrl('/landing');
   }
-
+  
   public hitBackButton(): void {
     this.decrementStep();
   }
 
   public hideBackButton(): boolean {
-    return this.step === 1
-      // || this.step === 9 // TODO undo this
-      || this.step < 0; // start page or summary page
+    return this.step <= 1
+      || this.step === 9 
   }
 
-  public getParSummary(score?: number): string {
-    let parScore = this.getRelativeScore(score, this.workingSummary.selectedCourse);
-    if (parScore < 0) {
-      parScore = parScore * -1;
-      return `${parScore} under par`;
-    } else if (parScore > 0) {
-      return `${parScore} over par`;
-    } else {
-      return `Even par`;
-    }
-  }
+  private buildSummary(skipNum: number): void {
+    this.userService.getUser().then(x => {
+      this.summary = {
+        ScoreId: uuid(),
+        CourseId: this.workingSummary.selectedCourseId,
+        CourseName: this.workingSummary.selectedCourse.Name,
+        RoundType: this.workingSummary.selectedRoundType,
+        Date: this.workingSummary.selectedDate.unix(),
+        PrettyDate: this.workingSummary.selectedDate.format(this.DATE_FORMAT),
+        Score: this.workingSummary.selectedScore,
+        RelativeScore: ScoreService.getRelativeScore(this.workingSummary.selectedScore, this.workingSummary.selectedCourse),
+        TeeboxColor: this.workingSummary.selectedTeebox.Color,
+        PlayerId: x.id,
+        PlayerName: x.displayName
+      };
 
-  public getRelativeScore(num: number, course: GolfCourse): number {
-    let par = 0;
-    course.Holes.map(x => {
-      par += x.Par;
-    })
-
-    return num - par;
+      this.friendSummary = [];
+      if (this.workingSummary.friendSummary && this.workingSummary.friendSummary.length > 0) {
+        this.workingSummary.friendSummary.map(y => {
+          this.friendSummary.push({
+            ScoreId: uuid(),
+            CourseId: this.workingSummary.selectedCourseId,
+            CourseName: this.workingSummary.selectedCourse.Name,
+            RoundType: this.workingSummary.selectedRoundType,
+            Date: this.workingSummary.selectedDate.unix(),
+            PrettyDate: this.workingSummary.selectedDate.format(this.DATE_FORMAT),
+            Score: y.Score,
+            RelativeScore: ScoreService.getRelativeScore(y.Score, this.workingSummary.selectedCourse),
+            TeeboxColor: y.Teebox.Color,
+            PlayerId: y.Friend.FriendId,
+            PlayerName: y.Friend.Name
+          })
+        })
+      }
+      this.incrementStep(skipNum);
+    });
   }
 
   public get roundType(): typeof RoundType {
     return RoundType;
   }
 
-  // retrieves the list of courses from the api and sorts
-  // the list alphabetically
-  private async getCourses(): Promise<GolfCourse[]> {
-    const list = (await this.courseService.getCourses().toPromise());
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
-    return list.sort((a, b) => {
-      const nameA = a.Name.toUpperCase();
-      const nameB = b.Name.toUpperCase();
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameB < nameA) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
   private incrementStep(inc: number = 1): void {
     this.stepHistory.push(this.step);
     this.step += inc;
-    console.log(`step: ${this.step}`)
+    // console.log(`step: ${this.step}`)
   }
 
   private decrementStep(): void {
     this.step = this.stepHistory.pop();
-    console.log(`step: ${this.step}`)
+    // console.log(`step: ${this.step}`)
   }
 }

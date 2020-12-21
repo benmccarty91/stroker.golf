@@ -66,7 +66,6 @@ export class ChooseFriendsScoresComponent implements OnInit {
 
   public friendScorePickerHandler(score: any, num: number): void {
     score.Score = num;
-    console.log(this.workingSummary);
   }
 
 }
