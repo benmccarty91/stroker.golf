@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { GolfCourse } from 'src/models/GolfCourse';
 import { v4 as uuid } from 'uuid';
+import { NewCourseSummary } from './models/newCourseSummary';
 
 
 @Component({
@@ -11,36 +12,37 @@ import { v4 as uuid } from 'uuid';
 })
 export class CourseComponent implements OnInit {
 
-  public courseFormControl = new FormControl('', [
-    Validators.required
-  ]);
+  public summary: NewCourseSummary;
 
-  public newGolfCourse: GolfCourse;
-  public newGolfCourse_numTeeboxes: number;
-  public newGolfCourse_numHoles: number;
+  public step: number = 1;
+  public stepHistory: number[] = [];
 
   constructor() { }
 
   ngOnInit(): void {
-    this.newGolfCourse = {
-      Id: uuid(),
-      Name: '',
-      StreetAddress: '',
-      City: '',
-      State: '',
-      TeeBoxes: [],
-      Holes: []
-    };
+    this.summary = {
+      newGolfCourse: {
+        Id: uuid(),
+        Name: '',
+        StreetAddress: '',
+        City: '',
+        State: '',
+        TeeBoxes: [],
+        Holes: []
+      },
+      numHoles: undefined,
+      numTeeboxes: undefined
+    }
   }
 
-  public submitMeta(): void {
-    if (this.courseFormControl.valid) {
-      console.log(JSON.stringify(this.newGolfCourse));
-      console.log(this.newGolfCourse_numHoles);
-      console.log(this.newGolfCourse_numTeeboxes);
-    } else {
-      console.log('form invalid');
-    }
+  public incrementStep = (): void => {
+    this.stepHistory.push(this.step);
+    this.step++;
+    console.log(this.summary);
+  }
+
+  public decrementStep = (): void => {
+    this.step = this.stepHistory.pop();
   }
 
 }
