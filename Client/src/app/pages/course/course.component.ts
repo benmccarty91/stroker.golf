@@ -45,4 +45,9 @@ export class CourseComponent implements OnInit {
     this.step = this.stepHistory.pop();
   }
 
+  public submitFinal = (): void => {
+    console.log(this.summary.newGolfCourse);
+    this.incrementStep();
+  }
+
 }

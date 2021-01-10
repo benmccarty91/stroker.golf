@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { GolfCourse } from "src/models/GolfCourse";
 import { NewCourseSummary } from "../models/newCourseSummary";
 
 @Component({
@@ -25,11 +24,11 @@ import { NewCourseSummary } from "../models/newCourseSummary";
       </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>How Many Teeboxes?</mat-label>
-        <input type="number" required matInput name="newGolfCourse_numTeeboxes" [(ngModel)]="newCourseSummary.numTeeboxes">
+        <input type="tel" required matInput name="newGolfCourse_numTeeboxes" [(ngModel)]="newCourseSummary.numTeeboxes">
       </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>How Many Holes?</mat-label>
-        <input type="number" required matInput name="newGolfCourse_numHoles" [(ngModel)]="newCourseSummary.numHoles">
+        <input type="tel" required matInput name="newGolfCourse_numHoles" [(ngModel)]="newCourseSummary.numHoles">
       </mat-form-field>
       <button type="submit" [disabled]="!courseMetaForm.form.valid" mat-stroked-button class="full-width"
         color="primary">Next</button>

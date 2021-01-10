@@ -1,12 +1,14 @@
 <mat-card>
-  <div class="backButton" [hidden]="stepHistory.length < 1">
+  <div class="backButton" [hidden]="stepHistory.length < 1 || step === 5 || step < 0">
     <button mat-mini-fab color="primary" (click)="decrementStep()">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
   </div>
 
 
-  <app-course-meta-form [newCourseSummary]="summary" [submitHandler]="incrementStep"></app-course-meta-form>
-
+  <app-course-meta-form *ngIf="step === 1" [newCourseSummary]="summary" [submitHandler]="incrementStep"></app-course-meta-form>
+  <app-course-teebox-form *ngIf="step === 2" [newCourseSummary]="summary" [submitHandler]="incrementStep"></app-course-teebox-form>
+  <app-course-holes-form *ngIf="step===3" [newCourseSummary]="summary" [submitHandler]="incrementStep"></app-course-holes-form>
+  <app-course-summary *ngIf="step===4" [newCourseSummary]="summary" [submitHandler]="submitFinal"></app-course-summary>
 
 </mat-card>
