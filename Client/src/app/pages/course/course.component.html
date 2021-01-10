@@ -11,4 +11,15 @@
   <app-course-holes-form *ngIf="step===3" [newCourseSummary]="summary" [submitHandler]="incrementStep"></app-course-holes-form>
   <app-course-summary *ngIf="step===4" [newCourseSummary]="summary" [submitHandler]="submitFinal"></app-course-summary>
 
+  <div *ngIf="step===-1">
+    <h2>Submission Failed</h2>
+    <p>{{errorMessage}}</p>
+    <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
+  </div>
+
+  <div *ngIf="step===5">
+    <h2>Success :)</h2>
+    <button mat-stroked-button class="wideButton" (click)="goHome()">Go Home</button>
+  </div>
+
 </mat-card>

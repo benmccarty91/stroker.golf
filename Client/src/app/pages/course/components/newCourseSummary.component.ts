@@ -38,7 +38,7 @@ import { NewCourseSummary } from "../models/newCourseSummary";
         <hr *ngIf="i+1 < newCourseSummary.newGolfCourse.Holes.length">
       </div>
     </mat-card>
-    <button mat-flat-button class="full-width" color="accent">Submit</button>
+    <button mat-flat-button class="full-width" color="accent" (click)="submit()">Submit</button>
   `,
   styles: [
     `
