@@ -34,6 +34,9 @@ router.get('/:courseId', async (req, res) => {
   const courseId = req.params.courseId;
   const course = (await courseCollection.doc(courseId).get()).data() as GolfCourse;
   if (course) {
+    if (!course.Id) {
+      course.Id = courseId;
+    }
     res.status(StatusCodes.OK).send(course);
   } else {
     res.status(StatusCodes.NOT_FOUND).send();
@@ -50,10 +53,9 @@ router.post('/', async (req, res) => {
     functions.logger.info(`New golf course already exists: ${newCourse.Name}|${newCourse.StreetAddress}`);
     res.status(StatusCodes.CONFLICT).send();
   } else {
-  const addedCourse = await courseCollection.add(newCourse);
-  const id = addedCourse.id;
-  functions.logger.info(`Added new course ${id}`);
-  res.status(StatusCodes.CREATED).send({ newCourseId: id });
+  await courseCollection.doc(newCourse.Id).set(newCourse);
+  functions.logger.info(`Added new course ${newCourse.Id}`);
+  res.status(StatusCodes.CREATED).send({ newCourseId: newCourse.Id });
   }
 });
 

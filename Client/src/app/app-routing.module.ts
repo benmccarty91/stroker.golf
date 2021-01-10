@@ -12,6 +12,8 @@ import { FriendsComponent } from './pages/friends/friends.component';
 import { AddFriendComponent } from './pages/friends/add-friend/add-friend.component';
 import { FriendDetailsComponent } from './pages/friends/friend-details/friend-details.component';
 import { PendingScoresComponent } from './pages/pending-scores/pending-scores.component';
+import { CourseModule } from './pages/course/course.module';
+import { CourseComponent } from './pages/course/course.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToLanding = () => redirectLoggedInTo(['landing']);
@@ -69,6 +71,12 @@ const routes: Routes = [
   {
     path: 'friends/:id',
     component: FriendDetailsComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+  },
+  {
+    path: 'course',
+    component: CourseComponent,
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin }
   },

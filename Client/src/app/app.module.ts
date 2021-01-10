@@ -23,6 +23,7 @@ import { RecordNewRoundModule } from './pages/record-new-round/record-new-round.
 import { PastScoresModule } from './pages/past-scores/past-scores.module';
 import { FriendsModule } from './pages/friends/friends.module';
 import { PendingScoresModule } from './pages/pending-scores/pending-scores.module';
+import { CourseModule } from './pages/course/course.module';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { PendingScoresModule } from './pages/pending-scores/pending-scores.modul
     PastScoresModule,
     FriendsModule,
     PendingScoresModule,
+    CourseModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' })
   ],
   providers: [
