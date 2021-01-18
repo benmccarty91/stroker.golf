@@ -105,8 +105,8 @@ router.post('/pending', async (req: any, res, next) => {
   const playerId = req.user.uid;
   const score = req.body as Score;
 
-  await userCollection.doc(playerId).collection('pendingScores').doc(score.ScoreId).delete();
   await userCollection.doc(playerId).collection('score').doc(score.ScoreId).set(score);
+  await userCollection.doc(playerId).collection('pendingScores').doc(score.ScoreId).delete();
 
   return res.status(StatusCodes.OK).send();
 });
