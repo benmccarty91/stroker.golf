@@ -64,6 +64,7 @@ export class CourseComponent implements OnInit {
     this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.courseService.postCourse(this.summary.newGolfCourse).subscribe(
     x => {
+      this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
       this.incrementStep();
     },
     err => {

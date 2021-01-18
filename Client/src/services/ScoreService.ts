@@ -57,9 +57,9 @@ export class ScoreService {
   }
 
   public static getRelativeScore(num: number, course: GolfCourse): number {
-    let par = 0;
+    let par: number = 0;
     course.Holes.map(x => {
-      par += x.Par;
+      par += Number(x.Par);
     })
     return num - par;
   }
