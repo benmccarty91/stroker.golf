@@ -62,4 +62,8 @@ export class UserService {
     };
     await this.apiService.post('/user/register', newUser).subscribe(() => { });
   }
+
+  public getProfile(): Observable<StrokerUser> {
+    return this.apiService.get<StrokerUser>('/user/profile');
+  }
 }

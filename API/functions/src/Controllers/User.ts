@@ -30,4 +30,12 @@ router.post('/register', async (req: any, res) => {
   }
 });
 
+router.get('/profile', async(req: any, res) => { // get full profile data
+  return res.status(StatusCodes.OK).send();
+});
+
+router.put('/profile', async(req: any, res) => { // update profile data
+  return res.status(StatusCodes.OK).send();
+});
+
 module.exports = router;
