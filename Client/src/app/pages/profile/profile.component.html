@@ -4,6 +4,23 @@
       <img class="avatar" src={{user.photoUrl}}>
       <h3>{{user.displayName}}</h3>
       <p>{{user.email}}</p>
+      <mat-card class="sub-card" *ngIf="scores && scores.length > 0">
+        <h3>Score Upload Failures</h3>
+        <p>These scores failed to upload.</p>
+        <mat-card class="scoreSummaryCard" *ngFor="let score of scores">
+          <div class="column">
+            <h4>{{score.PlayerName}}</h4>
+            <p>{{score.CourseName}}</p>
+            <p>{{score.TeeboxColor}} teebox</p>
+            <p>Score: <b>{{score.Score}}</b></p>
+            <p>{{score.RoundType}}</p>
+          </div>
+          <div class="column">
+            <button mat-flat-button color="accent" (click)="upload(score)">Upload</button>
+            <button mat-flat-button color="primary" (click)="delete(score)">Delete</button>
+          </div>
+        </mat-card>
+      </mat-card>
 
     </div>
   </mat-card>

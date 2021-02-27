@@ -8,8 +8,8 @@
     <img class="logo" src="../../assets/images/stroker-logos/logo_white.svg" />
   </div>
   <button *ngIf="loggedIn" mat-button id="profileButon" (click)="profileClicked()">
-    <mat-icon matBadge="!" matBadgeSize="small" matBadgeOverlap="true" matBadgeHidden="true" matBadgeColor="accent"
-      matBadgePosition="after">
+    <mat-icon [matBadge]="profileBadgeIcon" matBadgeSize="small" matBadgeOverlap="true"
+      [matBadgeHidden]="!profileBadgeIcon" matBadgeColor="accent" matBadgePosition="after">
       perm_identity</mat-icon>
   </button>
 </mat-toolbar>

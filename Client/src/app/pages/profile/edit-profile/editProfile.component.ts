@@ -54,7 +54,7 @@ import { ChangePhotoDialogComponent } from './changePhoto.dialog';
   }
 
   .profile_fab {
-    position: absolute;
+    position: fixed;
     bottom: 15px;
     right: 15px;
   }

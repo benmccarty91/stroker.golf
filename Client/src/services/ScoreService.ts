@@ -44,6 +44,12 @@ export class ScoreService {
     }
   }
 
+  postScore(score: Score): Observable<any> {
+    const scores = new Array<Score>();
+    scores.push(score);
+    return this.postScores(scores);
+  }
+
   public static getParSummary(score: number, course: GolfCourse): string {
     let parScore = ScoreService.getRelativeScore(score, course);
     if (parScore < 0) {

@@ -4,10 +4,32 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+
+  .sub-card {
+    width: 92%;
+    * {
+      margin: 0;
+    }
+    h3 {
+      margin-bottom: 5px;
+    }
+    .scoreSummaryCard {
+      margin: 5px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .column {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+    }
+  }
 }
 
 .profile_fab {
-  position: absolute;
+  position: fixed;
   bottom: 15px;
   right: 15px;
 }
