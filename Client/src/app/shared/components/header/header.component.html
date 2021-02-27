@@ -7,7 +7,7 @@
   <div id="logo_wrapper">
     <img class="logo" src="../../assets/images/stroker-logos/logo_white.svg" />
   </div>
-  <button mat-button id="profileButon" (click)="profileClicked()">
+  <button *ngIf="loggedIn" mat-button id="profileButon" (click)="profileClicked()">
     <mat-icon matBadge="!" matBadgeSize="small" matBadgeOverlap="true" matBadgeHidden="true" matBadgeColor="accent"
       matBadgePosition="after">
       perm_identity</mat-icon>
