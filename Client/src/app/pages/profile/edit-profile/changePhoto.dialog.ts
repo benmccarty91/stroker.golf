@@ -9,7 +9,7 @@ import { PubSubService } from 'src/services/PubSubService';
     <div id="flexContainer">
       <img *ngIf="newImageUrl" src={{newImageUrl}} class="avatar" />
       <button mat-flat-button color="primary" (click)="fileInput.click()">Choose Photo</button>
-      <input hidden (change)="onFileSelected($event)" #fileInput type="file" id="file">
+      <input hidden (change)="onFileSelected($event)" #fileInput type="file" id="file" accept="image/png, image/jpeg">
       <div id="rowContainer">
         <button *ngIf="newImageUrl" mat-flat-button color="accent" (click)="submit()">Submit</button>
         <button *ngIf="newImageUrl" mat-stroked-button color="primary" (click)="cancel()">Cancel</button>
