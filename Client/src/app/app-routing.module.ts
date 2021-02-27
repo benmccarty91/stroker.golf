@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LandingComponent } from 'src/app/pages/landing/landing.component';
 import { LoginComponent } from 'src/app/pages/login/login.component';
-import { TestComponent } from 'src/app/pages/test/test.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { AuthRedirectGuard } from './route-guards/login-redirect-route-guard';
 import { RecordNewRoundComponent } from './pages/record-new-round/record-new-round.component';
@@ -12,8 +11,9 @@ import { FriendsComponent } from './pages/friends/friends.component';
 import { AddFriendComponent } from './pages/friends/add-friend/add-friend.component';
 import { FriendDetailsComponent } from './pages/friends/friend-details/friend-details.component';
 import { PendingScoresComponent } from './pages/pending-scores/pending-scores.component';
-import { CourseModule } from './pages/course/course.module';
 import { CourseComponent } from './pages/course/course.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { EditProfileComponent } from './pages/profile/edit-profile/editProfile.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToLanding = () => redirectLoggedInTo(['landing']);
@@ -77,6 +77,18 @@ const routes: Routes = [
   {
     path: 'course',
     component: CourseComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+  },
+  {
+    path: 'profile/edit',
+    component: EditProfileComponent,
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin }
   },

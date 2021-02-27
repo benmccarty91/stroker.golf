@@ -142,18 +142,18 @@ export class RecordNewRoundComponent implements OnInit {
   public goHome = (): void => {
     this.router.navigateByUrl('/landing');
   }
-  
+
   public hitBackButton(): void {
     this.decrementStep();
   }
 
   public hideBackButton(): boolean {
     return this.step <= 1
-      || this.step === 9 
+      || this.step === 9
   }
 
   private buildSummary(skipNum: number): void {
-    this.userService.getUser().then(x => {
+    this.userService.getUser().subscribe(x => {
       this.summary = {
         ScoreId: uuid(),
         CourseId: this.workingSummary.selectedCourseId,
