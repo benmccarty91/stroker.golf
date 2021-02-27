@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CONSTS } from 'src/assets/CONSTS';
+import { StrokerUser } from 'src/models/StrokerUser';
+import { PubSubService } from 'src/services/PubSubService';
+import { UserService } from 'src/services/UserService';
 
 @Component({
   selector: 'app-profile',
@@ -7,9 +12,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileComponent implements OnInit {
 
-  constructor() { }
+  public loading: Boolean = true;
+  public user: StrokerUser;
+
+  constructor(
+    private userService: UserService,
+    private pubSub: PubSubService,
+    private consts: CONSTS,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
+    this.userService.getUser().then(user => {
+      this.user = user;
+      this.loading = false;
+    });
+  }
+
+  public async editFabClicked(): Promise<void> {
+    await this.router.navigateByUrl('/profile/edit')
   }
 
 }

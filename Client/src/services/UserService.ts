@@ -19,16 +19,6 @@ export class UserService {
     private apiService: ApiService
   ) { }
 
-  public async saveUser(user: User): Promise<void> {
-    const newUser: StrokerUser = {
-      id: user.uid,
-      displayName: user.displayName,
-      email: user.email,
-      photoUrl: user.photoURL
-    };
-    return await this.storageService.set(this.consts.APP_DATA.USER, newUser).toPromise();
-  }
-
   public async getUser(): Promise<StrokerUser> {
     const fireUser = await this.fireAuth.user.pipe(first()).toPromise();
     if (!fireUser) { return null; }
@@ -39,12 +29,6 @@ export class UserService {
       photoUrl: fireUser.photoURL
     };
     return strokerUser;
-  }
-
-  public async getApiToken(): Promise<string> {
-    const fireUser = await this.fireAuth.user.pipe(first()).toPromise();
-    const token = await fireUser.getIdToken();
-    return token;
   }
 
   public async getUserId(): Promise<string> {
@@ -65,5 +49,9 @@ export class UserService {
 
   public getProfile(): Observable<StrokerUser> {
     return this.apiService.get<StrokerUser>('/user/profile');
+  }
+
+  public updateProfile(newUser: StrokerUser): Observable<void> {
+    return this.apiService.post('/user/profile', newUser);
   }
 }

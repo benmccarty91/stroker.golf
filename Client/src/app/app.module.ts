@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireStorageModule } from "@angular/fire/storage";
 import { environment } from 'src/environments/environment';
 import { LoginModule } from 'src/app/pages/login/login.module';
 import { LandingModule } from 'src/app/pages/landing/landing.module';
@@ -24,6 +25,7 @@ import { PastScoresModule } from './pages/past-scores/past-scores.module';
 import { FriendsModule } from './pages/friends/friends.module';
 import { PendingScoresModule } from './pages/pending-scores/pending-scores.module';
 import { CourseModule } from './pages/course/course.module';
+import { ProfileModule } from './pages/profile/profile.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { CourseModule } from './pages/course/course.module';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    AngularFireStorageModule,
     LoginModule,
     LandingModule,
     BrowserAnimationsModule,
@@ -48,6 +51,7 @@ import { CourseModule } from './pages/course/course.module';
     FriendsModule,
     PendingScoresModule,
     CourseModule,
+    ProfileModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' })
   ],
   providers: [

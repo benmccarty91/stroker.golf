@@ -1,1 +1,14 @@
-<p>profile works!</p>
+<div *ngIf="!loading">
+  <mat-card>
+    <div id="flowContainer">
+      <img class="avatar" src={{user.photoUrl}}>
+      <h3>{{user.displayName}}</h3>
+      <p>{{user.email}}</p>
+
+    </div>
+  </mat-card>
+
+  <button mat-fab class="profile_fab" color="accent" (click)="editFabClicked()">
+    <mat-icon>mode_edit</mat-icon>
+  </button>
+</div>
