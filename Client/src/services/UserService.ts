@@ -29,6 +29,11 @@ export class UserService {
     });
   }
 
+  public async isLoggedIn(): Promise<boolean> {
+    const user = await this.fireAuth.currentUser;
+    return user ? true : false;
+  }
+
   // somehow, and I don't know how, but cached_user is getting updated
   // after you edit the profile.  That shouldn't be happening, but
   // somehow it is.  Maybe it's just the debugger?  If the cahced_user
