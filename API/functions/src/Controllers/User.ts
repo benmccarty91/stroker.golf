@@ -54,12 +54,28 @@ router.put('/profile', async (req: any, res) => { // update profile data
     updatedUser.photoUrl = 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png';
   }
 
+  const batch = db.batch(); //setup batch
+
+  //unfortunately, we have to read all the frend docs in order to get their refs
+  const friendRefs = await db.collectionGroup('friend').where('FriendId', '==', userId).get();
+  friendRefs.forEach(rec => {
+    batch.update(rec.ref, {
+      "Name": updatedUser.displayName,
+      "Email": updatedUser.email,
+      "PhotoUrl": updatedUser.photoUrl
+    });
+  })
+
+  //add our 'self' to the batch of udates
   const userRef = userCollection.doc(userId);
-  await userRef.update({
+  batch.update(userCollection.doc(userId), {
     "displayName": updatedUser.displayName,
     "email": updatedUser.email,
     "photoUrl": updatedUser.photoUrl
-  })
+  });
+
+  //execute the updates
+  await batch.commit();
 
   return res.status(StatusCodes.OK).send();
 });
