@@ -4,5 +4,12 @@
     <mat-icon>menu</mat-icon>
   </button>
 
-  <img class="logo" src="../../assets/images/stroker-logos/logo_white.svg" />
+  <div id="logo_wrapper">
+    <img class="logo" src="../../assets/images/stroker-logos/logo_white.svg" />
+  </div>
+  <button mat-button id="profileButon" (click)="profileClicked()">
+    <mat-icon matBadge="!" matBadgeSize="small" matBadgeOverlap="true" matBadgeHidden="true" matBadgeColor="accent"
+      matBadgePosition="after">
+      perm_identity</mat-icon>
+  </button>
 </mat-toolbar>
