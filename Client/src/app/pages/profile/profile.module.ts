@@ -4,6 +4,7 @@ import { ProfileComponent } from './profile.component';
 import { MaterialModule } from 'src/app/shared/material.module';
 import { EditProfileComponent } from './edit-profile/editProfile.component';
 import { ChangePhotoDialogComponent } from './edit-profile/changePhoto.dialog';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -11,7 +12,8 @@ import { ChangePhotoDialogComponent } from './edit-profile/changePhoto.dialog';
   declarations: [ProfileComponent, EditProfileComponent, ChangePhotoDialogComponent],
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    ReactiveFormsModule
   ]
 })
 export class ProfileModule { }

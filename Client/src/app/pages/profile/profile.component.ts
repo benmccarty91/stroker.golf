@@ -23,9 +23,10 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userService.getUser().then(user => {
+    this.userService.getUser().subscribe(user => {
       this.user = user;
       this.loading = false;
+      this.pubSub.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     });
   }
 

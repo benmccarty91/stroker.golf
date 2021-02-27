@@ -93,7 +93,7 @@ export class FriendDetailsComponent implements OnInit {
     const id = this.location.path().split('/').reverse().shift();
     this.friendService.getSelectedFriend(id).subscribe(friend => {
       this.friend = friend as Friend;
-      this.userService.getUser().then(user => {
+      this.userService.getUser().subscribe(user => {
         this.self = user;
         this.loading = false;
         this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);

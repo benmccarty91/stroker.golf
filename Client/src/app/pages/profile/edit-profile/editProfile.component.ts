@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { from, Observable, of } from 'rxjs';
@@ -20,11 +22,18 @@ import { ChangePhotoDialogComponent } from './changePhoto.dialog';
         <button mat-flat-button color="primary" (click)="photoDialog()">Change Photo</button>
         <mat-form-field class="full-width">
           <mat-label>Name</mat-label>
-          <input type="text" matInput [(ngModel)]="user.displayName">
+          <input type="text" matInput [(ngModel)]="user.displayName" autocomplete="off">
         </mat-form-field>
         <mat-form-field class="full-width">
-          <mat-label>Email</mat-label>
-          <input type="email" matInput [(ngModel)]="user.email">
+          <mat-label>Email Address</mat-label>
+          <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+            [(ngModel)]="user.email" autocomplete="off">
+          <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+            Please enter a valid email address
+          </mat-error>
+          <mat-error *ngIf="emailFormControl.hasError('required')">
+            Email is <strong>required</strong>
+          </mat-error>
         </mat-form-field>
 
       </div>
@@ -64,6 +73,13 @@ import { ChangePhotoDialogComponent } from './changePhoto.dialog';
 })
 export class EditProfileComponent implements OnInit {
 
+  emailFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
+
+  matcher = new MyErrorStateMatcher();
+
   public loading: Boolean = true;
   public user: StrokerUser;
 
@@ -79,7 +95,7 @@ export class EditProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userService.getUser().then(user => {
+    this.userService.getUser().subscribe(user => {
       this.user = user;
       this.loading = false;
       this.pubSub.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
@@ -118,7 +134,12 @@ export class EditProfileComponent implements OnInit {
       }
       this.userService.updateProfile(this.user).subscribe(() => {
         this.router.navigateByUrl('/profile');
-      });
+      },
+        (err) => {
+          alert('an error occured');
+          console.error(err);
+          this.pubSub.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+        });
     })
   }
 
@@ -135,4 +156,11 @@ export class EditProfileComponent implements OnInit {
     );
   }
 
+}
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
 }

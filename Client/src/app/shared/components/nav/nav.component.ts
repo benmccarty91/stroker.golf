@@ -79,7 +79,7 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   private async isUserInitiallyLoggedIn(): Promise<boolean> {
-    const user = await this.userService.getUser();
+    const user = await this.userService.getUser().toPromise();
     return user ? true : false;
   }
 }
