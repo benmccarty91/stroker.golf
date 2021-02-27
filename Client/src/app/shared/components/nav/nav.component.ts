@@ -4,7 +4,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { loggedIn } from '@angular/fire/auth-guard';
 import { NavigationEnd, Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AppComponent } from 'src/app/app.component';
 import { CONSTS } from 'src/assets/CONSTS';
@@ -41,10 +41,8 @@ export class NavComponent implements OnInit, OnDestroy {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.isLoggedIn = await this.isUserInitiallyLoggedIn();
+    this.userService.isLoggedIn().subscribe(x => this.isLoggedIn = x);
     this.currentRoute = this.location.path();
-    this.$logIn = this.pubSubService.$sub(this.consts.EVENTS.LOGGED_IN).subscribe(() => this.isLoggedIn = true);
-    this.$logOut = this.pubSubService.$sub(this.consts.EVENTS.LOGGED_OUT).subscribe(() => this.isLoggedIn = false);
     this.$navEnd = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(_ => this.currentRoute = this.location.path());
@@ -78,7 +76,7 @@ export class NavComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async isUserInitiallyLoggedIn(): Promise<boolean> {
-    return await this.userService.isLoggedIn();
+  private isUserInitiallyLoggedIn(): Observable<boolean> {
+    return this.userService.isLoggedIn();
   }
 }

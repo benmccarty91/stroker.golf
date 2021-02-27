@@ -23,15 +23,9 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userService.isLoggedIn().then(x => {
+    this.userService.isLoggedIn().subscribe(x => {
       this.loggedIn = x;
-    })
-    this.pubSub.$sub(this.consts.EVENTS.LOGGED_OUT).subscribe(x => {
-      this.loggedIn = false;
     });
-    this.pubSub.$sub(this.consts.EVENTS.LOGGED_IN).subscribe(x => {
-      this.loggedIn = true;
-    })
   }
 
   profileClicked(): void {

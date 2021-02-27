@@ -29,9 +29,12 @@ export class UserService {
     });
   }
 
-  public async isLoggedIn(): Promise<boolean> {
-    const user = await this.fireAuth.currentUser;
-    return user ? true : false;
+  public isLoggedIn(): Observable<boolean> {
+    return this.fireAuth.user.pipe(
+      map(user => {
+        return user ? true : false;
+      })
+    );
   }
 
   // somehow, and I don't know how, but cached_user is getting updated
