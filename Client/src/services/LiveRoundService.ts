@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { LiveRound } from 'src/models/LiveRound';
 import { UserService } from './UserService';
 
 @Injectable({
@@ -7,18 +10,36 @@ import { UserService } from './UserService';
 })
 export class LiveRoundService {
 
-  private activeLiveRound: AngularFirestoreDocument;
-  private userId: string;
+  private activeLiveRound: Observable<LiveRound>;
+  private activeLiveRoundDoc: AngularFirestoreDocument<LiveRound>;
+  private $hasLiveRoundSubject: BehaviorSubject<boolean>;
 
   constructor(
-    private fireStore: AngularFirestore,
-    private userService: UserService
+    fireStore: AngularFirestore,
+    userService: UserService
   ){
+    this.$hasLiveRoundSubject = new BehaviorSubject<boolean>(false);
     userService.getUserId().then(userId => {
-      this.userId = userId;
-      this.activeLiveRound = fireStore.collection('live_rounds').doc(userId);
-      console.log(this.activeLiveRound);
+      this.activeLiveRoundDoc = fireStore.collection('live_rounds').doc<LiveRound>(userId);
+      this.activeLiveRound = this.activeLiveRoundDoc.valueChanges().pipe(
+        tap(round => {
+          if (round) {
+            this.$hasLiveRoundSubject.next(true);
+          } else {
+            this.$hasLiveRoundSubject.next(false);
+          }
+          console.log(round);
+        })
+      );
     });
+  }
+
+  public getActiveRound(): Observable<LiveRound> {
+    return this.activeLiveRound;
+  }
+
+  public hasActiveRound(): Observable<boolean> {
+    return this.$hasLiveRoundSubject.asObservable();
   }
 
 }

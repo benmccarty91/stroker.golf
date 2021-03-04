@@ -6,6 +6,7 @@ import { CONSTS } from 'src/assets/CONSTS';
 import { Score } from 'src/models/Score';
 import { StrokerUser } from 'src/models/StrokerUser';
 import { FriendService } from 'src/services/FriendService';
+import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
 import { ScoreService } from 'src/services/ScoreService';
 import { UserService } from 'src/services/UserService';
@@ -22,6 +23,7 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
 
   public pendingFriends: string;
   public pendingScores: Score[];
+  public activeLiveRound: boolean;
 
   constructor(
     private userService: UserService,
@@ -31,6 +33,7 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
     private storageService: StorageMap,
     private pubsubService: PubSubService,
     private consts: CONSTS,
+    private liveRoundService: LiveRoundService
   ) {
     super(pubsubService, consts);
   }
@@ -50,6 +53,9 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
         });
       });
     });
+    this.liveRoundService.hasActiveRound().subscribe(x => {
+      this.activeLiveRound = x;
+    })
   }
 
   handleLink(path: string): void {

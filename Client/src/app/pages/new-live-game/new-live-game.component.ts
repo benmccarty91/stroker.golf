@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BASE_PAGE } from 'src/app/shared/BasePage';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CONSTS } from 'src/assets/CONSTS';
+import { LiveRound } from 'src/models/LiveRound';
+import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
 
 @Component({
@@ -8,16 +10,45 @@ import { PubSubService } from 'src/services/PubSubService';
   templateUrl: './new-live-game.component.html',
   styleUrls: ['./new-live-game.component.scss']
 })
-export class NewLiveGameComponent extends BASE_PAGE implements OnInit {
+export class NewLiveGameComponent implements OnInit {
+
+  public activeLiveRound: LiveRound;
+  public creatingGame: boolean = false;
 
   constructor(
     private pubsubService: PubSubService,
-    private consts: CONSTS
+    private consts: CONSTS,
+    private liveRoundService: LiveRoundService,
+    private dialog: MatDialog,
   ) {
-    super(pubsubService, consts);
   }
 
   ngOnInit(): void {
+    this.liveRoundService.getActiveRound().subscribe(x => {
+      this.activeLiveRound = x;
+      this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
+    });
   }
 
+  newGameClicked(): void {
+    this.creatingGame = true;
+
+  }
+
+  friendsGameButtonClicked(): void {
+    this.dialog.open(NotImplementedYetComponent);
+  }
+
+}
+
+
+@Component({
+  template: `
+  <h3>Doesn't work yet :(</h3>
+  `
+})
+export class NotImplementedYetComponent {
+  constructor(
+    public dialogRef: MatDialogRef<NotImplementedYetComponent>,
+  ) {}
 }

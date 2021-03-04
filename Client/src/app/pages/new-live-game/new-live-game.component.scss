@@ -1,0 +1,16 @@
+.liveRoundFab {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+}
+
+mat-card {
+
+  display: flex;
+  flex-direction: column;
+
+  .column_div {
+    display: flex;
+    flex-direction: column;
+  }
+}

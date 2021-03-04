@@ -1,1 +1,21 @@
-<p>new-live-game works!</p>
+
+<mat-card>
+  <h3>Live Game</h3>
+
+  <div *ngIf="!activeLiveRound && !creatingGame" class="column_div">
+    <p>You're not currently hosting a game.</p>
+    <button mat-stroked-button color="accent" class="wideButton" (click)="friendsGameButtonClicked()">Join a Friend's Game</button>
+  </div>
+
+  <div *ngIf="!activeLiveRound && creatingGame" class="column_div">
+
+  </div>
+
+
+
+
+</mat-card>
+
+<button mat-fab class="liveRoundFab" color="accent" *ngIf="!activeLiveRound && !creatingGame" (click)="newGameClicked()">
+  <mat-icon>golf_course</mat-icon>
+</button>
