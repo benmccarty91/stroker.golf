@@ -26,6 +26,7 @@ import { FriendsModule } from './pages/friends/friends.module';
 import { PendingScoresModule } from './pages/pending-scores/pending-scores.module';
 import { CourseModule } from './pages/course/course.module';
 import { ProfileModule } from './pages/profile/profile.module';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ProfileModule } from './pages/profile/profile.module';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireStorageModule,
+    AngularFirestoreModule.enablePersistence(),
     LoginModule,
     LandingModule,
     BrowserAnimationsModule,
