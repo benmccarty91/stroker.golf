@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { CONSTS } from 'src/assets/CONSTS';
 import { LiveRound } from 'src/models/LiveRound';
 import { LiveRoundService } from 'src/services/LiveRoundService';
@@ -10,10 +11,11 @@ import { PubSubService } from 'src/services/PubSubService';
   templateUrl: './new-live-game.component.html',
   styleUrls: ['./new-live-game.component.scss']
 })
-export class NewLiveGameComponent implements OnInit {
+export class NewLiveGameComponent implements OnInit, OnDestroy {
 
   public activeLiveRound: LiveRound;
   public creatingGame: boolean = false;
+  private $activeLiveRound: Subscription;
 
   constructor(
     private pubsubService: PubSubService,
@@ -24,10 +26,14 @@ export class NewLiveGameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.liveRoundService.getActiveRound().subscribe(x => {
+    this.$activeLiveRound = this.liveRoundService.getActiveRound().subscribe(x => {
       this.activeLiveRound = x;
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.$activeLiveRound.unsubscribe();
   }
 
   newGameClicked(): void {
