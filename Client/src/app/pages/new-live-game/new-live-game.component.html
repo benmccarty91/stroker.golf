@@ -7,9 +7,7 @@
     <button mat-stroked-button color="accent" class="wideButton" (click)="friendsGameButtonClicked()">Join a Friend's Game</button>
   </div>
 
-  <div *ngIf="!activeLiveRound && creatingGame" class="column_div">
-
-  </div>
+  <app-create-live-round *ngIf="!activeLiveRound && creatingGame" [submitHandler]="submitNewGame" [cancelHandler]="cancelCreate"></app-create-live-round>
 
 
 

@@ -13,4 +13,15 @@ mat-card {
     display: flex;
     flex-direction: column;
   }
+
+  .row_div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .half_width_button {
+    margin-top: 15px;
+    width: 45%;
+  }
 }

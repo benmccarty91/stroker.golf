@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { LiveRound } from 'src/models/LiveRound';
@@ -18,9 +18,8 @@ export class LiveRoundService {
   constructor(
     private fireStore: AngularFirestore,
     private userService: UserService
-  ){
+  ) {
     this.$hasLiveRoundSubject = new BehaviorSubject<boolean>(false);
-
     this.setupSubs();
   }
 
@@ -48,7 +47,7 @@ export class LiveRoundService {
           this.userId = userId;
           this.activeLiveRoundDoc = this.fireStore.collection('live_rounds').doc<LiveRound>(this.userId);
           return this.activeLiveRoundDoc.valueChanges();
-        } 
+        }
         else {
           throw Error(ERROR_CODES.NO_USER_ID);
         }
@@ -59,7 +58,7 @@ export class LiveRoundService {
         } else {
           this.$hasLiveRoundSubject.next(false);
         }
-        console.log(round);        
+        console.log(round);
       }),
       catchError(err => {
         if (err.message === ERROR_CODES.NO_USER || err.message === ERROR_CODES.NO_USER_ID) {

@@ -2,7 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { CONSTS } from 'src/assets/CONSTS';
+import { GolfCourse } from 'src/models/GolfCourse';
 import { LiveRound } from 'src/models/LiveRound';
+import { CourseService } from 'src/services/CourseService';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
 
@@ -15,6 +17,7 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
 
   public activeLiveRound: LiveRound;
   public creatingGame: boolean = false;
+
   private $activeLiveRound: Subscription;
 
   constructor(
@@ -25,25 +28,35 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.$activeLiveRound = this.liveRoundService.getActiveRound().subscribe(x => {
       this.activeLiveRound = x;
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.$activeLiveRound.unsubscribe();
   }
 
-  newGameClicked(): void {
+  public newGameClicked(): void {
+    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
     this.creatingGame = true;
-
   }
 
-  friendsGameButtonClicked(): void {
+  public friendsGameButtonClicked(): void {
     this.dialog.open(NotImplementedYetComponent);
   }
+
+  public cancelCreate = () => {
+    this.creatingGame = false;
+  }
+
+  public submitNewGame = (data: any): void => {
+    console.log(data);
+  }
+
+
 
 }
 
@@ -56,5 +69,5 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
 export class NotImplementedYetComponent {
   constructor(
     public dialogRef: MatDialogRef<NotImplementedYetComponent>,
-  ) {}
+  ) { }
 }
