@@ -5,7 +5,6 @@ import { LoginComponent } from 'src/app/pages/login/login.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { AuthRedirectGuard } from './route-guards/login-redirect-route-guard';
 import { RecordNewRoundComponent } from './pages/record-new-round/record-new-round.component';
-import { NewLiveGameComponent } from './pages/new-live-game/new-live-game.component';
 import { PastScoresComponent } from './pages/past-scores/past-scores.component';
 import { FriendsComponent } from './pages/friends/friends.component';
 import { AddFriendComponent } from './pages/friends/add-friend/add-friend.component';
@@ -40,9 +39,9 @@ const routes: Routes = [
   },
   {
     path: 'liveGame',
-    component: NewLiveGameComponent,
     canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin }
+    data: { authGuardPipe: redirectUnauthorizedToLogin },
+    loadChildren: () => import('src/app/pages/live-game/live-game.module').then(m => m.LiveGameModule)
   },
   {
     path: 'scores',

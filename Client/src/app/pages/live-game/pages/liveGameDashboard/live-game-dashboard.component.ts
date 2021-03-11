@@ -1,32 +1,29 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CONSTS } from 'src/assets/CONSTS';
-import { GolfCourse } from 'src/models/GolfCourse';
 import { LiveRound } from 'src/models/LiveRound';
-import { CourseService } from 'src/services/CourseService';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
 
 @Component({
-  selector: 'app-new-live-game',
-  templateUrl: './new-live-game.component.html',
-  styleUrls: ['./new-live-game.component.scss']
+  templateUrl: './live-game-dashboard.component.html',
+  styleUrls: ['./live-game-dashboard.component.scss'],
+  selector: 'app-live-game-dashboard'
 })
-export class NewLiveGameComponent implements OnInit, OnDestroy {
-
+export class LiveGameDashboard implements OnInit, OnDestroy {
   public activeLiveRound: LiveRound;
-  public creatingGame: boolean = false;
-
   private $activeLiveRound: Subscription;
 
+
   constructor(
+    private liveRoundService: LiveRoundService,
     private pubsubService: PubSubService,
     private consts: CONSTS,
-    private liveRoundService: LiveRoundService,
     private dialog: MatDialog,
-  ) {
-  }
+    private router: Router,
+  ) {}
 
   public ngOnInit(): void {
     this.$activeLiveRound = this.liveRoundService.getActiveRound().subscribe(x => {
@@ -39,27 +36,16 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
     this.$activeLiveRound.unsubscribe();
   }
 
-  public newGameClicked(): void {
-    this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    this.creatingGame = true;
+  public fabClicked(): void {
+    if (!this.activeLiveRound) { //button creates a new game
+      this.router.navigateByUrl('/liveGame/newGame');
+    }
   }
 
   public friendsGameButtonClicked(): void {
     this.dialog.open(NotImplementedYetComponent);
   }
-
-  public cancelCreate = () => {
-    this.creatingGame = false;
-  }
-
-  public submitNewGame = (data: any): void => {
-    console.log(data);
-  }
-
-
-
 }
-
 
 @Component({
   template: `

@@ -1,0 +1,18 @@
+
+<mat-card>
+  <div class="row_div">
+    <button mat-mini-fab color="primary" [ngClass]="{'hidden': hideBackButton()}" (click)="hitBackButton()">
+      <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
+    <h2 class="page_header">Live Game</h2>
+  </div>
+
+  <div class="column_div" *ngIf="!loading">
+    <app-choose-course *ngIf="step === 1" [courses]="courses" [workingSummary]="workingSummary" [submitHandler]="courseSumbit"></app-choose-course>
+    <app-choose-teebox *ngIf="step === 2" [workingSummary]="workingSummary" [submitHandler]="teeboxSubmit"></app-choose-teebox>
+    <app-choose-friends *ngIf="step === 3" [workingSummary]="workingSummary" [submitHandler]="submitFriends" [skipFriends]="skipFriends"></app-choose-friends>
+    <app-live-game-friend-teebox-select *ngIf="step === 4" [workingSummary]="workingSummary" [submitHandler]="submitFriendTeebox"></app-live-game-friend-teebox-select>
+    <app-live-game-create-summary *ngIf="step === 5" [workingSummary]="workingSummary" (submit)="submitSummary($event)"></app-live-game-create-summary>
+  </div>
+
+</mat-card>

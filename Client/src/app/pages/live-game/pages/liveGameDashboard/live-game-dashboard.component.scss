@@ -9,6 +9,10 @@ mat-card {
   display: flex;
   flex-direction: column;
 
+  p {
+    margin-top: 0;
+  }
+
   .column_div {
     display: flex;
     flex-direction: column;

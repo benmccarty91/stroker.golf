@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { asapScheduler, Observable, of, scheduled } from 'rxjs';
-import { catchError, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
 import { ApiService } from './ApiService';
@@ -17,7 +17,19 @@ export class CourseService {
   ) { }
 
   public getCourses(): Observable<GolfCourse[]> {
-    return this.apiService.get<GolfCourse[]>('/course');
+    return this.apiService.get<GolfCourse[]>('/course').pipe(
+      map(courses => courses.sort((a,b)=> {
+        const nameA = a.Name.toUpperCase();
+        const nameB = b.Name.toUpperCase();
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameB < nameA) {
+          return 1;
+        }
+        return 0;
+      }))
+    );
   }
 
   public getCourse(id: string): Observable<GolfCourse> {
