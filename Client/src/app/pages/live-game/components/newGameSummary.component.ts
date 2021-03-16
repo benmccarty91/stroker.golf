@@ -12,14 +12,50 @@ import { StrokerUser } from 'src/models/StrokerUser';
 @Component({
   selector: 'app-live-game-create-summary',
   template: `
-    <p>summary</p>
+    <div class="column_div" *ngIf="liveRound">
+      <h3>{{liveRound.Course.Name}}</h3>
+      <mat-card class="column_div" *ngFor="let player of liveRound.Players">
+        <div class="row_div">
+          <img src="{{player.PhotoUrl}}" class="avatar" />
+          <div class="column_div content">
+            <h2>{{player.PlayerName}}</h2>
+            <p>Teebox: {{player.Teebox.Color}}</p>
+          </div>
+        </div>
+      </mat-card>
+      <button mat-stroked-button color="accent" (click)="submit.next(liveRound)">Start Game</button>
+    </div>
   `,
   styles: [`
-  
+    * {
+      margin: 0;
+    }
+    .avatar {
+      min-width: 75px;
+      min-height: 75px;
+      max-width: 75px;
+      max-height: 75px;
+      margin: 
+    }
+    mat-card {
+      margin: 10px 0 10px 0;
+    }
+    .column_div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+    }
+    .row_div {
+      display: flex;
+      flex-direction: row;
+    }
+    .content {
+      padding: 0 0 0 15px;
+    }
   `]
 })
 export class NewGameSummary implements OnInit {
-  
+
   @Input() workingSummary: any;
   @Output() submit = new EventEmitter<any>();
 
@@ -32,46 +68,44 @@ export class NewGameSummary implements OnInit {
     private consts: CONSTS,
     private userService: UserService
   ) {
-   }
-
-  public async ngOnInit(): Promise<void> {
-    console.log(this.workingSummary);
-
-    this.pubsub.$pub(this.consts.EVENTS.PAGE_LOAD_START);
-    const user = await this.userService.getUser().toPromise();
-    this.liveRound = this.buildLiveRound(user);
-    this.pubsub.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
-    console.log(this.liveRound);
   }
 
-  private buildLiveRound(user: StrokerUser): LiveRound {
+  public async ngOnInit(): Promise<void> {
+    const user = await this.userService.getUser().toPromise();
+    this.liveRound = this.buildLiveRound(user, this.workingSummary);
+  }
+
+  private buildLiveRound(user: StrokerUser, workingSummary: any): LiveRound {
     const now = moment();
 
     const players: LiveRoundPlayer[] = [];
-    if (this.workingSummary.friendSummary) {
-      this.workingSummary.friendSummary.map(item => {
-        const friend: Friend = item.Friend;
-        const friendSummary: LiveRoundPlayer = {
-          PlayerId: friend.FriendId,
-          PlayerName: friend.Name,
-          Teebox: item.Teebox,
-          Scores: []
-        }
-        players.push(friendSummary);
-      });
-    }
 
     players.push({
       PlayerId: user.id,
       PlayerName: user.displayName,
       Scores: [],
-      Teebox: this.workingSummary.selectedTeebox
+      Teebox: workingSummary.selectedTeebox,
+      PhotoUrl: user.photoUrl
     });
+
+    if (workingSummary.friendSummary) {
+      workingSummary.friendSummary.map(item => {
+        const friend: Friend = item.Friend;
+        const friendSummary: LiveRoundPlayer = {
+          PlayerId: friend.FriendId,
+          PlayerName: friend.Name,
+          Teebox: item.Teebox,
+          Scores: [],
+          PhotoUrl: friend.PhotoUrl
+        }
+        players.push(friendSummary);
+      });
+    }
 
     return {
       LiveRoundId: uuid(),
-      Course: this.workingSummary.selectedCourse,
-      CourseId: this.workingSummary.selectedCourse.Id,
+      Course: workingSummary.selectedCourse,
+      CourseId: workingSummary.selectedCourse.Id,
       HostPlayerId: user.id,
       RoundDate: now.unix(),
       PrettyDate: now.format(this.DATE_FORMAT),

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { LiveRound } from 'src/models/LiveRound';
+import { ApiService } from './ApiService';
 import { UserService } from './UserService';
 
 @Injectable({
@@ -17,7 +18,8 @@ export class LiveRoundService {
 
   constructor(
     private fireStore: AngularFirestore,
-    private userService: UserService
+    private userService: UserService,
+    private apiService: ApiService
   ) {
     this.$hasLiveRoundSubject = new BehaviorSubject<boolean>(false);
     this.setupSubs();
@@ -76,6 +78,10 @@ export class LiveRoundService {
 
   public hasActiveRound(): Observable<boolean> {
     return this.$hasLiveRoundSubject.asObservable();
+  }
+
+  public createNewLiveRound(game: LiveRound): Observable<void> {
+    return this.apiService.post('/liveRound/create', game);
   }
 
 

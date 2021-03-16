@@ -16,6 +16,7 @@ export interface LiveRoundPlayer {
   PlayerName: string;
   Teebox: TeeBox;
   Scores: LiveRoundSingleHoleScore[];
+  PhotoUrl: string;
 }
 
 export interface LiveRoundSingleHoleScore {
