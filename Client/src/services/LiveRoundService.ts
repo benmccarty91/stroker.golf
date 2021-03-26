@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
-import { LiveRound } from 'src/models/LiveRound';
+import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { ApiService } from './ApiService';
 import { UserService } from './UserService';
 
@@ -84,6 +84,14 @@ export class LiveRoundService {
 
   public createNewLiveRound(game: LiveRound): Observable<void> {
     return this.apiService.post('/liveRound/create', game);
+  }
+
+  public getSingleScoreByPlayer(player: LiveRoundPlayer, holeNumber: number): Observable<LiveRoundSingleHoleScore> {
+    return this.activeLiveRoundDoc.collection(player.PlayerId).doc<LiveRoundSingleHoleScore>(`${holeNumber}`).valueChanges();
+  }
+
+  public setSingleScoreByPlayer(player: LiveRoundPlayer, holeNumber: number, body: LiveRoundSingleHoleScore): Promise<void> {
+    return this.activeLiveRoundDoc.collection(player.PlayerId).doc<LiveRoundSingleHoleScore>(`${holeNumber}`).set(body);
   }
 
 

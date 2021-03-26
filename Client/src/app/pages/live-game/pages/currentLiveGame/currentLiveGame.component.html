@@ -7,7 +7,8 @@
     </div>
 
     <mat-card-content>
-      <mat-tab-group [selectedIndex]="currentHoleIndex">
+      <!-- <mat-tab-group [selectedIndex]="currentHoleIndex"> -->
+      <mat-tab-group>
         <mat-tab *ngFor="let hole of liveRound.Course.Holes" [label]="hole.Number">
           <single-hole-scorecard [liveRound]="liveRound" [holeNumber]="hole.Number"></single-hole-scorecard>
         </mat-tab>

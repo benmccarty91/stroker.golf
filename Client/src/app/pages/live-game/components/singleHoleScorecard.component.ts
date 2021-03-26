@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { LiveRound } from 'src/models/LiveRound';
+import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
+import { Subscription, timer } from 'rxjs';
+import { LiveRoundService } from 'src/services/LiveRoundService';
 
 @Component({
   selector: 'single-hole-scorecard',
@@ -11,11 +13,10 @@ export class SingleHoleScorecardComponent implements OnInit {
   @Input() liveRound: LiveRound;
   @Input() holeNumber: number;
 
-
   constructor(
-
   ) {}
 
   ngOnInit(): void {
   }
+
 }

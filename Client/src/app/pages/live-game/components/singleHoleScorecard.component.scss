@@ -25,28 +25,11 @@
     }
 
     mat-list-item {
-
       height: 65px;
+      margin: 20px 0;
 
-      .row_item {
+      single-hole-single-player {
         width: 100%;
-      }
-  
-      .avatar {
-        height: 65px;
-      }
-  
-      .player_list_item_details {
-        margin-left: 10px;
-  
-        .subtitle_text {
-          color: rgba(0, 0, 0, 0.54);
-          font-size: 14px;
-        }
-      }
-  
-      .player_score {
-        margin-left: auto;
       }
     }  
   }
