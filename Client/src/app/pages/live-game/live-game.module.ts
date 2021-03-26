@@ -7,6 +7,9 @@ import { LiveGameDashboard } from './pages/liveGameDashboard/live-game-dashboard
 import { RecordNewRoundModule } from '../record-new-round/record-new-round.module';
 import { FriendTeeboxSelect } from './components/friend-teebox-select.component';
 import { NewGameSummary } from './components/newGameSummary.component';
+import { ErrorComponent } from './components/error.component';
+import { CurrentLiveGameComponent } from './pages/currentLiveGame/currentLiveGame.component';
+import { SingleHoleScorecardComponent } from './components/singleHoleScorecard.component';
 
 const routes: Routes = [
   {
@@ -20,11 +23,15 @@ const routes: Routes = [
   {
     path: 'newGame',
     component: NewLiveGameComponent
+  },
+  {
+    path: 'currentGame',
+    component: CurrentLiveGameComponent
   }
 ]
 
 @NgModule({
-  declarations: [NewLiveGameComponent, LiveGameDashboard, FriendTeeboxSelect, NewGameSummary],
+  declarations: [NewLiveGameComponent, LiveGameDashboard, FriendTeeboxSelect, NewGameSummary, ErrorComponent, CurrentLiveGameComponent, SingleHoleScorecardComponent],
   imports: [
     CommonModule,
     MaterialModule,

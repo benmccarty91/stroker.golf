@@ -1,0 +1,31 @@
+<mat-card *ngIf="liveRound">
+  <div class="column_div">
+    <div class="column_div header">
+      <mat-card-title>{{liveRound.Course.Name}}</mat-card-title>
+      <mat-card-subtitle *ngIf="hostPlayer">Host: {{hostPlayer.PlayerName}}</mat-card-subtitle>
+      <mat-card-subtitle>{{liveRound.PrettyDate}}</mat-card-subtitle>
+    </div>
+
+    <mat-card-content>
+      <mat-tab-group [selectedIndex]="currentHoleIndex">
+        <mat-tab *ngFor="let hole of liveRound.Course.Holes" [label]="hole.Number">
+          <single-hole-scorecard [liveRound]="liveRound" [holeNumber]="hole.Number"></single-hole-scorecard>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </div>
+</mat-card>
+
+<button mat-fab class="liveRoundFab" color="accent" [matMenuTriggerFor]="menu">
+  <mat-icon>menu</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item>
+    <mat-icon>save</mat-icon>
+    <span>Finish Game</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>cancel</mat-icon>
+    <span>Abandon Game</span>
+  </button>
+</mat-menu>

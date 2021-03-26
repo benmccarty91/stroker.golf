@@ -39,11 +39,17 @@ export class LiveGameDashboard implements OnInit, OnDestroy {
   public fabClicked(): void {
     if (!this.activeLiveRound) { //button creates a new game
       this.router.navigateByUrl('/liveGame/newGame');
+    } else {
+      this.router.navigateByUrl('/liveGame/currentGame');
     }
   }
 
   public friendsGameButtonClicked(): void {
     this.dialog.open(NotImplementedYetComponent);
+  }
+
+  public goToGame(): void {
+    this.router.navigateByUrl('/liveGame/currentGame');
   }
 }
 

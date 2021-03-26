@@ -8,6 +8,13 @@
     <button mat-stroked-button color="accent" (click)="friendsGameButtonClicked()">Join a Friend's Game</button>
   </div>
 
+  <div *ngIf="activeLiveRound" class="column_div">
+    <p>Game in progress!</p>
+    <p>{{activeLiveRound.Course.Name}}</p>
+    <p>Started on {{activeLiveRound.PrettyDate}}</p>
+    <button mat-stroked-button color="accent" (click)="goToGame()">Go To Game</button>
+  </div>
+
 </mat-card>
 
 <button mat-fab class="liveRoundFab" color="accent" (click)="fabClicked()">

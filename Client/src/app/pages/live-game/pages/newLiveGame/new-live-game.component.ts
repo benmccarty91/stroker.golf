@@ -8,6 +8,7 @@ import { LiveRound } from 'src/models/LiveRound';
 import { CourseService } from 'src/services/CourseService';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
+import { ErrorComponent } from '../../components/error.component';
 
 @Component({
   selector: 'app-new-live-game',
@@ -28,7 +29,8 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
     private pubsub: PubSubService,
     private consts: CONSTS,
     private liveRoundService: LiveRoundService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
   ) {
   }
 
@@ -91,6 +93,12 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
     this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.liveRoundService.createNewLiveRound(event).subscribe(x => {
       this.router.navigateByUrl('/liveGame');
+    },
+    err => {
+      const dialogRef = this.dialog.open(ErrorComponent);
+      dialogRef.afterClosed().subscribe(() => {
+        this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+      })
     });
   }
 }

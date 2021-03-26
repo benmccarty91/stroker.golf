@@ -16,6 +16,8 @@ export class LiveRoundService {
   private $hasLiveRoundSubject: BehaviorSubject<boolean>;
   private userId: string;
 
+  private readonly COLLECTION_NAME = 'live_rounds';
+
   constructor(
     private fireStore: AngularFirestore,
     private userService: UserService,
@@ -47,7 +49,7 @@ export class LiveRoundService {
       mergeMap(userId => {
         if (userId) {
           this.userId = userId;
-          this.activeLiveRoundDoc = this.fireStore.collection('live_rounds').doc<LiveRound>(this.userId);
+          this.activeLiveRoundDoc = this.fireStore.collection(this.COLLECTION_NAME).doc<LiveRound>(this.userId);
           return this.activeLiveRoundDoc.valueChanges();
         }
         else {
@@ -60,7 +62,7 @@ export class LiveRoundService {
         } else {
           this.$hasLiveRoundSubject.next(false);
         }
-        console.log(round);
+        // console.log(round);
       }),
       catchError(err => {
         if (err.message === ERROR_CODES.NO_USER || err.message === ERROR_CODES.NO_USER_ID) {

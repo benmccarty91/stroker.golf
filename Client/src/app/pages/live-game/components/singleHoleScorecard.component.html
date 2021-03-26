@@ -1,0 +1,27 @@
+<div class="column_div container">
+  
+  <mat-card-title>
+    #{{liveRound.Course.Holes[holeNumber - 1].Number}}
+  </mat-card-title>
+  <mat-card-subtitle>
+    Par {{liveRound.Course.Holes[holeNumber - 1].Par}}
+    Handicap: {{liveRound.Course.Holes[holeNumber - 1].Handicap}}
+  </mat-card-subtitle>
+
+  <mat-list>
+    <mat-list-item *ngFor="let player of liveRound.Players">
+      <div class="row_div row_item">
+        <img src="{{player.PhotoUrl}}" class="avatar"/>
+        <div class="column_div player_list_item_details">
+          <p>{{player.PlayerName}}</p>
+          <p class="subtitle_text">{{player.Teebox.Color}} ({{liveRound.Course.Holes[holeNumber - 1].Yardages[player.Teebox.Color]}} yards)</p>
+        </div>
+        <div class="row_div player_score">
+          <p>{{player.Scores[holeNumber - 1]?.Score || liveRound.Course.Holes[holeNumber - 1].Par}}</p>
+        </div>
+      </div>
+
+    </mat-list-item>
+  </mat-list>
+
+</div>

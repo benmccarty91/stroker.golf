@@ -1,0 +1,29 @@
+mat-card {
+  * {
+    padding: 0;
+    margin: 0;
+  }
+
+  .column_div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row_div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .header {
+    * {
+      margin: 5px 0 0 0;
+    }
+  }
+}
+
+.liveRoundFab {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+}
