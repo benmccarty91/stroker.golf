@@ -81,7 +81,6 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   @Input() liveRound: LiveRound;
   @Input() holeNumber: number;
 
-  public scores: {[holeNumber: number]: LiveRoundSingleHoleScore};
   public score: LiveRoundSingleHoleScore;
   public thisHole: GolfHole;
   
@@ -94,8 +93,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   ngOnInit(): void {
     this.thisHole = this.liveRound.Course.Holes[this.holeNumber - 1];
     this.liveRoundService.getScoreByPlayer(this.player).subscribe(x => {
-      this.scores = x;
-      this.score = this.scores[this.holeNumber];
+      this.score = x[this.holeNumber];
     });
   }
 
@@ -116,7 +114,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
       this.timerSub$.unsubscribe();
     }
     this.timerSub$ = timer(3000).subscribe(() => {
-      this.liveRoundService.setScoreByPlayer(this.player, this.scores);
+      this.liveRoundService.setScoreByPlayer(this.player, this.score);
     })
   }
 

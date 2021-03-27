@@ -91,17 +91,20 @@ export class LiveRoundService {
 
   public getScoreByPlayer(player: LiveRoundPlayer): Observable<{[holeNumber: number]: LiveRoundSingleHoleScore}> {
     if (!this.playerScoreObservables[`${player.PlayerId}`]) {
-      this.playerScoreObservables[`${player.PlayerId}`] = this.activeLiveRoundDoc.collection(player.PlayerId).doc<{[holeNumber: number]: LiveRoundSingleHoleScore}>('scores').valueChanges();
+      this.playerScoreObservables[`${player.PlayerId}`] = this.activeLiveRoundDoc.collection(player.PlayerId).doc<{[holeNumber: number]: LiveRoundSingleHoleScore}>('scores').valueChanges().pipe(
+        tap(scores => {
+          this.playerScores[player.PlayerId] = scores;
+        })
+      );
     }
     return this.playerScoreObservables[`${player.PlayerId}`];
   }
 
-  public setScoreByPlayer(player: LiveRoundPlayer, body: any): Promise<void> {
-    return this.activeLiveRoundDoc.collection(player.PlayerId).doc('scores').set(body);
+  public setScoreByPlayer(player: LiveRoundPlayer, body: LiveRoundSingleHoleScore): Promise<void> {
+    const toSave = this.playerScores[player.PlayerId];
+    toSave[body.HoleNumber] = body;
+    return this.activeLiveRoundDoc.collection(player.PlayerId).doc('scores').set(toSave);
   }
-
-
-
 }
 
 enum ERROR_CODES {
