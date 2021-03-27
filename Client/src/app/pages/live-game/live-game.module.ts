@@ -13,6 +13,7 @@ import { SingleHoleScorecardComponent } from './components/singleHoleScorecard.c
 import { SingleHoleSinglePlayerComponent } from './components/singleHoleSinglePlayer.component';
 import { SubmitLiveGameConfirmComponent } from './components/modals/submitLiveGameConfirm.component';
 import { NineHoleConfirmComponent } from './components/modals/nineHoleConfirm.component';
+import { AbortGameConfirmComponent } from './components/modals/abortGameConfirm.component';
 
 const routes: Routes = [
   {
@@ -44,7 +45,8 @@ const routes: Routes = [
     SingleHoleScorecardComponent, 
     SingleHoleSinglePlayerComponent,
     SubmitLiveGameConfirmComponent,
-    NineHoleConfirmComponent
+    NineHoleConfirmComponent,
+    AbortGameConfirmComponent
   ],
   imports: [
     CommonModule,

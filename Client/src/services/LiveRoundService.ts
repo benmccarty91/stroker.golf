@@ -82,6 +82,10 @@ export class LiveRoundService {
     console.log(this.playerScores);
   }
 
+  public abortGame() {
+    console.log('TODO: Abort game')
+  }
+
   public getActiveRound(): Observable<LiveRound> {
     return this.$activeLiveRound;
   }

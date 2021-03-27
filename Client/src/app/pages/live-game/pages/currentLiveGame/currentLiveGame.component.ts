@@ -5,6 +5,7 @@ import { CONSTS } from 'src/assets/CONSTS';
 import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
+import { AbortGameConfirmComponent } from '../../components/modals/abortGameConfirm.component';
 import { NineHoleConfirmComponent } from '../../components/modals/nineHoleConfirm.component';
 import { OtherErrorComponent } from '../../components/modals/otherError.component';
 import { SubmitLiveGameConfirmComponent } from '../../components/modals/submitLiveGameConfirm.component';
@@ -57,7 +58,11 @@ export class CurrentLiveGameComponent implements OnInit {
   }
 
   public abortGame(): void {
-
+    this.dialog.open(AbortGameConfirmComponent).afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.liveRoundService.abortGame();
+      }
+    })
   }
 
   private validateScorecard(): {[playerId: string]: LiveRoundSingleHoleScore[]} {
