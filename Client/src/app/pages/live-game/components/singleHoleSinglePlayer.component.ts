@@ -13,10 +13,15 @@ import { Subscription, timer } from 'rxjs';
         <p>{{player.PlayerName}}</p>
         <p class="subtitle_text">{{player.Teebox.Color}} ({{thisHole.Yardages[player.Teebox.Color]}} yards)</p>
       </div>
-      <div class="row_div player_score">
-        <button mat-icon-button (click)="decrementScore()"><mat-icon>remove_circle_outline</mat-icon></button>
-        <p class="score_number">{{scores[holeNumber].Score}}</p>
-        <button mat-icon-button (click)="incrementScore()"><mat-icon>add_circle_outline</mat-icon></button>
+      <div class="column_div player_score">
+        <div class="row_div">
+          <button [disabled]="hideDecrement()" mat-icon-button (click)="decrementScore()"><mat-icon>remove_circle_outline</mat-icon></button>
+          <p class="score_number">{{scores[holeNumber].Score}}</p>
+          <button mat-icon-button (click)="incrementScore()"><mat-icon>add_circle_outline</mat-icon></button>
+        </div>
+        <div class="row_div" [ngClass]="{'hideElement': hideRelativePar()}">
+          <p class="subtitle_text">{{printRelativePar()}}</p>
+        </div>
       </div>
     </div>
   `,
@@ -50,6 +55,7 @@ import { Subscription, timer } from 'rxjs';
 
     .player_score {
       margin-left: auto;
+      align-items: center;
     }
 
     .column_div {
@@ -61,6 +67,10 @@ import { Subscription, timer } from 'rxjs';
       display: flex;
       flex-direction: row;
       align-items: center;
+    }
+
+    .hideElement {
+      visibility: hidden;
     }
       
   `]
@@ -104,5 +114,33 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
     this.timerSub$ = timer(3000).subscribe(() => {
       this.liveRoundService.setScoreByPlayer(this.player, this.scores);
     })
+  }
+
+  getRelativePar(): number {
+    const currScore = this.scores[this.holeNumber].Score;
+    const currPar = this.thisHole.Par;
+
+    return currScore - currPar;
+  }
+
+  printRelativePar(): string {
+    const relPar = this.getRelativePar();
+
+    if (relPar === 0) {
+      return `Even Par`;
+    }
+    if (relPar > 0) {
+      return `${relPar} over Par`;
+    } else {
+      return `${relPar} under Par`;
+    }
+  }
+
+  hideDecrement(): boolean {
+    return this.scores[this.holeNumber].Score <= 0;
+  }
+
+  hideRelativePar(): boolean {
+    return this.scores[this.holeNumber].Score <= 0;
   }
 }
