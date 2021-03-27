@@ -25,6 +25,9 @@ import { Component, Input } from "@angular/core";
     .column_div {
       display: flex;
       flex-direction: column;
+    }
+
+    mat-card {
       margin-bottom: 25px;
     }
   `]
