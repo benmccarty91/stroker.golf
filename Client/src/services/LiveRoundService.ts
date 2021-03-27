@@ -10,7 +10,7 @@ import { UserService } from './UserService';
   providedIn: 'root'
 })
 export class LiveRoundService {
-
+  
   private $activeLiveRound: Observable<LiveRound>;
   private activeLiveRoundDoc: AngularFirestoreDocument<LiveRound>;
   private $hasLiveRoundSubject: BehaviorSubject<boolean>;
@@ -75,6 +75,11 @@ export class LiveRoundService {
         }
       })
     );
+  }
+
+  public saveFinalScores() {
+    console.log('TODO: Save final scores!')
+    console.log(this.playerScores);
   }
 
   public getActiveRound(): Observable<LiveRound> {

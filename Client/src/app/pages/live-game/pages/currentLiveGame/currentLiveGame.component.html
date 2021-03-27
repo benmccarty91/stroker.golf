@@ -21,11 +21,11 @@
   <mat-icon>menu</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
-  <button mat-menu-item>
+  <button mat-menu-item (click)="saveGame()">
     <mat-icon>save</mat-icon>
     <span>Finish Game</span>
   </button>
-  <button mat-menu-item>
+  <button mat-menu-item (click)="abortGame()">
     <mat-icon>cancel</mat-icon>
     <span>Abandon Game</span>
   </button>

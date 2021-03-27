@@ -11,6 +11,8 @@ import { ErrorComponent } from './components/error.component';
 import { CurrentLiveGameComponent } from './pages/currentLiveGame/currentLiveGame.component';
 import { SingleHoleScorecardComponent } from './components/singleHoleScorecard.component';
 import { SingleHoleSinglePlayerComponent } from './components/singleHoleSinglePlayer.component';
+import { SubmitLiveGameConfirmComponent } from './components/modals/submitLiveGameConfirm.component';
+import { NineHoleConfirmComponent } from './components/modals/nineHoleConfirm.component';
 
 const routes: Routes = [
   {
@@ -32,7 +34,18 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [NewLiveGameComponent, LiveGameDashboard, FriendTeeboxSelect, NewGameSummary, ErrorComponent, CurrentLiveGameComponent, SingleHoleScorecardComponent, SingleHoleSinglePlayerComponent],
+  declarations: [
+    NewLiveGameComponent, 
+    LiveGameDashboard, 
+    FriendTeeboxSelect, 
+    NewGameSummary, 
+    ErrorComponent, 
+    CurrentLiveGameComponent, 
+    SingleHoleScorecardComponent, 
+    SingleHoleSinglePlayerComponent,
+    SubmitLiveGameConfirmComponent,
+    NineHoleConfirmComponent
+  ],
   imports: [
     CommonModule,
     MaterialModule,
