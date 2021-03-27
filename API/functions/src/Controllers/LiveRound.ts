@@ -41,8 +41,8 @@ router.post('/create', async (req: any, res, next) => {
 
 });
 
-const getDefaultScoreMap = (data: LiveRound): any => {
-  return data.Course.Holes.reduce<any>((prev, curr) => {
+const getDefaultScoreMap = (data: LiveRound): {[holeNumber: number]: LiveRoundSingleHoleScore} => {
+  return data.Course.Holes.reduce<{[holeNumber: number]: LiveRoundSingleHoleScore}>((prev, curr) => {
     const toRet = prev;
     toRet[curr.Number] = {
       HoleNumber: curr.Number,
