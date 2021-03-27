@@ -17,6 +17,7 @@ export class LiveRoundService {
   private userId: string;
 
   private playerScoreObservables: {[playerId: string]: Observable<{[holeNumber: number]: LiveRoundSingleHoleScore}>} = {};
+  private playerScores: {[playerId: string]: {[holeNumber: number]: LiveRoundSingleHoleScore}} = {};
 
   private readonly COLLECTION_NAME = 'live_rounds';
 

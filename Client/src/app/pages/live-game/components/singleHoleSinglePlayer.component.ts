@@ -7,7 +7,7 @@ import { Subscription, timer } from 'rxjs';
 @Component({
   selector: 'single-hole-single-player',
   template: `
-    <div *ngIf="scores" class="row_div row_item">
+    <div *ngIf="score" class="row_div row_item">
       <img src="{{player.PhotoUrl}}" class="avatar"/>
       <div class="column_div player_list_item_details">
         <p>{{player.PlayerName}}</p>
@@ -16,7 +16,7 @@ import { Subscription, timer } from 'rxjs';
       <div class="column_div player_score">
         <div class="row_div">
           <button [disabled]="hideDecrement()" mat-icon-button (click)="decrementScore()"><mat-icon>remove_circle_outline</mat-icon></button>
-          <p class="score_number">{{scores[holeNumber].Score}}</p>
+          <p class="score_number">{{score.Score}}</p>
           <button mat-icon-button (click)="incrementScore()"><mat-icon>add_circle_outline</mat-icon></button>
         </div>
         <div class="row_div" [ngClass]="{'hideElement': hideRelativePar()}">
@@ -82,6 +82,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   @Input() holeNumber: number;
 
   public scores: {[holeNumber: number]: LiveRoundSingleHoleScore};
+  public score: LiveRoundSingleHoleScore;
   public thisHole: GolfHole;
   
   private timerSub$: Subscription;
@@ -94,16 +95,19 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
     this.thisHole = this.liveRound.Course.Holes[this.holeNumber - 1];
     this.liveRoundService.getScoreByPlayer(this.player).subscribe(x => {
       this.scores = x;
+      this.score = this.scores[this.holeNumber];
     });
   }
 
   incrementScore(): void {
-    this.scores[this.holeNumber].Score++;
+    this.score.Score++;
+    this.score.RelativePar = this.getRelativePar();
     this.writeScore();
   }
 
   decrementScore(): void {
-    this.scores[this.holeNumber].Score--;
+    this.score.Score--;
+    this.score.RelativePar = this.getRelativePar();
     this.writeScore();
   }
 
@@ -117,7 +121,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   }
 
   getRelativePar(): number {
-    const currScore = this.scores[this.holeNumber].Score;
+    const currScore = this.score.Score;
     const currPar = this.thisHole.Par;
 
     return currScore - currPar;
@@ -137,10 +141,10 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   }
 
   hideDecrement(): boolean {
-    return this.scores[this.holeNumber].Score <= 0;
+    return this.score.Score <= 0;
   }
 
   hideRelativePar(): boolean {
-    return this.scores[this.holeNumber].Score <= 0;
+    return this.score.Score <= 0;
   }
 }
