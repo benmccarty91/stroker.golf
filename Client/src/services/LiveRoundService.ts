@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
-import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { LiveRound, LiveRoundPlayer } from 'src/models/LiveRound';
 import { ApiService } from './ApiService';
 import { UserService } from './UserService';
 
@@ -15,6 +15,8 @@ export class LiveRoundService {
   private activeLiveRoundDoc: AngularFirestoreDocument<LiveRound>;
   private $hasLiveRoundSubject: BehaviorSubject<boolean>;
   private userId: string;
+
+  private playerScoreObservables = {};
 
   private readonly COLLECTION_NAME = 'live_rounds';
 
@@ -86,12 +88,15 @@ export class LiveRoundService {
     return this.apiService.post('/liveRound/create', game);
   }
 
-  public getSingleScoreByPlayer(player: LiveRoundPlayer, holeNumber: number): Observable<LiveRoundSingleHoleScore> {
-    return this.activeLiveRoundDoc.collection(player.PlayerId).doc<LiveRoundSingleHoleScore>(`${holeNumber}`).valueChanges();
+  public getScoreByPlayer(player: LiveRoundPlayer): Observable<any> {
+    if (!this.playerScoreObservables[`${player.PlayerId}`]) {
+      this.playerScoreObservables[`${player.PlayerId}`] = this.activeLiveRoundDoc.collection(player.PlayerId).doc('scores').valueChanges();
+    }
+    return this.playerScoreObservables[`${player.PlayerId}`];
   }
 
-  public setSingleScoreByPlayer(player: LiveRoundPlayer, holeNumber: number, body: LiveRoundSingleHoleScore): Promise<void> {
-    return this.activeLiveRoundDoc.collection(player.PlayerId).doc<LiveRoundSingleHoleScore>(`${holeNumber}`).set(body);
+  public setScoreByPlayer(player: LiveRoundPlayer, body: any): Promise<void> {
+    return this.activeLiveRoundDoc.collection(player.PlayerId).doc('scores').set(body);
   }
 
 

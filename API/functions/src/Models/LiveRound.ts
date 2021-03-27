@@ -15,12 +15,11 @@ export interface LiveRoundPlayer {
   PlayerId: string;
   PlayerName: string;
   Teebox: TeeBox;
-  Scores: LiveRoundSingleHoleScore[];
   PhotoUrl: string;
 }
 
 export interface LiveRoundSingleHoleScore {
   HoleNumber: number;
   Score: number;
-  RelativePar: number;
+  RelativePar?: number;
 }

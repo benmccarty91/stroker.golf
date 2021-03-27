@@ -83,7 +83,6 @@ export class NewGameSummary implements OnInit {
     players.push({
       PlayerId: user.id,
       PlayerName: user.displayName,
-      Scores: [],
       Teebox: workingSummary.selectedTeebox,
       PhotoUrl: user.photoUrl
     });
@@ -95,7 +94,6 @@ export class NewGameSummary implements OnInit {
           PlayerId: friend.FriendId,
           PlayerName: friend.Name,
           Teebox: item.Teebox,
-          Scores: [],
           PhotoUrl: friend.PhotoUrl
         }
         players.push(friendSummary);

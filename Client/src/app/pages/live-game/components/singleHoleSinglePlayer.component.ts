@@ -1,19 +1,21 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
+import { GolfHole } from 'src/models/GolfHole';
+import { LiveRound, LiveRoundPlayer } from 'src/models/LiveRound';
 import { LiveRoundService } from 'src/services/LiveRoundService';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'single-hole-single-player',
   template: `
-    <div class="row_div row_item">
+    <div *ngIf="scores" class="row_div row_item">
       <img src="{{player.PhotoUrl}}" class="avatar"/>
       <div class="column_div player_list_item_details">
         <p>{{player.PlayerName}}</p>
-        <p class="subtitle_text">{{player.Teebox.Color}} ({{liveRound.Course.Holes[holeNumber - 1].Yardages[player.Teebox.Color]}} yards)</p>
+        <p class="subtitle_text">{{player.Teebox.Color}} ({{thisHole.Yardages[player.Teebox.Color]}} yards)</p>
       </div>
       <div class="row_div player_score">
-        <button (click)="decrementScore(player)">-</button><p>{{player.Scores[holeNumber - 1]?.Score || liveRound.Course.Holes[holeNumber - 1].Par}}</p>
-        <button (click)="incrementScore(player)">+</button>
+        <button (click)="decrementScore()">-</button><p>{{scores[holeNumber].Score}}</p>
+        <button (click)="incrementScore()">+</button>
       </div>
     </div>
   `,
@@ -64,31 +66,38 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   @Input() liveRound: LiveRound;
   @Input() holeNumber: number;
 
-  public score: LiveRoundSingleHoleScore
+  public scores: any;
+  public thisHole: GolfHole;
+  
+  private timerSub$: Subscription;
 
   constructor(
-    private liveRoundService: LiveRoundService
+    private liveRoundService: LiveRoundService,
   ) {}
 
   ngOnInit(): void {
-    this.liveRoundService.getSingleScoreByPlayer(this.player, this.holeNumber).subscribe(score => {
-      this.score = score;
+    this.thisHole = this.liveRound.Course.Holes[this.holeNumber - 1];
+    this.liveRoundService.getScoreByPlayer(this.player).subscribe(x => {
+      this.scores = x;
+    });
+  }
 
-      if (!this.score) {
-        //TODO: initialize score for this player/hole
-      }
+  incrementScore(): void {
+    this.scores[this.holeNumber].Score++;
+    this.writeScore();
+  }
+
+  decrementScore(): void {
+    this.scores[this.holeNumber].Score--;
+    this.writeScore();
+  }
+
+  writeScore(): void {
+    if (this.timerSub$) {
+      this.timerSub$.unsubscribe();
+    }
+    this.timerSub$ = timer(3000).subscribe(() => {
+      this.liveRoundService.setScoreByPlayer(this.player, this.scores);
     })
-  }
-
-  incrementScore(player: LiveRoundPlayer): void {
-    player.Scores[this.holeNumber - 1].Score++;
-
-    // this.writeData(player, {});
-  }
-
-  decrementScore(player: LiveRoundPlayer): void {
-    player.Scores[this.holeNumber - 1].Score--;
-
-    // this.writeData(player, {});
   }
 }

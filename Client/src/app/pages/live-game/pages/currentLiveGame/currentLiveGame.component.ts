@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { CONSTS } from 'src/assets/CONSTS';
 import { LiveRound, LiveRoundPlayer } from 'src/models/LiveRound';
 import { LiveRoundService } from 'src/services/LiveRoundService';
@@ -21,22 +20,13 @@ export class CurrentLiveGameComponent implements OnInit {
   constructor(
     private pubsub: PubSubService,
     private consts: CONSTS,
-    private liveRoundService: LiveRoundService
+    private liveRoundService: LiveRoundService,
   ) {}
 
   ngOnInit(): void {
     this.liveRoundService.getActiveRound().subscribe(x => {
       this.liveRound = x;
       this.hostPlayer = this.liveRound.Players.find(y => y.PlayerId === this.liveRound.HostPlayerId);
-      this.hostPlayer.Scores.forEach((score, index) => {
-        if (score) {
-          if (index >= 17) {
-            this.currentHoleIndex = 17
-          } else {
-           this.currentHoleIndex = index + 1;
-          }
-        }
-      })
       this.pubsub.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     });
   }
