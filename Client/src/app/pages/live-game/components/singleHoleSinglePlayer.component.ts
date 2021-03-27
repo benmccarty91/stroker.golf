@@ -14,8 +14,9 @@ import { Subscription, timer } from 'rxjs';
         <p class="subtitle_text">{{player.Teebox.Color}} ({{thisHole.Yardages[player.Teebox.Color]}} yards)</p>
       </div>
       <div class="row_div player_score">
-        <button (click)="decrementScore()">-</button><p>{{scores[holeNumber].Score}}</p>
-        <button (click)="incrementScore()">+</button>
+        <button mat-icon-button (click)="decrementScore()"><mat-icon>remove_circle_outline</mat-icon></button>
+        <p class="score_number">{{scores[holeNumber].Score}}</p>
+        <button mat-icon-button (click)="incrementScore()"><mat-icon>add_circle_outline</mat-icon></button>
       </div>
     </div>
   `,
@@ -41,6 +42,10 @@ import { Subscription, timer } from 'rxjs';
     .subtitle_text {
       color: rgba(0, 0, 0, 0.54);
       font-size: 14px;
+    }
+
+    .score_number {
+      font-size: 30px;
     }
 
     .player_score {
