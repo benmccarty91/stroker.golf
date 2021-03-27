@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { GolfHole } from 'src/models/GolfHole';
-import { LiveRound, LiveRoundPlayer } from 'src/models/LiveRound';
+import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { Subscription, timer } from 'rxjs';
 
@@ -81,7 +81,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   @Input() liveRound: LiveRound;
   @Input() holeNumber: number;
 
-  public scores: any;
+  public scores: {[holeNumber: number]: LiveRoundSingleHoleScore};
   public thisHole: GolfHole;
   
   private timerSub$: Subscription;
