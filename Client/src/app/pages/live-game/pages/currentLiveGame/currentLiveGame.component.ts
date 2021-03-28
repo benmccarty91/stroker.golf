@@ -44,6 +44,7 @@ export class CurrentLiveGameComponent implements OnInit {
 
 
   public saveGame(): void {
+
     const invalidScores = this.validateScorecard();
     if (!invalidScores || invalidScores === {}) { // All 18 holes are valid
       this.dialog.open(SubmitLiveGameConfirmComponent).afterClosed().subscribe(result => {
@@ -60,10 +61,13 @@ export class CurrentLiveGameComponent implements OnInit {
   public abortGame(): void {
     this.dialog.open(AbortGameConfirmComponent).afterClosed().subscribe(result => {
       if (result === 'confirm') {
+        this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
         this.liveRoundService.abortGame().subscribe(() => {
           this.router.navigateByUrl('/liveGame');
         });
       }
+    }, err => {
+      this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
     })
   }
 

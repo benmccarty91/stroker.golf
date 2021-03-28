@@ -110,7 +110,7 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
     console.log(event);
     this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.liveRoundService.createNewLiveRound(event).subscribe(() => {
-      this.router.navigateByUrl('/liveGame');
+      this.router.navigateByUrl('/liveGame/currentGame');
     },
     () => {
       const dialogRef = this.dialog.open(ErrorComponent);
