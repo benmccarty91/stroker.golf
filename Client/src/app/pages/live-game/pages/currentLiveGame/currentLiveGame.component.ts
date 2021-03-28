@@ -8,6 +8,7 @@ import { RoundType } from 'src/models/Score';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
 import { AbortGameConfirmComponent } from '../../components/modals/abortGameConfirm.component';
+import { ChangeRoundTypeComponent } from '../../components/modals/changeRoundType.component';
 import { OtherErrorComponent } from '../../components/modals/otherError.component';
 import { SubmitLiveGameConfirmComponent } from '../../components/modals/submitLiveGameConfirm.component';
 
@@ -91,6 +92,14 @@ export class CurrentLiveGameComponent implements OnInit, OnDestroy {
     })
   }
 
+  public changeRoundType(): void {
+    this.dialog.open(ChangeRoundTypeComponent, {data: this.liveRound}).afterClosed().subscribe((result: RoundType) => {
+      if (result) {
+        this.liveRoundService.changeRoundType(this.liveRound, result).subscribe(() => {}); //TODO: what happens to the client when this data changes???
+      }
+    });
+  }
+
   private validateScorecard(): {[playerId: string]: LiveRoundSingleHoleScore[]} {
     // return null;
     const invalidScores = {};
@@ -120,7 +129,6 @@ export class CurrentLiveGameComponent implements OnInit, OnDestroy {
     return true; //Default
   }
 
-  // TODO: unsub from these subscriptions.  Also, don't sub if one already exists?
   private setupPlayerScoreSubs(): void {
     this.liveRound?.Players?.forEach(player => {
       if (!this.playerScoreSubs$[player.PlayerId]) {
