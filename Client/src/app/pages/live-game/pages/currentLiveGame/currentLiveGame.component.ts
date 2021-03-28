@@ -60,7 +60,7 @@ export class CurrentLiveGameComponent implements OnInit {
   public abortGame(): void {
     this.dialog.open(AbortGameConfirmComponent).afterClosed().subscribe(result => {
       if (result === 'confirm') {
-        this.liveRoundService.abortGame().then(() => {
+        this.liveRoundService.abortGame().subscribe(() => {
           this.router.navigateByUrl('/liveGame');
         });
       }

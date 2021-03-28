@@ -10,7 +10,7 @@ const liveRoundCollection = db.collection('live_rounds');
 
 const router = express.Router();
 
-router.post('/create', async (req: any, res, next) => {
+router.post('/', async (req: any, res, next) => {
   const playerId = req.user.uid;
   const data = req.body as LiveRound;
 
@@ -37,8 +37,30 @@ router.post('/create', async (req: any, res, next) => {
     functions.logger.error(`failed to create a live round.`, err);
     next(err);
   }
+});
 
+router.delete('/', async (req: any, res, next) => {
+  const playerId = req.user.uid;
+  functions.logger.info(`attempting to delete live round.  Host Player: ${playerId}`);
 
+  try {
+    const docRef = liveRoundCollection.doc(playerId);
+    const data = (await docRef.get()).data() as LiveRound;
+
+    const batch = db.batch();
+    batch.delete(docRef);
+    data.Players.forEach(player => {
+      batch.delete(docRef.collection(player.PlayerId).doc('scores'));
+    })
+
+    await batch.commit();
+    res.status(StatusCodes.OK).send();
+    return;
+  }
+  catch(err) {
+    functions.logger.error(`failed to delete live round.`, err);
+    next(err);
+  }
 });
 
 const getDefaultScoreMap = (data: LiveRound): {[holeNumber: number]: LiveRoundSingleHoleScore} => {

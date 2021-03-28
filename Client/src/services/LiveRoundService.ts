@@ -82,8 +82,8 @@ export class LiveRoundService {
     console.log(this.playerScores);
   }
 
-  public abortGame(): Promise<void> {
-    return this.activeLiveRoundDoc.delete();
+  public abortGame(): Observable<void> {
+    return this.apiService.delete('/liveRound');
   }
 
   public getActiveRound(): Observable<LiveRound> {
@@ -95,7 +95,7 @@ export class LiveRoundService {
   }
 
   public createNewLiveRound(game: LiveRound): Observable<void> {
-    return this.apiService.post('/liveRound/create', game);
+    return this.apiService.post('/liveRound', game);
   }
 
   public getScoreByPlayer(player: LiveRoundPlayer): Observable<{[holeNumber: number]: LiveRoundSingleHoleScore}> {

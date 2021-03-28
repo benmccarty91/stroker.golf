@@ -93,7 +93,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   ngOnInit(): void {
     this.thisHole = this.liveRound.Course.Holes.find(x => x.Number === this.holeNumber);
     this.liveRoundService.getScoreByPlayer(this.player).subscribe(x => {
-      this.score = x[this.holeNumber];
+      this.score = x ? x[this.holeNumber] : undefined;
     });
   }
 
