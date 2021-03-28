@@ -89,10 +89,6 @@ export class LiveRoundService {
     return this.$activeLiveRound;
   }
 
-  public hasActiveRound(): Observable<boolean> {
-    return this.$hasLiveRoundSubject.asObservable();
-  }
-
   public createNewLiveRound(game: LiveRound): Observable<void> {
     return this.apiService.post('/liveRound', game);
   }

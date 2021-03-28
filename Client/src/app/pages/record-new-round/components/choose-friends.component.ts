@@ -11,14 +11,14 @@ import { v4 as uuid } from 'uuid';
   template: `
     <div id="container">
       <div id="friendYesNo" *ngIf="(!friends)">
-        <h2>Did you play with any friends?</h2>
+        <h2>{{getTitle_one()}}</h2>
         <div id="buttonGroup">
           <button mat-stroked-button (click)="submitFriendSelect(true)">Yes</button>
           <button mat-stroked-button (click)="submitFriendSelect(false)">No</button>
         </div>
       </div>
       <div id="friendList" *ngIf="(friends)">
-        <h2>Who did you play with?</h2>
+        <h2>{{getTitle_two()}}</h2>
         <mat-list>
           <app-friend-item *ngFor="let friend of friends" [friend]="friend" (click)="selectFriend(friend)"
             [isSelected]="isFriendSelected(friend)"></app-friend-item>
@@ -61,6 +61,8 @@ export class ChooseFriendsComponent implements OnInit {
   @Input() workingSummary: any;
   @Input() submitHandler: Function;
   @Input() skipFriends: Function;
+  @Input() title: string;
+  @Input() title2: string;
 
   public friends: Friend[];
 
@@ -116,6 +118,22 @@ export class ChooseFriendsComponent implements OnInit {
       this.submitHandler();
     } else {
       this.skipFriends();
+    }
+  }
+
+  public getTitle_one(): string {
+    if (this.title) {
+      return this.title;
+    } else {
+      return 'Did you play with any friends?';
+    }
+  }
+
+  public getTitle_two(): string {
+    if (this.title2) {
+      return this.title2;
+    } else {
+      return 'Who did you play with?';
     }
   }
 

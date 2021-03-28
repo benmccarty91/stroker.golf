@@ -4,7 +4,7 @@ import { Component, Input } from "@angular/core";
   selector: 'app-live-game-friend-teebox-select',
   template: `
   <div class="column_div">
-    <h3>Which teebox did they play?</h3>
+    <h3>Which teebox are they playing?</h3>
     <mat-card *ngFor="let friend of workingSummary.friendSummary" class="column_div">
       <h4>{{friend.Friend.Name}}</h4>
 

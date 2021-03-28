@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { GolfHole } from 'src/models/GolfHole';
 import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { LiveRoundService } from 'src/services/LiveRoundService';
@@ -75,7 +75,7 @@ import { Subscription, timer } from 'rxjs';
       
   `]
 })
-export class SingleHoleSinglePlayerComponent implements OnInit {
+export class SingleHoleSinglePlayerComponent implements OnInit, OnDestroy {
 
   @Input() player: LiveRoundPlayer;
   @Input() liveRound: LiveRound;
@@ -85,6 +85,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
   public thisHole: GolfHole;
   
   private timerSub$: Subscription;
+  private playerScoreSub$: Subscription;
 
   constructor(
     private liveRoundService: LiveRoundService,
@@ -92,9 +93,14 @@ export class SingleHoleSinglePlayerComponent implements OnInit {
 
   ngOnInit(): void {
     this.thisHole = this.liveRound.Course.Holes.find(x => x.Number === this.holeNumber);
-    this.liveRoundService.getScoreByPlayer(this.player).subscribe(x => {
+    this.playerScoreSub$ = this.liveRoundService.getScoreByPlayer(this.player).subscribe(x => {
       this.score = x ? x[this.holeNumber] : undefined;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.timerSub$?.unsubscribe();
+    this.playerScoreSub$.unsubscribe();
   }
 
   incrementScore(): void {

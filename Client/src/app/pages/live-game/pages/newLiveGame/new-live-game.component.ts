@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -29,6 +30,7 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
     private consts: CONSTS,
     private liveRoundService: LiveRoundService,
     private router: Router,
+    private location: Location,
     private dialog: MatDialog,
   ) {
   }
@@ -44,12 +46,12 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
   }
 
-  public hideBackButton(): boolean {
-    return false; //TODO
-  }
-
   public hitBackButton(): void {
-    this.step = this.stepHistory.pop();
+    if (this.step > 1) {
+      this.step = this.stepHistory.pop();
+    } else {
+      this.location.back();
+    }
   }
 
   private incrementStep(amount: number = 1): void {
