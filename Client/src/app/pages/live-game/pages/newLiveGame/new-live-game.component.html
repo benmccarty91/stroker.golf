@@ -12,7 +12,8 @@
     <app-choose-teebox *ngIf="step === 2" [workingSummary]="workingSummary" [submitHandler]="teeboxSubmit"></app-choose-teebox>
     <app-choose-friends *ngIf="step === 3" [workingSummary]="workingSummary" [submitHandler]="submitFriends" [skipFriends]="skipFriends"></app-choose-friends>
     <app-live-game-friend-teebox-select *ngIf="step === 4" [workingSummary]="workingSummary" [submitHandler]="submitFriendTeebox"></app-live-game-friend-teebox-select>
-    <app-live-game-create-summary *ngIf="step === 5" [workingSummary]="workingSummary" (submit)="submitSummary($event)"></app-live-game-create-summary>
+    <app-choose-round-type *ngIf="step === 5" [workingSummary]="workingSummary" [submitHandler]="submitRoundType"></app-choose-round-type>
+    <app-live-game-create-summary *ngIf="step === 6" [workingSummary]="workingSummary" (submit)="submitSummary($event)"></app-live-game-create-summary>
   </div>
 
 </mat-card>

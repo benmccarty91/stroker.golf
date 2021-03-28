@@ -31,7 +31,7 @@ router.post('/create', async (req: any, res, next) => {
       batch.set(liveRoundCollection.doc(data.HostPlayerId).collection(player.PlayerId).doc(`scores`), defaultScoreMap);
     })
     await batch.commit();
-    res.status(StatusCodes.OK).send();
+    res.status(StatusCodes.CREATED).send();
   } 
   catch(err) {
     functions.logger.error(`failed to create a live round.`, err);

@@ -38,12 +38,12 @@ export class ConfirmDialogComponent implements OnInit {
   }
 
   public confirm(): void {
-    console.log('confirmed');
+    // console.log('confirmed');
     this.dialogRef.close('confirm');
   }
 
   public cancel(): void {
-    console.log('canceled');
+    // console.log('canceled');
     this.dialogRef.close('cancel');
   }
 

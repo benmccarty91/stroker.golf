@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { CONSTS } from 'src/assets/CONSTS';
 import { GolfCourse } from 'src/models/GolfCourse';
-import { LiveRound } from 'src/models/LiveRound';
+import { RoundType } from 'src/models/Score';
 import { CourseService } from 'src/services/CourseService';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
@@ -62,6 +61,10 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
     this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.courseService.getCourse(this.workingSummary.selectedCourseId).subscribe(course => {
       this.workingSummary.selectedCourse = course;
+      this.workingSummary.originalCourseHoleList = this.workingSummary.selectedCourse.Holes;
+      this.workingSummary.originalCourseHoleList.sort((a, b) => {
+        return a.Number - b.Number;
+      });
       this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
       this.incrementStep();
     })
@@ -88,18 +91,37 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
     this.incrementStep();
   }
 
+  public submitRoundType = (): void => {
+    switch (this.workingSummary.selectedRoundType) {
+      case (this.roundType.FULL_18):
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList;
+        break;
+      case (this.roundType.FRONT_9):
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList.slice(0, 9);
+        break;
+      case (this.roundType.BACK_9):
+        this.workingSummary.selectedCourse.Holes = this.workingSummary.originalCourseHoleList.slice(9);
+        break;
+    }
+    this.incrementStep();
+  }
+
   public submitSummary = (event): void => {
     console.log(event);
     this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
-    this.liveRoundService.createNewLiveRound(event).subscribe(x => {
+    this.liveRoundService.createNewLiveRound(event).subscribe(() => {
       this.router.navigateByUrl('/liveGame');
     },
-    err => {
+    () => {
       const dialogRef = this.dialog.open(ErrorComponent);
       dialogRef.afterClosed().subscribe(() => {
         this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
       })
     });
+  }
+
+  public get roundType(): typeof RoundType {
+    return RoundType;
   }
 }
 

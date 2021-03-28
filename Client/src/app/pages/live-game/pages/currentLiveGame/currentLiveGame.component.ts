@@ -1,12 +1,11 @@
-import { invalid } from '@angular/compiler/src/render3/view/util';
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { CONSTS } from 'src/assets/CONSTS';
 import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
 import { AbortGameConfirmComponent } from '../../components/modals/abortGameConfirm.component';
-import { NineHoleConfirmComponent } from '../../components/modals/nineHoleConfirm.component';
 import { OtherErrorComponent } from '../../components/modals/otherError.component';
 import { SubmitLiveGameConfirmComponent } from '../../components/modals/submitLiveGameConfirm.component';
 
@@ -17,8 +16,8 @@ import { SubmitLiveGameConfirmComponent } from '../../components/modals/submitLi
 })
 export class CurrentLiveGameComponent implements OnInit {
 
-  public liveRound: LiveRound
-  public hostPlayer: LiveRoundPlayer
+  public liveRound: LiveRound;
+  public hostPlayer: LiveRoundPlayer;
   public currentHoleIndex: number = 0;
 
   private playerScores: {[playerId: string]: {[holeNumber: number]: LiveRoundSingleHoleScore}} = {};
@@ -29,13 +28,14 @@ export class CurrentLiveGameComponent implements OnInit {
     private pubsub: PubSubService,
     private consts: CONSTS,
     private liveRoundService: LiveRoundService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.liveRoundService.getActiveRound().subscribe(x => {
       this.liveRound = x;
-      this.hostPlayer = this.liveRound.Players.find(y => y.PlayerId === this.liveRound.HostPlayerId);
+      this.hostPlayer = this.liveRound?.Players?.find(y => y.PlayerId === this.liveRound.HostPlayerId) || undefined;
       this.pubsub.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
 
       this.setupPlayerScoreSubs();
@@ -60,7 +60,9 @@ export class CurrentLiveGameComponent implements OnInit {
   public abortGame(): void {
     this.dialog.open(AbortGameConfirmComponent).afterClosed().subscribe(result => {
       if (result === 'confirm') {
-        this.liveRoundService.abortGame();
+        this.liveRoundService.abortGame().then(() => {
+          this.router.navigateByUrl('/liveGame');
+        });
       }
     })
   }
@@ -95,7 +97,7 @@ export class CurrentLiveGameComponent implements OnInit {
   }
 
   private setupPlayerScoreSubs(): void {
-    this.liveRound.Players.forEach(player => {
+    this.liveRound?.Players?.forEach(player => {
       this.liveRoundService.getScoreByPlayer(player).subscribe(scores => {
         this.playerScores[player.PlayerId] = scores;
       })

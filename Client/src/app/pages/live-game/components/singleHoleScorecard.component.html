@@ -1,11 +1,11 @@
 <div class="column_div container">
   
   <mat-card-title>
-    #{{liveRound.Course.Holes[holeNumber - 1].Number}}
+    #{{thisHole.Number}}
   </mat-card-title>
   <mat-card-subtitle>
-    Par {{liveRound.Course.Holes[holeNumber - 1].Par}}
-    Handicap: {{liveRound.Course.Holes[holeNumber - 1].Handicap}}
+    Par {{thisHole.Par}}
+    Handicap: {{thisHole.Handicap}}
   </mat-card-subtitle>
 
   <mat-list>

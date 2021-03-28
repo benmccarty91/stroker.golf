@@ -28,7 +28,8 @@ import { SubmitFailureComponent } from './components/submit-failure.component';
   exports: [
     ChooseCourseComponent,
     ChooseTeeboxComponent,
-    ChooseFriendsComponent
+    ChooseFriendsComponent,
+    ChooseRoundTypeComponent
   ]
 })
 export class RecordNewRoundModule { }

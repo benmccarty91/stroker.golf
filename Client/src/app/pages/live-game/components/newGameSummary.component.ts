@@ -107,7 +107,8 @@ export class NewGameSummary implements OnInit {
       HostPlayerId: user.id,
       RoundDate: now.unix(),
       PrettyDate: now.format(this.DATE_FORMAT),
-      Players: players
+      Players: players,
+      RoundType: workingSummary.selectedRoundType
     }
   }
 }

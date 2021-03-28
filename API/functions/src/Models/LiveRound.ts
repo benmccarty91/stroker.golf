@@ -1,4 +1,5 @@
 import GolfCourse from './GolfCourse';
+import { RoundType } from './ScoreSubmission';
 import { TeeBox } from './TeeBox';
 
 export interface LiveRound {
@@ -9,6 +10,7 @@ export interface LiveRound {
   Course: GolfCourse;
   RoundDate: number;
   PrettyDate: string;
+  RoundType: RoundType
 }
 
 export interface LiveRoundPlayer {
