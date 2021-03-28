@@ -19,13 +19,13 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { StorageModule } from '@ngx-pwa/local-storage';
 import { httpInterceptorProviders } from 'src/interceptors/interceptors';
-import { NewLiveGameModule } from './pages/new-live-game/new-live-game.module';
 import { RecordNewRoundModule } from './pages/record-new-round/record-new-round.module';
 import { PastScoresModule } from './pages/past-scores/past-scores.module';
 import { FriendsModule } from './pages/friends/friends.module';
 import { PendingScoresModule } from './pages/pending-scores/pending-scores.module';
 import { CourseModule } from './pages/course/course.module';
 import { ProfileModule } from './pages/profile/profile.module';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [
@@ -39,13 +39,13 @@ import { ProfileModule } from './pages/profile/profile.module';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireStorageModule,
+    AngularFirestoreModule.enablePersistence({synchronizeTabs: true}),
     LoginModule,
     LandingModule,
     BrowserAnimationsModule,
     NavModule,
     HeaderModule,
     MaterialModule,
-    NewLiveGameModule,
     RecordNewRoundModule,
     PastScoresModule,
     FriendsModule,

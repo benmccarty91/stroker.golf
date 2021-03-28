@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-confirm-dialog',
   template: `
     <h2>
       Are you sure?
     </h2>
-    <p>You can't un-delete a friend.</p>
+    <p>This will delete all progress</p>
     <button mat-stroked-button color="warn" (click)="confirm()">Confirm</button>
     <button mat-flat-button color="primary" cdkFocusInitial (click)="cancel()">Cancel</button>
   `,
@@ -28,14 +27,11 @@ import { MatDialogRef } from '@angular/material/dialog';
     `
   ]
 })
-export class ConfirmDialogComponent implements OnInit {
+export class AbortGameConfirmComponent {
 
   constructor(
-    public dialogRef: MatDialogRef<ConfirmDialogComponent>
-  ) { }
-
-  ngOnInit(): void {
-  }
+    private dialogRef: MatDialogRef<AbortGameConfirmComponent>,
+  ) {}
 
   public confirm(): void {
     // console.log('confirmed');

@@ -1,0 +1,36 @@
+.column_div {
+  display: flex;
+  flex-direction: column;
+}
+
+.row_div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.container {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  margin-top: 25px;
+
+  mat-list {
+    margin-top: 15px;
+
+    ::ng-deep .mat-list-item-content {
+      padding: 0!important;
+    }
+
+    mat-list-item {
+      height: 65px;
+      margin: 20px 0;
+
+      single-hole-single-player {
+        width: 100%;
+      }
+    }  
+  }
+}

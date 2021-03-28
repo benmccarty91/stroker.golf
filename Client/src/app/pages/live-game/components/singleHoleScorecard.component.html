@@ -1,0 +1,22 @@
+<div class="column_div container">
+  
+  <mat-card-title>
+    #{{thisHole.Number}}
+  </mat-card-title>
+  <mat-card-subtitle>
+    Par {{thisHole.Par}}
+    Handicap: {{thisHole.Handicap}}
+  </mat-card-subtitle>
+
+  <mat-list>
+    <mat-list-item *ngFor="let player of liveRound.Players">
+      <single-hole-single-player
+      [holeNumber]="holeNumber"
+      [liveRound]="liveRound"
+      [player]="player">
+      </single-hole-single-player>
+    </mat-list-item>
+    
+  </mat-list>
+
+</div>

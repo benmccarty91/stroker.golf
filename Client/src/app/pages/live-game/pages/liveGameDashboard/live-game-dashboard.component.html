@@ -1,0 +1,22 @@
+
+<mat-card>
+  <h3>Live Game</h3>
+
+  <div *ngIf="!activeLiveRound" class="column_div">
+    <p>You have no active Live Round.</p>
+    <p>Start a new game or join a friend's game.</p>
+    <button mat-stroked-button color="accent" (click)="friendsGameButtonClicked()">Join a Friend's Game</button>
+  </div>
+
+  <div *ngIf="activeLiveRound" class="column_div">
+    <p>Game in progress!</p>
+    <p>{{activeLiveRound.Course.Name}}</p>
+    <p>Started on {{activeLiveRound.PrettyDate}}</p>
+    <button mat-stroked-button color="accent" (click)="goToGame()">Go To Game</button>
+  </div>
+
+</mat-card>
+
+<button mat-fab class="liveRoundFab" color="accent" (click)="fabClicked()">
+  <mat-icon>golf_course</mat-icon>
+</button>

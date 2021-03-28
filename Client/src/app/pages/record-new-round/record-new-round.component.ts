@@ -41,17 +41,7 @@ export class RecordNewRoundComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.courseService.getCourses().subscribe(courses => {
-      this.courses = courses.sort((a, b) => {
-        const nameA = a.Name.toUpperCase();
-        const nameB = b.Name.toUpperCase();
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameB < nameA) {
-          return 1;
-        }
-        return 0;
-      });
+      this.courses = courses;
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
     });
   }

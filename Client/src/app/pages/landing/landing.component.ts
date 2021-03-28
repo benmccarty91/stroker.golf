@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
+import { Subscription } from 'rxjs';
 import { BASE_PAGE } from 'src/app/shared/BasePage';
 import { CONSTS } from 'src/assets/CONSTS';
 import { Score } from 'src/models/Score';
 import { StrokerUser } from 'src/models/StrokerUser';
 import { FriendService } from 'src/services/FriendService';
+import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
 import { ScoreService } from 'src/services/ScoreService';
 import { UserService } from 'src/services/UserService';
@@ -15,13 +17,16 @@ import { UserService } from 'src/services/UserService';
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent extends BASE_PAGE implements OnInit {
+export class LandingComponent extends BASE_PAGE implements OnInit, OnDestroy {
 
   public user: StrokerUser = null;
   public displayName = null;
 
   public pendingFriends: string;
   public pendingScores: Score[];
+  public activeLiveRound: boolean;
+
+  private $liveRoundSub: Subscription;
 
   constructor(
     private userService: UserService,
@@ -31,6 +36,7 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
     private storageService: StorageMap,
     private pubsubService: PubSubService,
     private consts: CONSTS,
+    private liveRoundService: LiveRoundService
   ) {
     super(pubsubService, consts);
   }
@@ -50,6 +56,13 @@ export class LandingComponent extends BASE_PAGE implements OnInit {
         });
       });
     });
+    this.$liveRoundSub = this.liveRoundService.getActiveRound().subscribe(x => {
+      this.activeLiveRound = x ? true : false;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.$liveRoundSub.unsubscribe();
   }
 
   handleLink(path: string): void {

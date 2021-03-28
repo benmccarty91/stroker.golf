@@ -1,0 +1,31 @@
+.liveRoundFab {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+}
+
+mat-card {
+
+  display: flex;
+  flex-direction: column;
+
+  p {
+    margin-top: 0;
+  }
+
+  .column_div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row_div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .half_width_button {
+    margin-top: 15px;
+    width: 45%;
+  }
+}
