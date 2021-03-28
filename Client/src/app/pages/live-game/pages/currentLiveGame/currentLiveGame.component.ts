@@ -46,10 +46,20 @@ export class CurrentLiveGameComponent implements OnInit {
   public saveGame(): void {
 
     const invalidScores = this.validateScorecard();
-    if (!invalidScores || invalidScores === {}) { // All 18 holes are valid
+    let numErrors = 0;
+    Object.keys(invalidScores).forEach(player => {
+      invalidScores[player].forEach(score => {
+        numErrors ++;
+      })
+    });
+
+    if (numErrors === 0) { // All 18 holes are valid
       this.dialog.open(SubmitLiveGameConfirmComponent).afterClosed().subscribe(result => {
         if (result === 'confirm') {
-          this.liveRoundService.saveFinalScores();
+          this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
+          this.liveRoundService.saveFinalScores(this.liveRound, this.playerScores).subscribe(() => {
+            this.router.navigateByUrl('/scores');
+          });
         } else {}
       })
     } else { // something on the scorecard is invalid
@@ -90,7 +100,7 @@ export class CurrentLiveGameComponent implements OnInit {
     if (score.HoleNumber < 1 || score.HoleNumber > 18) {
       return false;
     }
-    if (!score.RelativePar || score.RelativePar < -4) {
+    if (score.RelativePar === undefined || score.RelativePar === null || score.RelativePar < -4) {
       return false;
     }
     if (!score.Score || score.Score < 0) {

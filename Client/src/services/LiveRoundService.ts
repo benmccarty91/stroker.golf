@@ -77,9 +77,8 @@ export class LiveRoundService {
     );
   }
 
-  public saveFinalScores() {
-    console.log('TODO: Save final scores!')
-    console.log(this.playerScores);
+  public saveFinalScores(liveRound: LiveRound, scoreData: {[playerId: string]: {[holeNumber: number]: LiveRoundSingleHoleScore}}): Observable<void> {
+    return this.apiService.post('/liveRound/finalSubmit', {round: liveRound, scoreData: scoreData});
   }
 
   public abortGame(): Observable<void> {
