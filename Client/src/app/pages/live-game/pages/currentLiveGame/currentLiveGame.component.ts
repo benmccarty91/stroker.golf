@@ -1,8 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CONSTS } from 'src/assets/CONSTS';
 import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
+import { RoundType } from 'src/models/Score';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
 import { AbortGameConfirmComponent } from '../../components/modals/abortGameConfirm.component';
@@ -110,11 +112,32 @@ export class CurrentLiveGameComponent implements OnInit {
     return true; //Default
   }
 
+  // TODO: unsub from these subscriptions.  Also, don't sub if one already exists?
   private setupPlayerScoreSubs(): void {
     this.liveRound?.Players?.forEach(player => {
       this.liveRoundService.getScoreByPlayer(player).subscribe(scores => {
         this.playerScores[player.PlayerId] = scores;
+
+        if (player?.PlayerId === this.liveRound?.HostPlayerId) {
+          Object.keys(scores).map(key => Number.parseInt(key)).forEach(holeNumber => {
+            if (scores[holeNumber].Score) {
+              this.currentHoleIndex = this.mapHoleNumberToTabIndex(holeNumber);
+            }
+          })
+        }
       })
     })
+  }
+
+  private mapHoleNumberToTabIndex(holeNumber: number): number {
+    switch(this.liveRound.RoundType) {
+      case(RoundType.FULL_18):
+      case(RoundType.FRONT_9):
+        return holeNumber - 1;
+      case(RoundType.BACK_9): 
+        return holeNumber - 10;
+      default: 
+        return 
+    }
   }
 }
