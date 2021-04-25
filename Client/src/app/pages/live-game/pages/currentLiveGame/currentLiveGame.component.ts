@@ -75,7 +75,7 @@ export class CurrentLiveGameComponent implements OnInit, OnDestroy {
       })
     } else { // something on the scorecard is invalid
       this.dialog.open(OtherErrorComponent, {data: invalidScores});
-      console.log(invalidScores);
+      // console.log(invalidScores);
     }
   }
 

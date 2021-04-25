@@ -112,7 +112,7 @@ export class LiveRoundService {
   }
 
   public changeRoundType(liveRound: LiveRound, roundType: RoundType): Observable<void> {
-    return this.apiService.put('/liveRound/updateRoundType', {liveRoundId: liveRound.HostPlayerId, newRoundType: roundType});
+    return this.apiService.put('/liveRound/updateRoundType', {HostPlayerId: liveRound.HostPlayerId, NewRoundType: roundType});
   }
 }
 

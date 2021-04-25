@@ -56,7 +56,7 @@ export class FriendService {
         return this.getFriend(id);
       }),
       catchError(err => {
-        console.log(err);
+        // console.log(err);
         return this.getFriend(id);
       })
     );

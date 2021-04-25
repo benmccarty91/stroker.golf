@@ -52,7 +52,7 @@ export class ChangeRoundTypeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.data);
+    // console.log(this.data);
   }
 
   public get roundType(): typeof RoundType {
