@@ -3,6 +3,7 @@ import { GolfHole } from 'src/models/GolfHole';
 import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { Subscription, timer } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'single-hole-single-player',
@@ -11,6 +12,7 @@ import { Subscription, timer } from 'rxjs';
       <img src="{{player.PhotoUrl}}" class="avatar"/>
       <div class="column_div player_list_item_details">
         <p>{{player.PlayerName}}</p>
+        <p class="subtitle_text">{{printRelativePar(cumulativeScore)}}<p>
         <p class="subtitle_text">{{player.Teebox.Color}} ({{thisHole.Yardages[player.Teebox.Color]}} yards)</p>
       </div>
       <div class="column_div player_score">
@@ -83,6 +85,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit, OnDestroy {
 
   public score: LiveRoundSingleHoleScore;
   public thisHole: GolfHole;
+  public cumulativeScore: number = 0;
   
   private timerSub$: Subscription;
   private playerScoreSub$: Subscription;
@@ -93,7 +96,19 @@ export class SingleHoleSinglePlayerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.thisHole = this.liveRound.Course.Holes.find(x => x.Number === this.holeNumber);
-    this.playerScoreSub$ = this.liveRoundService.getScoreByPlayer(this.player).subscribe(x => {
+    this.playerScoreSub$ = this.liveRoundService.getScoreByPlayer(this.player).pipe(
+      tap(x => {
+        if (!x) {
+          return;
+        }
+
+        this.cumulativeScore = Object.keys(x).reduce<number>((prev, holeNum) => {
+          const relPar = x[Number.parseInt(holeNum)]?.RelativePar;
+          return prev += relPar || 0;
+        }, 0)
+      })
+    )
+    .subscribe(x => {
       this.score = x ? x[this.holeNumber] : undefined;
     });
   }
@@ -119,7 +134,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit, OnDestroy {
     if (this.timerSub$) {
       this.timerSub$.unsubscribe();
     }
-    this.timerSub$ = timer(3000).subscribe(() => {
+    this.timerSub$ = timer(1000).subscribe(() => {
       this.liveRoundService.setScoreByPlayer(this.player, this.score);
     })
   }
@@ -131,8 +146,10 @@ export class SingleHoleSinglePlayerComponent implements OnInit, OnDestroy {
     return currScore - currPar;
   }
 
-  printRelativePar(): string {
-    const relPar = this.getRelativePar();
+  printRelativePar(relPar?: number): string {
+    if (!relPar) {
+      relPar = this.getRelativePar();
+    }
 
     if (relPar === 0) {
       return `Even Par`;
