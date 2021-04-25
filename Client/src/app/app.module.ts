@@ -26,6 +26,7 @@ import { PendingScoresModule } from './pages/pending-scores/pending-scores.modul
 import { CourseModule } from './pages/course/course.module';
 import { ProfileModule } from './pages/profile/profile.module';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAnalyticsModule, CONFIG, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     AngularFireAuthModule,
     AngularFireStorageModule,
     AngularFirestoreModule.enablePersistence({synchronizeTabs: true}),
+    AngularFireAnalyticsModule,
     LoginModule,
     LandingModule,
     BrowserAnimationsModule,
@@ -57,6 +59,15 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
   providers: [
     AngularFireAuth,
     HttpClient,
+    ScreenTrackingService,
+    UserTrackingService,
+    { provide: CONFIG, 
+      useValue: {
+        send_page_view: true,
+        allow_ad_personalization_signals: false,
+        anonymize_ip: true,
+      } 
+    },
     httpInterceptorProviders
   ],
   bootstrap: [AppComponent]
