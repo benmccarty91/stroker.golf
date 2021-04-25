@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
-import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
+import { FriendHostedLiveGame, LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { RoundType } from 'src/models/Score';
 import { ApiService } from './ApiService';
 import { UserService } from './UserService';
@@ -14,7 +14,7 @@ export class LiveRoundService {
   
   private $activeLiveRound: Observable<LiveRound>;
   private activeLiveRoundDoc: AngularFirestoreDocument<LiveRound>;
-  private $hasLiveRoundSubject: BehaviorSubject<boolean>;
+  private $userId: Observable<string>;
   private userId: string;
 
   private playerScoreObservables: {[playerId: string]: Observable<{[holeNumber: number]: LiveRoundSingleHoleScore}>} = {};
@@ -27,12 +27,11 @@ export class LiveRoundService {
     private userService: UserService,
     private apiService: ApiService
   ) {
-    this.$hasLiveRoundSubject = new BehaviorSubject<boolean>(false);
     this.setupSubs();
   }
 
   private setupSubs(): void {
-    this.$activeLiveRound = this.userService.isLoggedIn().pipe(
+    this.$userId = this.userService.isLoggedIn().pipe(
       mergeMap(isLoggedIn => {
         if (isLoggedIn) {
           return this.userService.getUser()
@@ -45,14 +44,16 @@ export class LiveRoundService {
       }),
       mergeMap(user => {
         if (user) {
+          this.userId = user.id;
           return of(user.id);
         } else {
           throw Error(ERROR_CODES.NO_USER);
         }
-      }),
+      })
+    );
+    this.$activeLiveRound = this.$userId.pipe(
       mergeMap(userId => {
         if (userId) {
-          this.userId = userId;
           this.activeLiveRoundDoc = this.fireStore.collection(this.COLLECTION_NAME).doc<LiveRound>(this.userId);
           return this.activeLiveRoundDoc.valueChanges();
         }
@@ -60,13 +61,20 @@ export class LiveRoundService {
           throw Error(ERROR_CODES.NO_USER_ID);
         }
       }),
-      tap(round => {
-        if (round) {
-          this.$hasLiveRoundSubject.next(true);
-        } else {
-          this.$hasLiveRoundSubject.next(false);
+      mergeMap(liveRound => {
+        if (liveRound) { // we are hosting a game
+          return of(liveRound);
+        } else { //check for friend's game
+          return this.fireStore.collection('user').doc(this.userId).collection('non-hosted-live-game').doc<FriendHostedLiveGame>('active-game').valueChanges();
         }
-        // console.log(round);
+      }),
+      mergeMap(liveRoundOrFriend => {
+        if (this.isRound(liveRoundOrFriend)) {
+          return of(liveRoundOrFriend);
+        } else { //return friend's hosted game, if we don't have our own.
+          this.activeLiveRoundDoc = this.fireStore.collection(this.COLLECTION_NAME).doc<LiveRound>(liveRoundOrFriend.GameId);
+          return this.activeLiveRoundDoc.valueChanges();
+        }
       }),
       catchError(err => {
         if (err.message === ERROR_CODES.NO_USER || err.message === ERROR_CODES.NO_USER_ID) {
@@ -113,6 +121,10 @@ export class LiveRoundService {
 
   public changeRoundType(liveRound: LiveRound, roundType: RoundType): Observable<void> {
     return this.apiService.put('/liveRound/updateRoundType', {HostPlayerId: liveRound.HostPlayerId, NewRoundType: roundType});
+  }
+
+  private isRound(x: LiveRound | FriendHostedLiveGame): x is LiveRound {
+    return (x as LiveRound).CourseId !== undefined;
   }
 }
 

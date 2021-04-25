@@ -25,3 +25,7 @@ export interface LiveRoundSingleHoleScore {
   Score: number;
   RelativePar?: number;
 }
+
+export interface FriendHostedLiveGame {
+  GameId: string;
+}
