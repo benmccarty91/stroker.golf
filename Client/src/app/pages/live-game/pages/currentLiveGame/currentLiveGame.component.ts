@@ -95,7 +95,10 @@ export class CurrentLiveGameComponent implements OnInit, OnDestroy {
   public changeRoundType(): void {
     this.dialog.open(ChangeRoundTypeComponent, {data: this.liveRound}).afterClosed().subscribe((result: RoundType) => {
       if (result) {
-        this.liveRoundService.changeRoundType(this.liveRound, result).subscribe(() => {}); //TODO: what happens to the client when this data changes???
+        this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
+        this.liveRoundService.changeRoundType(this.liveRound, result).subscribe(() => {
+          this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_COMPLETE);
+        }); 
       }
     });
   }
