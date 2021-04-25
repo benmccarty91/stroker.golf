@@ -34,6 +34,9 @@ router.post('/', async (req: any, res, next) => {
     data.Players.forEach((player) => {
       const defaultScoreMap = getDefaultScoreMap(data);
       batch.set(liveRoundCollection.doc(data.HostPlayerId).collection(player.PlayerId).doc(`scores`), defaultScoreMap);
+      if (player.PlayerId !== data.HostPlayerId) {
+        batch.set(userCollection.doc(player.PlayerId).collection('non-hosted-live-game').doc('active-game'), {GameId: data.HostPlayerId});
+      }
     })
     await batch.commit();
     res.status(StatusCodes.CREATED).send();
@@ -56,6 +59,7 @@ router.delete('/', async (req: any, res, next) => {
     batch.delete(docRef);
     data.Players.forEach(player => {
       batch.delete(docRef.collection(player.PlayerId).doc('scores'));
+      batch.delete(userCollection.doc(player.PlayerId).collection('non-hosted-live-game').doc('active-game'));
     })
 
     await batch.commit();
@@ -107,6 +111,7 @@ router.post('/finalSubmit', async (req: any, res, next) => {
       }).forEach(friendScore => {
         batch.create(userCollection.doc(friendScore.PlayerId).collection('pendingScores').doc(friendScore.ScoreId), friendScore);
         batch.delete(liveRoundCollection.doc(liveRound.HostPlayerId).collection(friendScore.PlayerId).doc('scores'));
+        batch.delete(userCollection.doc(friendScore.PlayerId).collection('non-hosted-live-game').doc('active-game'));
       });
     }
 
