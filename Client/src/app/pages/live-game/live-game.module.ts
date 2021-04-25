@@ -14,6 +14,7 @@ import { SingleHoleSinglePlayerComponent } from './components/singleHoleSinglePl
 import { SubmitLiveGameConfirmComponent } from './components/modals/submitLiveGameConfirm.component';
 import { NineHoleConfirmComponent } from './components/modals/nineHoleConfirm.component';
 import { AbortGameConfirmComponent } from './components/modals/abortGameConfirm.component';
+import { ChangeRoundTypeComponent } from './components/modals/changeRoundType.component';
 
 const routes: Routes = [
   {
@@ -46,7 +47,8 @@ const routes: Routes = [
     SingleHoleSinglePlayerComponent,
     SubmitLiveGameConfirmComponent,
     NineHoleConfirmComponent,
-    AbortGameConfirmComponent
+    AbortGameConfirmComponent,
+    ChangeRoundTypeComponent
   ],
   imports: [
     CommonModule,

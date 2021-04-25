@@ -4,12 +4,14 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { v4 as uuid } from 'uuid';
 
-import {LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore} from '../Models/LiveRound';
-import { Score } from '../Models/ScoreSubmission';
+import {LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore, LiveRoundTypeChange} from '../Models/LiveRound';
+import { RoundType, Score } from '../Models/ScoreSubmission';
+import GolfCourse from '../Models/GolfCourse';
 
 const db = admin.firestore();
 const liveRoundCollection = db.collection('live_rounds');
 const userCollection = db.collection('user');
+const courseCollection = db.collection('course');
 
 const router = express.Router();
 
@@ -122,6 +124,69 @@ router.post('/finalSubmit', async (req: any, res, next) => {
   }
 });
 
+router.put('/updateRoundType', async (req: any, res, next) => {
+  const playerId = req.user.uid;
+  functions.logger.info(`attempting to edit live game type`);
+  
+  try {
+    const data = req.body as LiveRoundTypeChange;
+    functions.logger.info(data);
+
+    if (playerId !== data.HostPlayerId) {
+      functions.logger.info(`cannot change the round type unless you're the owner`);
+      res.status(StatusCodes.FORBIDDEN).send();
+      return;
+    }
+
+    const batch = db.batch();
+
+    const existingRecordRef = liveRoundCollection.doc(data.HostPlayerId);
+    const existingRecord = (await existingRecordRef.get()).data() as LiveRound;
+    const oldRoundType = existingRecord.RoundType;
+    const newLiveRoundRecord: LiveRound = {...existingRecord};
+    const courseRecord = (await courseCollection.doc(existingRecord.CourseId).get()).data() as GolfCourse;
+
+    if (oldRoundType === data.NewRoundType) {
+      return res.status(StatusCodes.OK).send();
+    }
+
+
+    //update the LiveRound.Course to include the new holes
+    newLiveRoundRecord.Course = getUpdatedCourse(courseRecord, data.NewRoundType);
+    newLiveRoundRecord.RoundType = data.NewRoundType
+    batch.set(existingRecordRef, newLiveRoundRecord);
+
+
+    //update each each LiveRound.{{playerId}}.scores document to fill in the new holes
+    for (const player of newLiveRoundRecord.Players) {
+      const playerScoreRef = existingRecordRef.collection(player.PlayerId).doc('scores');
+      const playerScoreDoc = (await playerScoreRef.get()).data() as {[holeNumber: number]: LiveRoundSingleHoleScore};
+
+      //creates a new player score doc by looping over the updated course holes and creating new records for each hole
+      //if an old score record exists, we'll take that one.  Otherwise, create a default score.
+      const newPlayerScoreDoc = newLiveRoundRecord.Course.Holes.reduce<{[holeNumber: number]: LiveRoundSingleHoleScore}>((prev, curr) => {
+        const toRet = prev;
+        toRet[curr.Number] = playerScoreDoc[curr.Number] || {
+          HoleNumber: curr.Number,
+          Score: 0
+        };
+        return toRet;
+        }, {}
+      );
+      batch.set(playerScoreRef, newPlayerScoreDoc);
+    }
+
+    await batch.commit();
+    
+    return res.status(StatusCodes.OK).send();
+  }
+  catch(err) {
+    functions.logger.error(`problem editing live round.`, err);
+    next(err);
+    return;
+  }
+});
+
 const getDefaultScoreMap = (data: LiveRound): {[holeNumber: number]: LiveRoundSingleHoleScore} => {
   return data.Course.Holes.reduce<{[holeNumber: number]: LiveRoundSingleHoleScore}>((prev, curr) => {
     const toRet = prev;
@@ -161,6 +226,22 @@ const mapScore = (liveRound: LiveRound, player: LiveRoundPlayer, flatScores: {[p
     RoundType: liveRound.RoundType,
     Score: flatScores[player.PlayerId]['score'],
     RelativeScore: flatScores[player.PlayerId]['relativeScore']
+  }
+}
+
+const getUpdatedCourse = (originalCourseRecord: GolfCourse, newRoundType: RoundType): GolfCourse => {
+  originalCourseRecord.Holes = originalCourseRecord.Holes.sort((a, b) => {
+    return a.Number - b.Number;
+  });
+  switch (newRoundType) {
+    case (RoundType.FULL_18):
+      return originalCourseRecord;
+    case (RoundType.FRONT_9):
+      originalCourseRecord.Holes = originalCourseRecord.Holes.slice(0,9);
+      return originalCourseRecord;
+    case (RoundType.BACK_9):
+      originalCourseRecord.Holes = originalCourseRecord.Holes.slice(9);
+      return originalCourseRecord;
   }
 }
 

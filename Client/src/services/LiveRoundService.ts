@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
+import { RoundType } from 'src/models/Score';
 import { ApiService } from './ApiService';
 import { UserService } from './UserService';
 
@@ -108,6 +109,10 @@ export class LiveRoundService {
     const toSave = this.playerScores[player.PlayerId];
     toSave[body.HoleNumber] = body;
     return this.activeLiveRoundDoc.collection(player.PlayerId).doc('scores').set(toSave);
+  }
+
+  public changeRoundType(liveRound: LiveRound, roundType: RoundType): Observable<void> {
+    return this.apiService.put('/liveRound/updateRoundType', {HostPlayerId: liveRound.HostPlayerId, NewRoundType: roundType});
   }
 }
 

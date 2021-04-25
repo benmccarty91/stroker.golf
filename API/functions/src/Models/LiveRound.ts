@@ -25,3 +25,8 @@ export interface LiveRoundSingleHoleScore {
   Score: number;
   RelativePar?: number;
 }
+
+export interface LiveRoundTypeChange {
+  HostPlayerId: string;
+  NewRoundType: RoundType
+}

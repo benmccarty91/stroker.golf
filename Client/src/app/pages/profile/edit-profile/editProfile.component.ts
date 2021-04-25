@@ -110,7 +110,7 @@ export class EditProfileComponent implements OnInit {
         this.user.photoUrl = res.newImageUrl;
         this.newImage = res.newImage;
       }
-      console.log(res);
+      // console.log(res);
     });
   }
 

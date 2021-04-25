@@ -48,7 +48,7 @@ export class CourseComponent implements OnInit {
   public incrementStep = (): void => {
     this.stepHistory.push(this.step);
     this.step++;
-    console.log(this.summary);
+    // console.log(this.summary);
   }
 
   public decrementStep = (): void => {
@@ -60,7 +60,7 @@ export class CourseComponent implements OnInit {
   }
 
   public submitFinal = (): void => {
-    console.log(this.summary.newGolfCourse);
+    // console.log(this.summary.newGolfCourse);
     this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.courseService.postCourse(this.summary.newGolfCourse).subscribe(
     x => {

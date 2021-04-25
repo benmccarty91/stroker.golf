@@ -109,7 +109,7 @@ export class NewLiveGameComponent implements OnInit, OnDestroy {
   }
 
   public submitSummary = (event): void => {
-    console.log(event);
+    // console.log(event);
     this.pubsub.$pub(this.consts.EVENTS.DATA_LOAD_START);
     this.liveRoundService.createNewLiveRound(event).subscribe(() => {
       this.router.navigateByUrl('/liveGame/currentGame');
