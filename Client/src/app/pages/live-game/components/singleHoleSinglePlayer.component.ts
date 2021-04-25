@@ -12,7 +12,7 @@ import { tap } from 'rxjs/operators';
       <img src="{{player.PhotoUrl}}" class="avatar"/>
       <div class="column_div player_list_item_details">
         <p>{{player.PlayerName}}</p>
-        <p class="subtitle_text">{{printRelativePar(cumulativeScore)}}<p>
+        <p class="subtitle_text" *ngIf="cumulativeScore !== undefined">{{printRelativePar(cumulativeScore)}}<p>
         <p class="subtitle_text">{{player.Teebox.Color}} ({{thisHole.Yardages[player.Teebox.Color]}} yards)</p>
       </div>
       <div class="column_div player_score">
@@ -147,7 +147,7 @@ export class SingleHoleSinglePlayerComponent implements OnInit, OnDestroy {
   }
 
   printRelativePar(relPar?: number): string {
-    if (!relPar) {
+    if (relPar === undefined || relPar === null) {
       relPar = this.getRelativePar();
     }
 

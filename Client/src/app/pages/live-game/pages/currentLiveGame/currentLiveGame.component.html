@@ -16,7 +16,7 @@
   </div>
 </mat-card>
 
-<button mat-fab class="liveRoundFab" color="accent" [matMenuTriggerFor]="menu">
+<button mat-fab class="liveRoundFab" color="accent" [matMenuTriggerFor]="menu" *ngIf="isHostPlayer()">
   <mat-icon>menu</mat-icon>
 </button>
 <mat-menu #menu="matMenu">

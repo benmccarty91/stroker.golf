@@ -5,8 +5,10 @@ import { Subscription } from 'rxjs';
 import { CONSTS } from 'src/assets/CONSTS';
 import { LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { RoundType } from 'src/models/Score';
+import { StrokerUser } from 'src/models/StrokerUser';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
+import { UserService } from 'src/services/UserService';
 import { AbortGameConfirmComponent } from '../../components/modals/abortGameConfirm.component';
 import { ChangeRoundTypeComponent } from '../../components/modals/changeRoundType.component';
 import { OtherErrorComponent } from '../../components/modals/otherError.component';
@@ -26,12 +28,15 @@ export class CurrentLiveGameComponent implements OnInit, OnDestroy {
   private playerScores: {[playerId: string]: {[holeNumber: number]: LiveRoundSingleHoleScore}} = {};
   private playerScoreSubs$: {[playerId: string]: Subscription} = {};
   private liveRoundSub$: Subscription;
+  private userSub$: Subscription;
+  private user: StrokerUser;
 
 
   constructor(
     private pubsub: PubSubService,
     private consts: CONSTS,
     private liveRoundService: LiveRoundService,
+    private userService: UserService,
     private dialog: MatDialog,
     private router: Router,
   ) {}
@@ -41,13 +46,16 @@ export class CurrentLiveGameComponent implements OnInit, OnDestroy {
       this.liveRound = x;
       this.hostPlayer = this.liveRound?.Players?.find(y => y.PlayerId === this.liveRound.HostPlayerId) || undefined;
       this.pubsub.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
-
       this.setupPlayerScoreSubs();
+    });
+    this.userSub$ = this.userService.getUser().subscribe(x => {
+      this.user = x;
     });
   }
 
   ngOnDestroy(): void {
     this.liveRoundSub$.unsubscribe();
+    this.userSub$.unsubscribe();
     Object.keys(this.playerScoreSubs$).forEach(playerId => {
       this.playerScoreSubs$[playerId].unsubscribe();
     })
@@ -101,6 +109,13 @@ export class CurrentLiveGameComponent implements OnInit, OnDestroy {
         }); 
       }
     });
+  }
+
+  public isHostPlayer(): boolean {
+    if (!this.user || !this.liveRound) {
+      return false;
+    }
+    return this.user.id === this.liveRound.HostPlayerId;
   }
 
   private validateScorecard(): {[playerId: string]: LiveRoundSingleHoleScore[]} {
