@@ -3,4 +3,5 @@ export interface StrokerUser {
   displayName: string;
   email: string;
   photoUrl: string;
+  isPremium?: boolean;
 }
