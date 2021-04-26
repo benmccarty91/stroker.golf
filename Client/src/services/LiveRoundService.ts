@@ -11,14 +11,14 @@ import { UserService } from './UserService';
   providedIn: 'root'
 })
 export class LiveRoundService {
-  
+
   private $activeLiveRound: Observable<LiveRound>;
   private activeLiveRoundDoc: AngularFirestoreDocument<LiveRound>;
   private $userId: Observable<string>;
   private userId: string;
 
-  private playerScoreObservables: {[playerId: string]: Observable<{[holeNumber: number]: LiveRoundSingleHoleScore}>} = {};
-  private playerScores: {[playerId: string]: {[holeNumber: number]: LiveRoundSingleHoleScore}} = {};
+  private playerScoreObservables: { [playerId: string]: Observable<{ [holeNumber: number]: LiveRoundSingleHoleScore }> } = {};
+  private playerScores: { [playerId: string]: { [holeNumber: number]: LiveRoundSingleHoleScore } } = {};
 
   private readonly COLLECTION_NAME = 'live_rounds';
 
@@ -69,6 +69,9 @@ export class LiveRoundService {
         }
       }),
       mergeMap(liveRoundOrFriend => {
+        if (!liveRoundOrFriend) {
+          return of(null);
+        }
         if (this.isRound(liveRoundOrFriend)) {
           return of(liveRoundOrFriend);
         } else { //return friend's hosted game, if we don't have our own.
@@ -86,8 +89,8 @@ export class LiveRoundService {
     );
   }
 
-  public saveFinalScores(liveRound: LiveRound, scoreData: {[playerId: string]: {[holeNumber: number]: LiveRoundSingleHoleScore}}): Observable<void> {
-    return this.apiService.post('/liveRound/finalSubmit', {round: liveRound, scoreData: scoreData});
+  public saveFinalScores(liveRound: LiveRound, scoreData: { [playerId: string]: { [holeNumber: number]: LiveRoundSingleHoleScore } }): Observable<void> {
+    return this.apiService.post('/liveRound/finalSubmit', { round: liveRound, scoreData: scoreData });
   }
 
   public abortGame(): Observable<void> {
@@ -102,9 +105,9 @@ export class LiveRoundService {
     return this.apiService.post('/liveRound', game);
   }
 
-  public getScoreByPlayer(player: LiveRoundPlayer): Observable<{[holeNumber: number]: LiveRoundSingleHoleScore}> {
+  public getScoreByPlayer(player: LiveRoundPlayer): Observable<{ [holeNumber: number]: LiveRoundSingleHoleScore }> {
     if (!this.playerScoreObservables[`${player.PlayerId}`]) {
-      this.playerScoreObservables[`${player.PlayerId}`] = this.activeLiveRoundDoc.collection(player.PlayerId).doc<{[holeNumber: number]: LiveRoundSingleHoleScore}>('scores').valueChanges().pipe(
+      this.playerScoreObservables[`${player.PlayerId}`] = this.activeLiveRoundDoc.collection(player.PlayerId).doc<{ [holeNumber: number]: LiveRoundSingleHoleScore }>('scores').valueChanges().pipe(
         tap(scores => {
           this.playerScores[player.PlayerId] = scores;
         })
@@ -120,11 +123,11 @@ export class LiveRoundService {
   }
 
   public changeRoundType(liveRound: LiveRound, roundType: RoundType): Observable<void> {
-    return this.apiService.put('/liveRound/updateRoundType', {HostPlayerId: liveRound.HostPlayerId, NewRoundType: roundType});
+    return this.apiService.put('/liveRound/updateRoundType', { HostPlayerId: liveRound.HostPlayerId, NewRoundType: roundType });
   }
 
   private isRound(x: LiveRound | FriendHostedLiveGame): x is LiveRound {
-    return (x as LiveRound).CourseId !== undefined;
+    return (x as LiveRound)?.CourseId !== undefined;
   }
 }
 
