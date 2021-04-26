@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { FriendHostedLiveGame, LiveRound, LiveRoundPlayer, LiveRoundSingleHoleScore } from 'src/models/LiveRound';
 import { RoundType } from 'src/models/Score';
+import { StrokerUser } from 'src/models/StrokerUser';
 import { ApiService } from './ApiService';
 import { UserService } from './UserService';
 
@@ -42,8 +43,8 @@ export class LiveRoundService {
           return of(null);
         }
       }),
-      mergeMap(user => {
-        if (user) {
+      mergeMap((user: StrokerUser) => {
+        if (user && user.isPremium) {
           this.userId = user.id;
           return of(user.id);
         } else {

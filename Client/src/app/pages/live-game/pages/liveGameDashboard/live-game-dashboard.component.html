@@ -1,22 +1,35 @@
 
-<mat-card>
-  <h3>Live Game</h3>
+<mat-card *ngIf="user">
+  <h2>Live Game</h2>
 
-  <div *ngIf="!activeLiveRound" class="column_div">
-    <p>You have no active Live Round.</p>
-    <p>Start a new game or join a friend's game.</p>
-    <button mat-stroked-button color="accent" (click)="friendsGameButtonClicked()">Join a Friend's Game</button>
+  <div *ngIf="!user.isPremium">
+    <div class="column_div">
+      <h3>Upgrade to Premium</h3>
+      <p>
+        Live round tracking is reserved only for premium users.  If your friend is 
+        a premium user, they can add you to their game.
+      </p>
+    </div>
   </div>
-
-  <div *ngIf="activeLiveRound" class="column_div">
-    <p>Game in progress!</p>
-    <p>{{activeLiveRound.Course.Name}}</p>
-    <p>Started on {{activeLiveRound.PrettyDate}}</p>
-    <button mat-stroked-button color="accent" (click)="goToGame()">Go To Game</button>
+  
+  <div *ngIf="user.isPremium">
+    <div *ngIf="!activeLiveRound" class="column_div">
+      <h3>You have no active Live Round.</h3>
+      <p>Start can start a new game, or have one of your friends start one.</p>
+      <p>If a friend adds you to a game, it will show up here automatically.</p>
+    </div>
+  
+    <div *ngIf="activeLiveRound" class="column_div">
+      <p>Game in progress!</p>
+      <p>{{activeLiveRound.Course.Name}}</p>
+      <p>Started on {{activeLiveRound.PrettyDate}}</p>
+      <button mat-stroked-button color="accent" (click)="goToGame()">Go To Game</button>
+    </div>
   </div>
+  
 
 </mat-card>
 
-<button mat-fab class="liveRoundFab" color="accent" (click)="fabClicked()">
+<button *ngIf="user && user.isPremium" mat-fab class="liveRoundFab" color="accent" (click)="fabClicked()">
   <mat-icon>golf_course</mat-icon>
 </button>

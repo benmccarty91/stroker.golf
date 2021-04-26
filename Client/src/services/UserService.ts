@@ -42,8 +42,8 @@ export class UserService {
   // somehow it is.  Maybe it's just the debugger?  If the cahced_user
   // isn't getting updated in prod, then just simply update it in the 
   // update method below.
-  public getUser(): Observable<StrokerUser> {
-    if (this.cached_user) {
+  public getUser(skipCache: boolean = false): Observable<StrokerUser> {
+    if (this.cached_user && !skipCache) {
       return of(this.cached_user);
     }
 
@@ -66,7 +66,8 @@ export class UserService {
       displayName: user.displayName,
       email: user.email,
       id: user.uid,
-      photoUrl: user.photoURL
+      photoUrl: user.photoURL,
+      isPremium: false
     };
     await this.apiService.post('/user/register', newUser).subscribe(() => { });
   }

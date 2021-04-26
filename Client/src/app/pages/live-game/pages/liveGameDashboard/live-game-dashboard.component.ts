@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CONSTS } from 'src/assets/CONSTS';
 import { LiveRound } from 'src/models/LiveRound';
+import { StrokerUser } from 'src/models/StrokerUser';
 import { LiveRoundService } from 'src/services/LiveRoundService';
 import { PubSubService } from 'src/services/PubSubService';
+import { UserService } from 'src/services/UserService';
 
 @Component({
   templateUrl: './live-game-dashboard.component.html',
@@ -14,18 +16,24 @@ import { PubSubService } from 'src/services/PubSubService';
 })
 export class LiveGameDashboard implements OnInit, OnDestroy {
   public activeLiveRound: LiveRound;
+  public user: StrokerUser;
   private $activeLiveRound: Subscription;
+  private $user: Subscription;
 
 
   constructor(
     private liveRoundService: LiveRoundService,
+    private userService: UserService,
     private pubsubService: PubSubService,
     private consts: CONSTS,
     private dialog: MatDialog,
     private router: Router,
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
+    this.userService.getUser().subscribe(x => {
+      this.user = x;
+    });
     this.$activeLiveRound = this.liveRoundService.getActiveRound().subscribe(x => {
       this.activeLiveRound = x;
       this.pubsubService.$pub(this.consts.EVENTS.PAGE_LOAD_COMPLETE);
