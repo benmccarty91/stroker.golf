@@ -5,6 +5,8 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
 import { StrokerUser } from '../Models/StrokerUser'
+import moment = require('moment');
+import { Score } from '../Models/ScoreSubmission';
 
 const db = admin.firestore();
 const userCollection = db.collection('user');
@@ -37,6 +39,33 @@ router.get('/profile', async (req: any, res) => { // get full profile data
   const user = userQuery.data() as StrokerUser;
   return res.status(StatusCodes.OK).send(user);
 });
+
+router.get('/profile/stats', async (req: any, res, next) => {
+  const userId = req.user.uid;
+
+  try {
+    const now = Number.parseInt(moment().format('YYYY'));
+    const startDate = moment({ year: now });
+    const currentYearQuery = await userCollection.doc(userId).collection('score').where('Date', '>=', startDate.unix()).get();
+
+    const toRet: { [courseName: string]: number } = {};
+    currentYearQuery.forEach((scoreDoc) => {
+      const data = scoreDoc.data() as Score;
+      if (!toRet[data.CourseName]) {
+        toRet[data.CourseName] = 0;
+      }
+      toRet[data.CourseName] += 1;
+    });
+
+    res.status(StatusCodes.OK).send(toRet);
+  }
+  catch (err) {
+    functions.logger.error(err);
+    return next(err);
+  }
+
+
+})
 
 router.put('/profile', async (req: any, res) => { // update profile data
   const userId = req.user.uid;
