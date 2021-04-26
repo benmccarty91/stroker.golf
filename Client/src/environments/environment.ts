@@ -15,7 +15,7 @@ export const environment = {
     measurementId: 'G-FQJ9W378JC'
   },
   api: {
-    baseURL: 'https://us-central1-stroker-af4d5.cloudfunctions.net/api'
+    baseURL: 'http://localhost:5001/stroker-af4d5/us-central1/api'
   }
 };
 
